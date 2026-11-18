@@ -17,35 +17,35 @@ export const ReminderTimeline: React.FC<ReminderTimelineProps> = ({
   isApplied,
 }) => {
   return (
-    <div className="p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] space-y-6">
+    <div className="p-6 sm:p-7 rounded-2xl bg-[#FDFDFD] space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-neutral-800">
+          <div className="w-8 h-8 rounded-lg bg-[#F5F5F5] flex items-center justify-center text-neutral-800">
             <Bell className="w-4 h-4 stroke-[1.75]" />
           </div>
           <div>
-            <h3 className="text-sm sm:text-base font-bold text-neutral-900 tracking-tight [text-wrap:balance]">
-              Escalating Reminder Schedule
+            <h3 className="text-sm sm:text-base font-semibold text-neutral-950 tracking-tight" style={{ textWrap: 'balance' }}>
+              Reminder Schedule
             </h3>
-            <p className="text-xs text-neutral-500 [text-wrap:pretty]">
-              Checklist-aware alerts timed to incomplete mandatory deliverables
+            <p className="text-xs text-neutral-500" style={{ textWrap: 'pretty' }}>
+              Checklist-aware alerts timed to incomplete deliverables
             </p>
           </div>
         </div>
 
         <button
           onClick={onToggleReminders}
-          className={`w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.97] ${
+          className={`w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 active:scale-[0.97] ${
             remindersEnabled
               ? 'btn-tactile-primary text-white'
-              : 'bg-white hover:bg-neutral-50 text-neutral-700'
+              : 'bg-[#F5F5F5] hover:bg-[#EBEBEB] text-neutral-700'
           }`}
         >
           {remindersEnabled ? (
             <>
               <Bell className="w-3.5 h-3.5 stroke-[1.75]" />
-              <span>Reminders: Enabled</span>
+              <span>Reminders: Active</span>
             </>
           ) : (
             <>
@@ -57,70 +57,65 @@ export const ReminderTimeline: React.FC<ReminderTimelineProps> = ({
       </div>
 
       {isApplied && (
-        <div className="p-4 rounded-xl bg-white text-xs text-emerald-800 flex items-center gap-2.5">
+        <div className="p-3.5 rounded-xl bg-[#F5F5F5] text-xs text-neutral-700 flex items-center gap-2.5">
           <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 stroke-[2]" />
-          <span className="[text-wrap:pretty]">Application Submitted — all upcoming deadline reminders are cancelled.</span>
+          <span style={{ textWrap: 'pretty' }}>Application submitted — upcoming deadline alerts cancelled.</span>
         </div>
       )}
 
       {/* 5-Checkpoint Vertical Timeline */}
-      <div className="relative pl-6 space-y-6 before:content-[''] before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-neutral-200">
+      <div className="relative pl-6 space-y-5 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[1px] before:bg-neutral-200">
         {checkpoints.map((cp) => {
           let badge = null;
           let nodeIcon = null;
 
           if (isApplied || cp.status === 'cancelled') {
-            nodeIcon = <XCircle className="w-4 h-4 text-neutral-400 stroke-[1.75]" />;
+            nodeIcon = <XCircle className="w-3.5 h-3.5 text-neutral-400 stroke-[1.75]" />;
             badge = (
-              <span className="text-[11px] font-medium text-neutral-400 bg-white px-2.5 py-1 rounded-md">
+              <span className="text-[11px] font-medium text-neutral-400">
                 Cancelled
               </span>
             );
           } else if (cp.status === 'passed_before_save') {
-            nodeIcon = <Clock className="w-4 h-4 text-neutral-400 stroke-[1.75]" />;
+            nodeIcon = <Clock className="w-3.5 h-3.5 text-neutral-400 stroke-[1.75]" />;
             badge = (
-              <span className="text-[11px] font-medium text-neutral-400 bg-white px-2.5 py-1 rounded-md">
+              <span className="text-[11px] font-medium text-neutral-400">
                 Passed before save
               </span>
             );
           } else if (cp.status === 'sent') {
-            nodeIcon = <CheckCircle2 className="w-4 h-4 text-emerald-600 stroke-[2]" />;
+            nodeIcon = <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 stroke-[2]" />;
             badge = (
-              <span className="text-[11px] font-medium text-emerald-700 bg-white px-2.5 py-1 rounded-md">
+              <span className="text-[11px] font-medium text-emerald-700 font-mono">
                 Fired
               </span>
             );
           } else {
-            nodeIcon = <Clock className="w-4 h-4 text-neutral-700 stroke-[1.75]" />;
+            nodeIcon = <Clock className="w-3.5 h-3.5 text-neutral-600 stroke-[1.75]" />;
             badge = (
-              <span className="text-[11px] font-medium text-neutral-700 bg-white px-2.5 py-1 rounded-md tabular-nums font-mono">
-                Scheduled · {formatEventDate(cp.targetDate)}
+              <span className="text-[11px] font-medium text-neutral-600 tabular-nums font-mono">
+                {formatEventDate(cp.targetDate)}
               </span>
             );
           }
 
-          const isDimmed = cp.status === 'passed_before_save' || isApplied;
-
           return (
-            <div key={cp.id} className="relative group">
-              <div className="absolute -left-6 top-1 w-5 h-5 rounded-full bg-white flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-neutral-400 group-hover:bg-neutral-900 transition-colors" />
+            <div key={cp.id} className="relative flex items-start justify-between gap-3 text-xs">
+              <span className="absolute -left-6 top-0.5 w-4 h-4 rounded-full bg-white flex items-center justify-center">
+                {nodeIcon}
+              </span>
+
+              <div className="space-y-0.5 flex-1 min-w-0">
+                <p className="font-semibold text-neutral-900 tracking-tight">
+                  {cp.label}
+                </p>
+                <p className="text-[11px] text-neutral-500 leading-relaxed" style={{ textWrap: 'pretty' }}>
+                  Alert scheduled {cp.interval} before submission cutoff
+                </p>
               </div>
 
-              <div className={`space-y-1.5 ${isDimmed ? 'opacity-50' : 'opacity-100'}`}>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    {nodeIcon}
-                    <h4 className="text-xs sm:text-sm font-semibold text-neutral-900 [text-wrap:balance]">
-                      {cp.label}
-                    </h4>
-                  </div>
-                  {badge}
-                </div>
-
-                <p className="text-xs text-neutral-500 tabular-nums font-mono">
-                  Target: {formatEventDate(cp.targetDate)}
-                </p>
+              <div className="flex-shrink-0 text-right">
+                {badge}
               </div>
             </div>
           );

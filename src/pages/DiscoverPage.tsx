@@ -82,55 +82,56 @@ export const DiscoverPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-12 sm:space-y-16 bg-white">
-      {/* Intro Header */}
+    <div className="space-y-12 sm:space-y-14 bg-white">
+      {/* Page Header */}
       <div className="space-y-3">
-        <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900 tracking-tight" style={{ textWrap: 'balance' }}>
-          Ecosystem Discovery Rails
+        <h1 className="text-2xl sm:text-3xl font-semibold text-neutral-950 tracking-tight" style={{ textWrap: 'balance' }}>
+          Discover Opportunities
         </h1>
-        <p className="text-sm sm:text-base text-neutral-500 max-w-2xl leading-relaxed" style={{ textWrap: 'pretty' }}>
-          Audit application requirements upfront, verify sponsor judging overlaps, and organize your preparation inside a persistent workspace.
+        <p className="text-sm text-neutral-500 max-w-xl leading-relaxed" style={{ textWrap: 'pretty' }}>
+          Inspect application questions upfront, verify sponsor judging criteria, and organize your preparation inside a persistent workspace.
         </p>
 
-        {/* Clean Filter Strip */}
-        <div className="pt-3">
+        {/* Filter Strip */}
+        <div className="pt-2">
           <InterestBoostBar />
         </div>
       </div>
 
-      {/* 4 Distinct Rails with Layout Animation */}
+      {/* Discovery Rails */}
       <LayoutGroup>
-        <div className="space-y-14 sm:space-y-16">
+        <div className="space-y-12 sm:space-y-14">
           {SECTIONS.map((section) => {
             const rawItems = opportunitiesByType[section.type] || [];
             const sortedItems = sortSectionOpportunities(rawItems);
-            const displayItems = sortedItems.slice(0, 4);
+            // Display 3 cards per rail for optimal 3-column layout
+            const displayItems = sortedItems.slice(0, 3);
 
             return (
               <section key={section.type} className="space-y-4">
                 {/* Rail Header */}
                 <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-1">
                   <div>
-                    <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-neutral-900 flex items-center gap-2">
+                    <h2 className="text-base sm:text-lg font-semibold tracking-tight text-neutral-950 flex items-center gap-2">
                       <span>{section.title}</span>
-                      <span className="text-xs font-normal text-neutral-400 font-mono tabular-nums">· {rawItems.length}</span>
+                      <span className="text-xs font-normal text-neutral-400 font-mono tabular-nums">({rawItems.length})</span>
                     </h2>
-                    <p className="text-xs sm:text-sm text-neutral-500 mt-1" style={{ textWrap: 'pretty' }}>
+                    <p className="text-xs text-neutral-500 mt-0.5" style={{ textWrap: 'pretty' }}>
                       {section.description}
                     </p>
                   </div>
 
                   <Link
                     to={`/discover/${section.type}`}
-                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium text-neutral-700 bg-[#FDFDFD] hover:bg-[#f2f2f4] transition-[transform,background-color] duration-150 whitespace-nowrap self-start sm:self-auto active:scale-[0.97]"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-[#F5F5F5] transition-colors whitespace-nowrap self-start sm:self-auto active:scale-[0.97]"
                   >
-                    <span>See all</span>
+                    <span>View all</span>
                     <ArrowRight className="w-3.5 h-3.5 text-neutral-400 stroke-[1.75]" />
                   </Link>
                 </div>
 
-                {/* Animated Grid Cards - Mobile Stack / Desktop Grid */}
-                <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+                {/* 3-Column Grid Cards - Generous breathing room */}
+                <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {displayItems.map((opportunity) => {
                     const isMatched = selectedInterests.length > 0 &&
                       opportunity.tags.some((tag) => selectedInterests.includes(tag));

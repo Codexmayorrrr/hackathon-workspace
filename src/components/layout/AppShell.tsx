@@ -76,14 +76,14 @@ export const AppShell: React.FC = () => {
             <button
               onClick={() => setVaultModalOpen(true)}
               aria-label="Open Reusable Vault"
-              className="p-2 rounded-xl bg-[#FDFDFD] text-neutral-700 active:scale-[0.97] hover:bg-[#f4f4f6]"
+              className="p-2 rounded-xl bg-[#FDFDFD] text-neutral-700 active:scale-[0.97] hover:bg-[#F5F5F5]"
             >
               <FolderArchive className="w-4 h-4 text-neutral-600 stroke-[1.75]" />
             </button>
             <button
               onClick={() => setCalendarModalOpen(true)}
               aria-label="Open Calendar Sync"
-              className="p-2 rounded-xl bg-[#FDFDFD] text-neutral-700 active:scale-[0.97] hover:bg-[#f4f4f6]"
+              className="p-2 rounded-xl bg-[#FDFDFD] text-neutral-700 active:scale-[0.97] hover:bg-[#F5F5F5]"
             >
               <Calendar className="w-4 h-4 text-neutral-600 stroke-[1.75]" />
             </button>
@@ -91,7 +91,7 @@ export const AppShell: React.FC = () => {
         </header>
 
         {/* Primary Page Canvas - Pure White, Generous Spacing */}
-        <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 pb-24 md:pb-12 bg-white">
+        <main className="flex-1 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 py-8 sm:py-10 pb-24 md:pb-12 bg-white">
           <Outlet />
         </main>
       </div>
