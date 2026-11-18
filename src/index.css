@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Emil Kowalski custom motion tokens */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+    
+    --bg-base: #ffffff;
+    --bg-surface: #FDFDFD;
+    --bg-subtle: #f5f5f7;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+    background-color: #ffffff;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  body {
+    background-color: #ffffff;
+    color: #18181b;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+  }
+
+  /* Headings typography: balance wrapping and optical negative tracking */
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  /* Paragraphs typography: pretty wrapping prevents orphan words */
+  p {
+    text-wrap: pretty;
+    line-height: 1.55;
+  }
+
+  /* Universal tactile button behavior: instantaneous feedback & touch readiness */
+  button,
+  [role="button"],
+  .btn-tactile-primary,
+  .btn-tactile-secondary,
+  .btn-tactile-ghost,
+  a.btn-tactile-primary,
+  a.btn-tactile-secondary,
+  a.btn-tactile-ghost {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
+
+  /* Prevent iOS Safari zooming on text inputs */
+  @media (pointer: coarse) {
+    input, textarea, select {
+      font-size: 16px !important;
+    }
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Custom minimal scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Tactile Primary Button - Pure Charcoal, Zero Border, Zero Shadow */
+.btn-tactile-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #18181b;
+  color: #ffffff;
+  border: 0;
+  box-shadow: none;
+  transition: transform 160ms var(--ease-out), background-color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-tactile-primary:hover {
+    background: #27272a;
+  }
+}
+.btn-tactile-primary:active {
+  transform: scale(0.97);
+  background: #09090b;
+}
+
+/* Tactile Secondary Button - Crisp White on #FDFDFD, Zero Border, Zero Shadow */
+.btn-tactile-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: #18181b;
+  border: 0;
+  box-shadow: none;
+  transition: transform 160ms var(--ease-out), background-color 160ms ease, color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-tactile-secondary:hover {
+    background: #f7f7f9;
+    color: #09090b;
+  }
+}
+.btn-tactile-secondary:active {
+  transform: scale(0.97);
+  background: #efeff2;
+}
+
+/* Tactile Ghost Button */
+.btn-tactile-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #71717a;
+  border: 0;
+  box-shadow: none;
+  transition: transform 160ms var(--ease-out), background-color 160ms ease, color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-tactile-ghost:hover {
+    background: #f4f4f6;
+    color: #18181b;
+  }
+}
+.btn-tactile-ghost:active {
+  transform: scale(0.97);
+  background: #e8e8ec;
+}
+
+/* Light Grey Cards (#FDFDFD) - Pure Flat, Zero Border, Zero Shadow */
+.surface-card {
+  background-color: #FDFDFD;
+  border: 0;
+  box-shadow: none;
+  transition: background-color 140ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .surface-card:hover {
+    background-color: #f7f7f9;
+  }
+}
