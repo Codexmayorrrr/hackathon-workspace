@@ -92,9 +92,10 @@
   justify-content: center;
   background: #18181b;
   color: #ffffff;
+  font-weight: 600;
   border: 0;
   box-shadow: none;
-  transition: transform 160ms var(--ease-out), background-color 160ms ease;
+  transition: transform 160ms var(--ease-out), background-color 160ms ease, opacity 160ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
   .btn-tactile-primary:hover {
@@ -102,30 +103,31 @@
   }
 }
 .btn-tactile-primary:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
   background: #09090b;
 }
 
-/* Tactile Secondary Button - Crisp White on #FDFDFD, Zero Border, Zero Shadow */
+/* Tactile Secondary Button - Subtle Neutral (#F5F5F5), Zero Border, Zero Shadow */
 .btn-tactile-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
+  background: #F5F5F5;
   color: #18181b;
+  font-weight: 500;
   border: 0;
   box-shadow: none;
   transition: transform 160ms var(--ease-out), background-color 160ms ease, color 160ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
   .btn-tactile-secondary:hover {
-    background: #f7f7f9;
-    color: #09090b;
+    background: #EBEBEB;
+    color: #000000;
   }
 }
 .btn-tactile-secondary:active {
-  transform: scale(0.97);
-  background: #efeff2;
+  transform: scale(0.96);
+  background: #E0E0E0;
 }
 
 /* Tactile Ghost Button */
@@ -134,20 +136,43 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  color: #71717a;
+  color: #52525b;
+  font-weight: 500;
   border: 0;
   box-shadow: none;
   transition: transform 160ms var(--ease-out), background-color 160ms ease, color 160ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
   .btn-tactile-ghost:hover {
-    background: #f4f4f6;
+    background: #F5F5F5;
     color: #18181b;
   }
 }
 .btn-tactile-ghost:active {
-  transform: scale(0.97);
-  background: #e8e8ec;
+  transform: scale(0.96);
+  background: #EBEBEB;
+}
+
+/* Tactile Lavender Accent Button (Figma Frame 12 Accent) */
+.btn-tactile-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #DECAFF;
+  color: #18181b;
+  font-weight: 600;
+  border: 0;
+  box-shadow: none;
+  transition: transform 160ms var(--ease-out), background-color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-tactile-accent:hover {
+    background: #D4BEFA;
+  }
+}
+.btn-tactile-accent:active {
+  transform: scale(0.96);
+  background: #C8ACF8;
 }
 
 /* Light Grey Cards (#FDFDFD) - Pure Flat, Zero Border, Zero Shadow */

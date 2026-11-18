@@ -224,7 +224,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
           {onLaunchCoach && (
             <button
               onClick={onLaunchCoach}
-              className="btn-tactile-primary px-4.5 py-2.5 rounded-xl text-xs font-semibold text-white active:scale-[0.97] flex items-center justify-center gap-2 flex-shrink-0"
+              className="btn-tactile-primary px-4.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 flex-shrink-0"
             >
               <Play className="w-3.5 h-3.5 fill-white" />
               <span>Open Presentation Coach</span>
@@ -248,7 +248,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
           <button
             onClick={handleGenerateFromRepo}
             disabled={isGenerating}
-            className="bg-white hover:bg-neutral-50 px-4.5 py-2.5 rounded-xl text-xs font-semibold active:scale-[0.97] text-neutral-800 flex items-center justify-center gap-1.5 transition-colors flex-shrink-0"
+            className="btn-tactile-secondary px-4.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 flex-shrink-0"
           >
             {isGenerating ? (
               <>
@@ -257,7 +257,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
               </>
             ) : (
               <>
-                <Sparkles className="w-3.5 h-3.5 text-amber-600 stroke-[2]" />
+                <Sparkles className="w-3.5 h-3.5 text-neutral-900 stroke-[2]" />
                 <span>Synthesize Slide Deck</span>
               </>
             )}
@@ -284,10 +284,10 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
               <button
                 key={s.id}
                 onClick={() => setCurrentSlideIndex(idx)}
-                className={`w-7 h-7 rounded-lg text-xs font-mono font-medium transition-colors active:scale-[0.97] ${
+                className={`w-7 h-7 rounded-lg text-xs font-mono font-medium ${
                   currentSlideIndex === idx
-                    ? 'bg-neutral-900 text-white'
-                    : 'bg-[#FDFDFD] text-neutral-600 hover:text-neutral-900'
+                    ? 'btn-tactile-primary'
+                    : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-900'
                 }`}
               >
                 {s.slideNumber}
@@ -430,7 +430,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
             <button
               onClick={handlePrevSlide}
               disabled={currentSlideIndex === 0}
-              className="p-2.5 rounded-xl bg-[#FDFDFD] hover:bg-[#f4f4f6] text-neutral-700 disabled:opacity-30 active:scale-[0.97] transition-colors"
+              className="p-2.5 rounded-xl btn-tactile-secondary text-neutral-700 disabled:opacity-30 disabled:pointer-events-none"
               title="Previous slide"
             >
               <ChevronLeft className="w-4 h-4 stroke-[2]" />
@@ -438,7 +438,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
             <button
               onClick={handleNextSlide}
               disabled={currentSlideIndex === slides.length - 1}
-              className="p-2.5 rounded-xl bg-[#FDFDFD] hover:bg-[#f4f4f6] text-neutral-700 disabled:opacity-30 active:scale-[0.97] transition-colors"
+              className="p-2.5 rounded-xl btn-tactile-secondary text-neutral-700 disabled:opacity-30 disabled:pointer-events-none"
               title="Next slide"
             >
               <ChevronRight className="w-4 h-4 stroke-[2]" />
@@ -451,7 +451,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => toast.success('Slide deck exported to PDF')}
-              className="bg-[#FDFDFD] hover:bg-[#f4f4f6] px-4 py-2.5 rounded-xl text-xs font-medium active:scale-[0.97] text-neutral-700 flex items-center gap-1.5 transition-colors"
+              className="btn-tactile-secondary px-4 py-2.5 rounded-xl text-xs font-medium flex items-center gap-2"
             >
               <Download className="w-3.5 h-3.5 stroke-[1.75]" />
               <span>Export PDF / PPTX</span>
@@ -460,7 +460,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
             {onLaunchCoach && (
               <button
                 onClick={onLaunchCoach}
-                className="btn-tactile-primary px-4 py-2.5 rounded-xl text-xs font-semibold text-white active:scale-[0.97] flex items-center gap-1.5"
+                className="btn-tactile-primary px-4.5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2"
               >
                 <Play className="w-3.5 h-3.5 fill-white" />
                 <span>Rehearse Pitch</span>

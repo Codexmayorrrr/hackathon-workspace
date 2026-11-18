@@ -123,10 +123,10 @@ export const DiscoverPage: React.FC = () => {
 
                   <Link
                     to={`/discover/${section.type}`}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-[#F5F5F5] transition-colors whitespace-nowrap self-start sm:self-auto active:scale-[0.97]"
+                    className="btn-tactile-secondary inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-950 whitespace-nowrap self-start sm:self-auto group/rail"
                   >
                     <span>View all</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-neutral-400 stroke-[1.75]" />
+                    <ArrowRight className="w-3.5 h-3.5 text-neutral-400 stroke-[1.75] transition-transform duration-150 group-hover/rail:translate-x-0.5" />
                   </Link>
                 </div>
 

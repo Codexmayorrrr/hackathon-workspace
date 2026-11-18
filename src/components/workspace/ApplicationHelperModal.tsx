@@ -307,7 +307,7 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
               navigator.clipboard.writeText(workingText);
               toast.success('Copied draft to clipboard');
             }}
-            className="bg-[#FDFDFD] hover:bg-[#f4f4f6] px-4 py-2.5 rounded-xl text-xs font-medium active:scale-[0.97] text-neutral-700 transition-[transform,background-color] duration-150 w-full sm:w-auto text-center flex items-center justify-center gap-1.5"
+            className="btn-tactile-secondary px-4 py-2.5 rounded-xl text-xs font-medium w-full sm:w-auto text-center flex items-center justify-center gap-1.5"
           >
             <Copy className="w-3.5 h-3.5 stroke-[1.75]" />
             <span>Copy to Clipboard</span>
@@ -316,14 +316,14 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
           <div className="flex items-center gap-2.5 w-full sm:w-auto">
             <button
               onClick={onClose}
-              className="bg-[#FDFDFD] hover:bg-[#f4f4f6] px-4 py-2.5 rounded-xl text-xs font-medium active:scale-[0.97] text-neutral-700 transition-[transform,background-color] duration-150 w-full sm:w-auto text-center"
+              className="btn-tactile-secondary px-4 py-2.5 rounded-xl text-xs font-medium w-full sm:w-auto text-center"
             >
               Cancel
             </button>
             <button
               onClick={handleSaveToDraft}
               disabled={isOver}
-              className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold active:scale-[0.97] text-white disabled:opacity-50 w-full sm:w-auto text-center flex items-center justify-center gap-1.5"
+              className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold disabled:opacity-50 w-full sm:w-auto text-center flex items-center justify-center gap-2"
             >
               <CheckCircle2 className="w-4 h-4 stroke-[2]" />
               <span>Apply to Checklist Draft</span>

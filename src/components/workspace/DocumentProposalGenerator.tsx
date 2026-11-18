@@ -124,7 +124,7 @@ The system employs an event-driven decoupled architecture:
       <div className="p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-neutral-800">
+            <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-neutral-800">
               <FileText className="w-5 h-5 stroke-[1.75]" />
             </div>
             <div>
@@ -132,7 +132,7 @@ The system employs an event-driven decoupled architecture:
                 <h3 className="text-base sm:text-lg font-bold text-neutral-900 tracking-tight [text-wrap:balance]">
                   Automated Document & Proposal Generator
                 </h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-neutral-700 font-mono font-semibold">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F5F5F5] text-neutral-700 font-mono font-semibold">
                   PRD §3.G
                 </span>
               </div>
@@ -145,14 +145,14 @@ The system employs an event-driven decoupled architecture:
           <div className="flex items-center gap-2">
             <button
               onClick={handleCopy}
-              className="bg-white hover:bg-neutral-50 px-4 py-2.5 rounded-xl text-xs font-semibold active:scale-[0.97] text-neutral-800 flex items-center gap-1.5 transition-colors"
+              className="btn-tactile-secondary px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5"
             >
               {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" /> : <Copy className="w-3.5 h-3.5 stroke-[1.75]" />}
               <span>{isCopied ? 'Copied' : 'Copy Markdown'}</span>
             </button>
             <button
               onClick={() => toast.success('Exported to PDF')}
-              className="btn-tactile-primary px-4 py-2.5 rounded-xl text-xs font-semibold active:scale-[0.97] text-white flex items-center gap-1.5"
+              className="btn-tactile-primary px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5 stroke-[1.75]" />
               <span>Export PDF</span>
@@ -174,14 +174,14 @@ The system employs an event-driven decoupled architecture:
               <button
                 key={tab.id}
                 onClick={() => setDocType(tab.id as DocType)}
-                className={`p-3 rounded-xl text-left transition-colors active:scale-[0.97] ${
+                className={`p-3 rounded-xl text-left transition-[transform,background-color,color] duration-150 active:scale-[0.97] ${
                   isSelected
-                    ? 'bg-neutral-900 text-white font-semibold'
-                    : 'bg-white hover:bg-neutral-100 text-neutral-700'
+                    ? 'btn-tactile-primary font-semibold'
+                    : 'btn-tactile-secondary text-neutral-700'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className="w-3.5 h-3.5 stroke-[1.75]" />
                   <span className="text-xs">{tab.label}</span>
                 </div>
               </button>

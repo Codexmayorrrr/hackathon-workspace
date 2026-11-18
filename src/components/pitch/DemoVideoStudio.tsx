@@ -108,7 +108,7 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
       <div className="p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-neutral-800">
+            <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-neutral-800">
               <Video className="w-5 h-5 stroke-[1.75]" />
             </div>
             <div>
@@ -116,7 +116,7 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
                 <h3 className="text-base sm:text-lg font-bold text-neutral-900 tracking-tight [text-wrap:balance]">
                   Demo Video Studio (Script, Voice & Video)
                 </h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-neutral-700 font-mono font-semibold">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F5F5F5] text-neutral-700 font-mono font-semibold">
                   PRD §3.H Single Flow
                 </span>
               </div>
@@ -151,10 +151,10 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
                 setVoicePersona(v.id as any);
                 toast.info(`Switched voice to ${v.label.split('—')[0].trim()}`);
               }}
-              className={`px-3 py-1.5 rounded-xl font-medium whitespace-nowrap transition-colors active:scale-[0.97] ${
+              className={`px-3 py-1.5 rounded-xl font-medium whitespace-nowrap ${
                 voicePersona === v.id
-                  ? 'bg-neutral-900 text-white font-semibold'
-                  : 'bg-white hover:bg-neutral-100 text-neutral-700'
+                  ? 'btn-tactile-primary font-semibold'
+                  : 'btn-tactile-secondary text-neutral-700'
               }`}
             >
               {v.label}
@@ -205,7 +205,7 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="w-10 h-10 rounded-xl bg-neutral-900 text-white flex items-center justify-center active:scale-[0.97] transition-transform"
+                className="w-10 h-10 rounded-xl btn-tactile-primary flex items-center justify-center"
               >
                 {isPlaying ? <Pause className="w-4 h-4 fill-white" /> : <Play className="w-4 h-4 fill-white ml-0.5" />}
               </button>
@@ -215,7 +215,7 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
                   setCurrentSec(0);
                   setActiveSceneIndex(0);
                 }}
-                className="p-2 rounded-xl text-neutral-400 hover:text-neutral-700 active:scale-[0.97]"
+                className="p-2.5 rounded-xl btn-tactile-ghost text-neutral-500 hover:text-neutral-900"
                 title="Restart playback"
               >
                 <RotateCcw className="w-4 h-4 stroke-[1.75]" />
@@ -230,10 +230,10 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
                 <button
                   key={s.id}
                   onClick={() => handleSeekScene(idx)}
-                  className={`px-2.5 py-1 rounded-lg font-mono text-[11px] whitespace-nowrap active:scale-[0.97] ${
+                  className={`px-2.5 py-1 rounded-lg font-mono text-[11px] whitespace-nowrap ${
                     activeSceneIndex === idx
-                      ? 'bg-neutral-900 text-white font-semibold'
-                      : 'bg-white text-neutral-600 hover:text-neutral-900'
+                      ? 'btn-tactile-primary font-semibold'
+                      : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-900'
                   }`}
                 >
                   Scene {idx + 1}

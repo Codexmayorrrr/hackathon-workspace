@@ -195,14 +195,14 @@ export const SavedQueuePage: React.FC = () => {
                   </div>
 
                   {/* Right Column: Actions */}
-                  <div className="flex items-center gap-2 flex-shrink-0 self-start md:self-center">
+                  <div className="flex items-center gap-2.5 flex-shrink-0 self-start md:self-center">
                     <button
                       onClick={() => handleOpenCalendarModal(opp.id)}
                       title="Sync to Calendar"
-                      className={`p-2 rounded-lg text-xs transition-colors flex items-center justify-center flex-shrink-0 active:scale-[0.97] ${
+                      className={`p-2.5 rounded-xl text-xs flex items-center justify-center flex-shrink-0 active:scale-[0.96] transition-all ${
                         workspace.googleCalendarSynced || workspace.appleCalendarSynced
-                          ? 'bg-neutral-900 text-white'
-                          : 'bg-[#F5F5F5] text-neutral-600 hover:text-neutral-950 hover:bg-[#EBEBEB]'
+                          ? 'bg-neutral-950 text-white font-medium'
+                          : 'btn-tactile-secondary'
                       }`}
                     >
                       <Calendar className="w-4 h-4 stroke-[1.75]" />
@@ -210,17 +210,17 @@ export const SavedQueuePage: React.FC = () => {
 
                     <button
                       onClick={() => handleMarkApplied(workspace.id, opp.title)}
-                      className="bg-[#F5F5F5] hover:bg-[#EBEBEB] text-neutral-800 px-3.5 py-2 rounded-lg text-xs font-medium text-center active:scale-[0.97] transition-colors"
+                      className="btn-tactile-secondary px-4 py-2.5 rounded-xl text-xs font-medium text-center"
                     >
                       Mark Applied
                     </button>
 
                     <button
                       onClick={() => navigate(`/workspaces/${opp.id}`)}
-                      className="btn-tactile-primary inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold active:scale-[0.97] text-white"
+                      className="btn-tactile-primary px-4.5 py-2.5 rounded-xl text-xs font-semibold inline-flex items-center gap-2 group/btn"
                     >
                       <span>Open Workspace</span>
-                      <ArrowRight className="w-3.5 h-3.5 stroke-[2]" />
+                      <ArrowRight className="w-3.5 h-3.5 stroke-[2] transition-transform duration-150 group-hover/btn:translate-x-0.5" />
                     </button>
                   </div>
                 </motion.div>

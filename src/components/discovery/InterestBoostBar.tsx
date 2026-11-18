@@ -14,10 +14,10 @@ export const InterestBoostBar: React.FC = () => {
     <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
       <button
         onClick={clearInterests}
-        className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 active:scale-[0.97] ${
+        className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium ${
           isAll
-            ? 'bg-neutral-950 text-white'
-            : 'bg-[#F5F5F5] hover:bg-[#EBEBEB] text-neutral-600 hover:text-neutral-950'
+            ? 'btn-tactile-primary'
+            : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-950'
         }`}
       >
         All Tracks
@@ -29,10 +29,10 @@ export const InterestBoostBar: React.FC = () => {
           <button
             key={tag}
             onClick={() => toggleInterest(tag)}
-            className={`flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 active:scale-[0.97] ${
+            className={`flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${
               isSelected
-                ? 'bg-neutral-950 text-white'
-                : 'bg-[#F5F5F5] hover:bg-[#EBEBEB] text-neutral-600 hover:text-neutral-950'
+                ? 'btn-tactile-primary'
+                : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-950'
             }`}
           >
             {isSelected && <Check className="w-3 h-3 stroke-[2.5]" />}

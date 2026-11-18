@@ -76,14 +76,14 @@ export const AppShell: React.FC = () => {
             <button
               onClick={() => setVaultModalOpen(true)}
               aria-label="Open Reusable Vault"
-              className="p-2 rounded-xl bg-[#FDFDFD] text-neutral-700 active:scale-[0.97] hover:bg-[#F5F5F5]"
+              className="p-2 rounded-xl btn-tactile-secondary text-neutral-700"
             >
               <FolderArchive className="w-4 h-4 text-neutral-600 stroke-[1.75]" />
             </button>
             <button
               onClick={() => setCalendarModalOpen(true)}
               aria-label="Open Calendar Sync"
-              className="p-2 rounded-xl bg-[#FDFDFD] text-neutral-700 active:scale-[0.97] hover:bg-[#F5F5F5]"
+              className="p-2 rounded-xl btn-tactile-secondary text-neutral-700"
             >
               <Calendar className="w-4 h-4 text-neutral-600 stroke-[1.75]" />
             </button>

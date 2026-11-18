@@ -108,7 +108,7 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
       <div className="p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-neutral-800">
+            <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-neutral-800">
               <Users className="w-5 h-5 stroke-[1.75]" />
             </div>
             <div>
@@ -116,7 +116,7 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
                 <h3 className="text-base sm:text-lg font-bold text-neutral-900 tracking-tight [text-wrap:balance]">
                   Teammate Finder & Gap Matching
                 </h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-neutral-700 font-mono font-semibold">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F5F5F5] text-neutral-700 font-mono font-semibold">
                   PRD §3.L
                 </span>
               </div>
@@ -127,14 +127,14 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-semibold px-3 py-1 rounded-xl bg-white text-neutral-800">
+            <span className="text-xs font-mono font-semibold px-3 py-1 rounded-xl bg-[#F5F5F5] text-neutral-800">
               {teamMembers.length} / 4 Members
             </span>
           </div>
         </div>
 
         {/* Skill Gap Analysis Strip */}
-        <div className="pt-2 p-4 rounded-xl bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="pt-2 p-4 rounded-xl bg-[#F5F5F5] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
             <span className="text-xs font-semibold text-neutral-900 flex items-center gap-2">
               <Sparkles className="w-3.5 h-3.5 text-amber-600 stroke-[2]" />
@@ -142,7 +142,7 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
             </span>
             <div className="flex items-center gap-1.5 flex-wrap">
               {Array.from(coveredSkills).map((s) => (
-                <span key={s} className="text-[11px] font-medium bg-[#FDFDFD] text-emerald-800 px-2.5 py-0.5 rounded-md flex items-center gap-1">
+                <span key={s} className="text-[11px] font-medium bg-white text-emerald-800 px-2.5 py-0.5 rounded-md flex items-center gap-1">
                   <Check className="w-3 h-3 stroke-[2.5]" />
                   <span>{s}</span>
                 </span>
@@ -174,10 +174,10 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
       <div className="flex items-center gap-2 pb-2">
         <button
           onClick={() => setActiveTab('available')}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold transition-colors active:scale-[0.97] ${
+          className={`px-4 py-2 rounded-xl text-xs font-semibold ${
             activeTab === 'available'
-              ? 'bg-neutral-900 text-white'
-              : 'bg-[#FDFDFD] text-neutral-600 hover:text-neutral-900'
+              ? 'btn-tactile-primary'
+              : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-900'
           }`}
         >
           Candidates Available ({candidates.length})
@@ -185,10 +185,10 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
 
         <button
           onClick={() => setActiveTab('my_team')}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold transition-colors active:scale-[0.97] ${
+          className={`px-4 py-2 rounded-xl text-xs font-semibold ${
             activeTab === 'my_team'
-              ? 'bg-neutral-900 text-white'
-              : 'bg-[#FDFDFD] text-neutral-600 hover:text-neutral-900'
+              ? 'btn-tactile-primary'
+              : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-900'
           }`}
         >
           Current Team Roster ({teamMembers.length})
@@ -226,7 +226,7 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
                     </div>
 
                     {candidate.verifiedWins > 0 && (
-                      <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-white text-amber-800 flex items-center gap-1">
+                      <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-[#F5F5F5] text-amber-800 flex items-center gap-1">
                         <Trophy className="w-3 h-3 stroke-[2] text-amber-600" />
                         <span>{candidate.verifiedWins} Wins</span>
                       </span>
@@ -251,7 +251,7 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
                           className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${
                             isNeeded
                               ? 'bg-emerald-600 text-white'
-                              : 'bg-white text-neutral-700'
+                              : 'bg-[#F5F5F5] text-neutral-700'
                           }`}
                         >
                           {isNeeded ? `★ ${s}` : s}
@@ -269,7 +269,7 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
                         href={candidate.githubUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="hover:text-neutral-900"
+                        className="p-1.5 rounded-lg hover:bg-[#F5F5F5] hover:text-neutral-900 transition-colors"
                       >
                         <Github className="w-4 h-4 stroke-[1.75]" />
                       </a>
@@ -279,7 +279,7 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
                         href={candidate.portfolioUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="hover:text-neutral-900"
+                        className="p-1.5 rounded-lg hover:bg-[#F5F5F5] hover:text-neutral-900 transition-colors"
                       >
                         <ExternalLink className="w-4 h-4 stroke-[1.75]" />
                       </a>
@@ -289,12 +289,12 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
                   <button
                     onClick={() => handleInviteCandidate(candidate)}
                     disabled={isAlreadyOnTeam}
-                    className={`px-4 py-2 rounded-xl text-xs font-semibold active:scale-[0.97] transition-colors flex items-center gap-1.5 ${
+                    className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 ${
                       isAlreadyOnTeam
                         ? 'bg-neutral-200 text-neutral-500 cursor-default'
                         : fillsGap
-                        ? 'btn-tactile-primary text-white'
-                        : 'bg-white hover:bg-neutral-100 text-neutral-800'
+                        ? 'btn-tactile-primary'
+                        : 'btn-tactile-secondary'
                     }`}
                   >
                     {isAlreadyOnTeam ? (
@@ -337,7 +337,7 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
                   <p className="text-xs text-neutral-500">{member.primaryRole}</p>
                   <div className="flex items-center gap-1 flex-wrap pt-0.5">
                     {member.skills.map((s) => (
-                      <span key={s} className="text-[10px] bg-white text-neutral-600 px-2 py-0.5 rounded font-medium">
+                      <span key={s} className="text-[10px] bg-[#F5F5F5] text-neutral-600 px-2 py-0.5 rounded font-medium">
                         {s}
                       </span>
                     ))}

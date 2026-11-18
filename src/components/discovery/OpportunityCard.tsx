@@ -128,13 +128,13 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
       </div>
 
       {/* Footer Actions */}
-      <div className="pt-6 mt-4 flex items-center justify-between gap-3">
+      <div className="pt-5 mt-2 flex items-center justify-between gap-3">
         <button
           onClick={handleSaveToggle}
-          className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 active:scale-[0.97] ${
+          className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 active:scale-[0.96] ${
             isSaved
-              ? 'text-neutral-950 font-semibold bg-[#EBEBEB]'
-              : 'text-neutral-600 hover:text-neutral-950 hover:bg-[#EAEAEA]/60'
+              ? 'bg-[#DECAFF] text-neutral-950 font-semibold'
+              : 'btn-tactile-secondary'
           }`}
         >
           {isSaved ? (
@@ -153,18 +153,18 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
         {isSaved ? (
           <Link
             to={`/workspaces/${opportunity.id}`}
-            className="btn-tactile-primary px-4 py-2 rounded-xl text-xs font-medium inline-flex items-center gap-1.5 text-white active:scale-[0.97]"
+            className="btn-tactile-primary px-4 py-2 rounded-lg text-xs font-semibold inline-flex items-center gap-2 group/btn"
           >
             <span>Workspace</span>
-            <ArrowRight className="w-3.5 h-3.5 stroke-[2]" />
+            <ArrowRight className="w-3.5 h-3.5 stroke-[2] transition-transform duration-150 group-hover/btn:translate-x-0.5" />
           </Link>
         ) : (
           <Link
             to={`/opportunities/${opportunity.slug}`}
-            className="px-4 py-2 rounded-xl text-xs font-medium inline-flex items-center gap-1.5 text-neutral-800 active:scale-[0.97] bg-[#EBEBEB] hover:bg-[#E0E0E0] transition-colors"
+            className="btn-tactile-secondary px-4 py-2 rounded-lg text-xs font-medium inline-flex items-center gap-2 group/btn"
           >
             <span>Preview</span>
-            <ArrowRight className="w-3.5 h-3.5 text-neutral-500 stroke-[1.75]" />
+            <ArrowRight className="w-3.5 h-3.5 text-neutral-500 stroke-[1.75] transition-transform duration-150 group-hover/btn:translate-x-0.5" />
           </Link>
         )}
       </div>

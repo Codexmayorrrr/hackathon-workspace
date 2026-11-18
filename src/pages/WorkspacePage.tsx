@@ -185,7 +185,7 @@ export const WorkspacePage: React.FC = () => {
         <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
           <button
             onClick={() => setVaultModalOpen(true)}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 active:scale-[0.97] bg-[#F5F5F5] hover:bg-[#EBEBEB] text-neutral-800 transition-colors"
+            className="btn-tactile-secondary px-3.5 py-2 rounded-lg text-xs font-medium gap-1.5"
             title="Open Reusable Application Vault"
           >
             <FolderArchive className="w-3.5 h-3.5 text-neutral-500 stroke-[1.75]" />
@@ -194,7 +194,7 @@ export const WorkspacePage: React.FC = () => {
 
           <button
             onClick={() => setCalendarModalOpen(true)}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 active:scale-[0.97] bg-[#F5F5F5] hover:bg-[#EBEBEB] text-neutral-800 transition-colors"
+            className="btn-tactile-secondary px-3.5 py-2 rounded-lg text-xs font-medium gap-1.5"
           >
             <Calendar className="w-3.5 h-3.5 text-neutral-500 stroke-[1.75]" />
             <span>Sync</span>
@@ -204,7 +204,7 @@ export const WorkspacePage: React.FC = () => {
             href={opportunity.externalPortalUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium active:scale-[0.97] bg-[#F5F5F5] hover:bg-[#EBEBEB] text-neutral-800 transition-colors"
+            className="btn-tactile-secondary px-3.5 py-2 rounded-lg text-xs font-medium gap-1.5"
           >
             <span>Portal</span>
             <ExternalLink className="w-3.5 h-3.5 text-neutral-400 stroke-[1.75]" />

@@ -41,7 +41,7 @@ export const InPersonLogistics: React.FC<InPersonLogisticsProps> = ({
       <div className="p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div className="flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-neutral-800 flex-shrink-0 mt-0.5">
+            <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-neutral-800 flex-shrink-0 mt-0.5">
               <MapPin className="w-5 h-5 stroke-[1.75]" />
             </div>
             <div className="space-y-1">
@@ -64,7 +64,7 @@ export const InPersonLogistics: React.FC<InPersonLogisticsProps> = ({
             href="https://maps.google.com"
             target="_blank"
             rel="noreferrer"
-            className="bg-white hover:bg-neutral-50 px-4 py-2.5 rounded-xl text-xs font-semibold active:scale-[0.97] text-neutral-800 flex items-center gap-1.5 transition-colors self-start sm:self-auto flex-shrink-0"
+            className="btn-tactile-secondary px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 self-start sm:self-auto flex-shrink-0"
           >
             <span>Open in Google Maps</span>
             <ExternalLink className="w-3.5 h-3.5 text-neutral-400 stroke-[1.75]" />
@@ -78,7 +78,7 @@ export const InPersonLogistics: React.FC<InPersonLogisticsProps> = ({
         <div className="lg:col-span-7 p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] space-y-5">
           <div className="flex items-center justify-between pb-2">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-neutral-800">
+              <div className="w-8 h-8 rounded-lg bg-[#F5F5F5] flex items-center justify-center text-neutral-800">
                 <Luggage className="w-4 h-4 stroke-[1.75]" />
               </div>
               <div>
@@ -91,7 +91,7 @@ export const InPersonLogistics: React.FC<InPersonLogisticsProps> = ({
               </div>
             </div>
 
-            <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full bg-white text-neutral-800 tabular-nums">
+            <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full bg-[#F5F5F5] text-neutral-800 tabular-nums">
               {packedCount} / {totalItems} Packed
             </span>
           </div>
@@ -104,15 +104,15 @@ export const InPersonLogistics: React.FC<InPersonLogisticsProps> = ({
                   toggleLogisticsItemPacked(workspaceId, item.id);
                   toast.success(item.packed ? `Unchecked ${item.item}` : `Packed: ${item.item}`);
                 }}
-                className={`p-3.5 rounded-xl flex items-center justify-between cursor-pointer transition-colors active:scale-[0.98] ${
+                className={`p-3.5 rounded-xl flex items-center justify-between cursor-pointer transition-[transform,background-color] duration-150 active:scale-[0.98] ${
                   item.packed
-                    ? 'bg-white opacity-70'
-                    : 'bg-white hover:bg-neutral-50'
+                    ? 'bg-[#F5F5F5] opacity-70'
+                    : 'bg-[#F5F5F5] hover:bg-[#EBEBEB]'
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
-                    item.packed ? 'bg-emerald-600 text-white' : 'bg-[#FDFDFD]'
+                    item.packed ? 'bg-emerald-600 text-white' : 'bg-white'
                   }`}>
                     {item.packed && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
                   </div>
@@ -123,7 +123,7 @@ export const InPersonLogistics: React.FC<InPersonLogisticsProps> = ({
                   </span>
                 </div>
 
-                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#FDFDFD] text-neutral-500">
+                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-white text-neutral-500">
                   {item.category}
                 </span>
               </div>
@@ -167,12 +167,12 @@ export const InPersonLogistics: React.FC<InPersonLogisticsProps> = ({
 
             <div className="space-y-2">
               {logistics.emergencyContacts.map((c, i) => (
-                <div key={i} className="p-3 rounded-xl bg-white flex items-center justify-between text-xs">
+                <div key={i} className="p-3 rounded-xl bg-[#F5F5F5] flex items-center justify-between text-xs">
                   <div>
                     <span className="font-semibold text-neutral-900 block">{c.name}</span>
                     <span className="text-[11px] text-neutral-400">{c.role}</span>
                   </div>
-                  <span className="font-mono text-neutral-700 bg-[#FDFDFD] px-2 py-1 rounded">
+                  <span className="font-mono text-neutral-700 bg-white px-2 py-1 rounded">
                     {c.contact}
                   </span>
                 </div>

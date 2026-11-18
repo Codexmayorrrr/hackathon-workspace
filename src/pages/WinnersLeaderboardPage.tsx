@@ -190,7 +190,7 @@ export const WinnersLeaderboardPage: React.FC = () => {
                       href={winner.socials.twitter}
                       target="_blank"
                       rel="noreferrer"
-                      className="p-2 rounded-lg text-neutral-400 hover:text-neutral-900 hover:bg-[#F5F5F5] active:scale-[0.97] transition-colors"
+                      className="p-2 rounded-lg text-neutral-400 hover:text-neutral-900 btn-tactile-ghost"
                       title="Twitter / X"
                     >
                       <Twitter className="w-3.5 h-3.5" />
@@ -201,7 +201,7 @@ export const WinnersLeaderboardPage: React.FC = () => {
                       href={winner.socials.github}
                       target="_blank"
                       rel="noreferrer"
-                      className="p-2 rounded-lg text-neutral-400 hover:text-neutral-900 hover:bg-[#F5F5F5] active:scale-[0.97] transition-colors"
+                      className="p-2 rounded-lg text-neutral-400 hover:text-neutral-900 btn-tactile-ghost"
                       title="GitHub"
                     >
                       <Github className="w-3.5 h-3.5" />
@@ -212,7 +212,7 @@ export const WinnersLeaderboardPage: React.FC = () => {
                       href={winner.socials.linkedin}
                       target="_blank"
                       rel="noreferrer"
-                      className="p-2 rounded-lg text-neutral-400 hover:text-neutral-900 hover:bg-[#F5F5F5] active:scale-[0.97] transition-colors"
+                      className="p-2 rounded-lg text-neutral-400 hover:text-neutral-900 btn-tactile-ghost"
                       title="LinkedIn"
                     >
                       <Linkedin className="w-3.5 h-3.5" />

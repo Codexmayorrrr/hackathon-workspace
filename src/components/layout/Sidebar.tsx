@@ -125,7 +125,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
           <div className="flex items-center justify-between w-full">
             <NavLink
               to="/discover"
-              className="flex items-center gap-2.5 rounded-lg group active:scale-[0.97] transition-transform"
+              className="flex items-center gap-2.5 rounded-lg group active:scale-[0.96] transition-transform duration-150"
             >
               {/* Lavender Logo Badge (#DECAFF) */}
               <div className="w-5 h-5 rounded-[3px] bg-[#DECAFF] flex items-center justify-center flex-shrink-0 text-neutral-900 font-bold text-[10px] leading-none">
@@ -139,7 +139,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
             {/* Collapse Toggle */}
             <button
               onClick={() => setIsCollapsed(true)}
-              className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-800 hover:bg-[#EAEAEA] active:scale-[0.97] transition-all"
+              className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-800 hover:bg-[#EAEAEA] active:scale-[0.96] transition-[transform,background-color,color] duration-150"
               title="Collapse sidebar"
               aria-label="Collapse sidebar"
             >
@@ -150,7 +150,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
           <div className="flex flex-col items-center justify-center w-full">
             <button
               onClick={() => setIsCollapsed(false)}
-              className="w-7 h-7 rounded-[4px] bg-[#DECAFF] hover:opacity-90 flex items-center justify-center text-neutral-900 font-bold text-xs active:scale-[0.97] transition-transform"
+              className="w-7 h-7 rounded-[4px] bg-[#DECAFF] hover:opacity-90 flex items-center justify-center text-neutral-900 font-bold text-xs active:scale-[0.96] transition-[transform,opacity] duration-150"
               title="Expand sidebar (HackWorkspace)"
               aria-label="Expand sidebar"
             >
@@ -174,7 +174,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
                 key={item.path}
                 to={item.path}
                 title={`${item.label}${item.badge ? ` (${item.badge})` : ''}`}
-                className={`relative flex items-center justify-center w-10 h-10 mx-auto rounded-lg text-neutral-600 transition-all active:scale-[0.97] ${
+                className={`relative flex items-center justify-center w-10 h-10 mx-auto rounded-lg text-neutral-600 transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
                   isActive
                     ? 'bg-[#EBEBEB] text-neutral-950 font-semibold'
                     : 'hover:bg-[#EAEAEA] hover:text-neutral-950'
@@ -192,7 +192,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
             <NavLink
               key={item.path}
               to={item.path}
-              className={`group flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all active:scale-[0.97] ${
+              className={`group flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
                 isActive
                   ? 'bg-[#EBEBEB] text-neutral-950 font-semibold'
                   : 'text-neutral-600 hover:text-neutral-950 hover:bg-[#EAEAEA]/60'
@@ -234,7 +234,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
                 key={tool.label}
                 onClick={tool.action}
                 title={tool.label}
-                className="flex items-center justify-center w-10 h-10 mx-auto rounded-lg text-neutral-500 hover:text-neutral-950 hover:bg-[#EAEAEA] transition-all active:scale-[0.97]"
+                className="flex items-center justify-center w-10 h-10 mx-auto rounded-lg text-neutral-500 hover:text-neutral-950 hover:bg-[#EAEAEA] transition-[transform,background-color,color] duration-150 active:scale-[0.96]"
               >
                 <Icon className="w-4 h-4 stroke-[1.8]" />
               </button>
@@ -245,7 +245,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
             <button
               key={tool.label}
               onClick={tool.action}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-[#EAEAEA]/60 transition-all text-left active:scale-[0.97]"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-[#EAEAEA]/60 transition-[transform,background-color,color] duration-150 text-left active:scale-[0.96]"
             >
               <Icon className="w-4 h-4 stroke-[1.8] text-neutral-500" />
               <span className="truncate">{tool.label}</span>
@@ -288,7 +288,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
                         <NavLink
                           key={pin.id}
                           to={`/workspaces/${pin.id}`}
-                          className={`group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all active:scale-[0.97] ${
+                          className={`group flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
                             isPinActive
                               ? 'bg-[#EBEBEB] text-neutral-950 font-semibold'
                               : 'text-neutral-700 hover:text-neutral-950 hover:bg-[#EAEAEA]/60'
@@ -322,7 +322,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
                 key={pin.id}
                 to={`/workspaces/${pin.id}`}
                 title={pin.title}
-                className="w-7 h-7 rounded-full bg-[#DECAFF] hover:scale-105 active:scale-95 text-neutral-900 font-bold text-[9px] flex items-center justify-center transition-transform"
+                className="w-7 h-7 rounded-full bg-[#DECAFF] hover:scale-105 active:scale-[0.96] text-neutral-900 font-bold text-[9px] flex items-center justify-center transition-transform duration-150"
               >
                 {pin.initial}
               </NavLink>
@@ -346,7 +346,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
 
             <button
               onClick={() => setIsCollapsed(true)}
-              className="flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-medium text-neutral-500 hover:text-neutral-900 hover:bg-[#EAEAEA] active:scale-[0.97] transition-all"
+              className="flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-medium text-neutral-500 hover:text-neutral-900 hover:bg-[#EAEAEA] active:scale-[0.96] transition-[transform,background-color,color] duration-150"
             >
               <span>Collapse</span>
               <PanelLeftClose className="w-3.5 h-3.5 text-neutral-400" />
@@ -355,7 +355,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
         ) : (
           <button
             onClick={() => setIsCollapsed(false)}
-            className="flex items-center justify-center w-10 h-10 mx-auto rounded-lg text-neutral-500 hover:text-neutral-900 hover:bg-[#EAEAEA] active:scale-[0.97] transition-all"
+            className="flex items-center justify-center w-10 h-10 mx-auto rounded-lg text-neutral-500 hover:text-neutral-900 hover:bg-[#EAEAEA] active:scale-[0.96] transition-[transform,background-color,color] duration-150"
             title="Expand sidebar"
             aria-label="Expand sidebar"
           >

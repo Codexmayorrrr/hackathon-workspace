@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
+  ArrowRight,
   Clock, 
   ExternalLink, 
   FileText, 
@@ -123,17 +124,17 @@ export const OpportunityDetailPage: React.FC = () => {
             {isSaved ? (
               <Link
                 to={`/workspaces/${opportunity.id}`}
-                className="btn-tactile-primary inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold active:scale-[0.97] text-white"
+                className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold inline-flex items-center gap-2 group/cta"
               >
                 <span>Continue in Workspace</span>
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 stroke-[2]" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 stroke-[2] transition-transform duration-150 group-hover/cta:scale-105" />
               </Link>
             ) : (
               <button
                 onClick={handleSaveToggle}
-                className="btn-tactile-primary inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold active:scale-[0.97] text-white"
+                className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold inline-flex items-center gap-2 group/cta"
               >
-                <Bookmark className="w-3.5 h-3.5 opacity-80 stroke-[1.75]" />
+                <Bookmark className="w-4 h-4 opacity-80 stroke-[2] transition-transform duration-150 group-hover/cta:scale-105" />
                 <span>Save to Workspace</span>
               </button>
             )}
@@ -142,10 +143,10 @@ export const OpportunityDetailPage: React.FC = () => {
               href={opportunity.externalPortalUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#F5F5F5] hover:bg-[#EBEBEB] inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium active:scale-[0.97] text-neutral-800 transition-colors"
+              className="btn-tactile-secondary px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium inline-flex items-center gap-1.5"
             >
               <span>Portal</span>
-              <ExternalLink className="w-3.5 h-3.5 text-neutral-400 stroke-[1.75]" />
+              <ExternalLink className="w-3.5 h-3.5 text-neutral-500 stroke-[1.75]" />
             </a>
           </div>
         </div>
@@ -269,16 +270,17 @@ export const OpportunityDetailPage: React.FC = () => {
             {isSaved ? (
               <Link
                 to={`/workspaces/${opportunity.id}`}
-                className="btn-tactile-primary px-4 py-2 rounded-lg text-xs font-semibold w-full sm:w-auto text-center active:scale-[0.97] text-white"
+                className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold w-full sm:w-auto text-center inline-flex items-center justify-center gap-2 group/btn"
               >
-                Go to Workspace →
+                <span>Go to Workspace</span>
+                <ArrowRight className="w-3.5 h-3.5 stroke-[2] transition-transform duration-150 group-hover/btn:translate-x-0.5" />
               </Link>
             ) : (
               <button
                 onClick={handleSaveToggle}
-                className="btn-tactile-primary px-4 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 w-full sm:w-auto text-center active:scale-[0.97] text-white"
+                className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold inline-flex items-center justify-center gap-2 w-full sm:w-auto text-center group/btn"
               >
-                <Bookmark className="w-3.5 h-3.5 opacity-80 stroke-[1.75]" />
+                <Bookmark className="w-4 h-4 opacity-80 stroke-[2] transition-transform duration-150 group-hover/btn:scale-105" />
                 <span>Save to Workspace</span>
               </button>
             )}

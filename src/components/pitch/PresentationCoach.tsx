@@ -220,10 +220,10 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
 
               <div className="flex items-center gap-2">
                 {/* Mode Toggle */}
-                <div className="flex items-center bg-[#FDFDFD] rounded-xl p-1 text-xs">
+                <div className="flex items-center bg-[#F5F5F5] rounded-xl p-1 text-xs">
                   <button
                     onClick={() => setMode('rehearsal')}
-                    className={`px-3 py-1.5 rounded-lg font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.97] ${
+                    className={`px-3 py-1.5 rounded-lg font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
                       mode === 'rehearsal'
                         ? 'bg-white text-neutral-900 font-semibold'
                         : 'text-neutral-500 hover:text-neutral-800'
@@ -233,7 +233,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
                   </button>
                   <button
                     onClick={() => setMode('live')}
-                    className={`px-3 py-1.5 rounded-lg font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.97] ${
+                    className={`px-3 py-1.5 rounded-lg font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
                       mode === 'live'
                         ? 'bg-white text-neutral-900 font-semibold'
                         : 'text-neutral-500 hover:text-neutral-800'
@@ -245,7 +245,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
 
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-xl text-neutral-400 hover:text-neutral-700 hover:bg-[#FDFDFD] transition-[transform,background-color,color] duration-150 active:scale-[0.97]"
+                  className="p-2 rounded-xl btn-tactile-ghost text-neutral-400 hover:text-neutral-700"
                   aria-label="Close presentation coach"
                 >
                   <X className="w-4 h-4 stroke-[1.75]" />
@@ -341,7 +341,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
             <div className="flex items-center justify-center gap-3 pt-4">
               <button
                 onClick={handleReset}
-                className="btn-tactile-primary px-6 py-2.5 rounded-xl text-xs font-semibold text-white active:scale-[0.97] flex items-center gap-2"
+                className="btn-tactile-primary px-6 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Rehearse Again</span>
@@ -413,13 +413,13 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
                   <button
                     onClick={handlePrevLine}
                     disabled={activeLineIndex === 0}
-                    className="p-2 rounded-xl bg-white hover:bg-neutral-100 disabled:opacity-30 active:scale-[0.97]"
+                    className="p-2 rounded-xl btn-tactile-secondary disabled:opacity-30 disabled:pointer-events-none"
                   >
                     <ChevronLeft className="w-3.5 h-3.5 stroke-[2]" />
                   </button>
                   <button
                     onClick={handleAdvanceLine}
-                    className="p-2 rounded-xl bg-white hover:bg-neutral-100 active:scale-[0.97]"
+                    className="p-2 rounded-xl btn-tactile-secondary"
                   >
                     <ChevronRight className="w-3.5 h-3.5 stroke-[2]" />
                   </button>
@@ -493,8 +493,8 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
                       setIsPausedForQA((prev) => !prev);
                       toast.info(isPausedForQA ? 'Resuming script sync' : 'Paused for judge Q&A');
                     }}
-                    className={`p-2.5 rounded-xl font-medium text-center transition-colors active:scale-[0.97] ${
-                      isPausedForQA ? 'bg-amber-600 text-white font-bold' : 'bg-white hover:bg-neutral-50 text-neutral-800'
+                    className={`p-2.5 rounded-xl font-medium text-center transition-all ${
+                      isPausedForQA ? 'bg-amber-600 text-white font-bold active:scale-[0.96]' : 'btn-tactile-secondary'
                     }`}
                   >
                     {isPausedForQA ? '▶ Resume Script' : '⏸ Pause for Q&A'}
@@ -505,7 +505,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
                       handleAdvanceLine();
                       toast('Manual slide push');
                     }}
-                    className="p-2.5 rounded-xl bg-white hover:bg-neutral-50 text-neutral-800 font-medium text-center active:scale-[0.97]"
+                    className="btn-tactile-secondary p-2.5 rounded-xl font-medium text-center"
                   >
                     Manual Next ➔
                   </button>
@@ -522,7 +522,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
               {!isRunning ? (
                 <button
                   onClick={handleStartRehearsal}
-                  className="btn-tactile-primary px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white active:scale-[0.97] flex items-center gap-2"
+                  className="btn-tactile-primary px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2"
                 >
                   <Play className="w-4 h-4 fill-white" />
                   <span>Start Voice Rehearsal</span>
@@ -530,7 +530,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
               ) : (
                 <button
                   onClick={handlePauseToggle}
-                  className="bg-[#FDFDFD] hover:bg-[#f4f4f6] px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-neutral-800 active:scale-[0.97] flex items-center gap-2"
+                  className="btn-tactile-secondary px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2"
                 >
                   <Pause className="w-4 h-4" />
                   <span>Pause</span>
@@ -539,7 +539,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
 
               <button
                 onClick={handleReset}
-                className="bg-[#FDFDFD] hover:bg-[#f4f4f6] p-2.5 rounded-xl text-neutral-600 hover:text-neutral-900 active:scale-[0.97]"
+                className="btn-tactile-secondary p-2.5 rounded-xl text-neutral-600 hover:text-neutral-900"
                 title="Reset session"
               >
                 <RotateCcw className="w-4 h-4 stroke-[1.75]" />
