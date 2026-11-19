@@ -186,7 +186,7 @@ export const WorkspacePage: React.FC = () => {
           <button
             onClick={() => setVaultModalOpen(true)}
             className="btn-tactile-secondary px-3.5 py-2 rounded-lg text-xs font-medium gap-1.5"
-            title="Open Reusable Application Vault"
+            title="Open Reusable Vault"
           >
             <FolderArchive className="w-3.5 h-3.5 text-neutral-500 stroke-[1.75]" />
             <span>Vault</span>
@@ -1185,8 +1185,8 @@ const InteractiveChecklistRow: React.FC<InteractiveChecklistRowProps> = ({
                         <button
                           type="button"
                           onClick={onOpenVault}
-                          className="bg-[#F5F5F5] hover:bg-[#EBEBEB] px-2.5 py-1 rounded-md text-[11px] font-medium text-neutral-600 hover:text-neutral-900 flex items-center gap-1 active:scale-[0.97] transition-colors"
-                          title="Import snippet from Reusable Vault"
+                          className="btn-tactile-secondary px-2.5 py-1 rounded-md text-[11px] font-medium text-neutral-600 hover:text-neutral-900 flex items-center gap-1"
+                          title="Insert snippet from Reusable Vault"
                         >
                           <FolderArchive className="w-3 h-3 stroke-[1.75]" />
                           <span>Vault</span>

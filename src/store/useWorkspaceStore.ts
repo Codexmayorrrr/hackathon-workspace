@@ -51,7 +51,7 @@ interface WorkspaceStore {
 const DEFAULT_VAULT_ITEMS: VaultItem[] = [
   {
     id: 'vault-bio-1',
-    title: 'Founder & Full-Stack Engineer Bio',
+    title: 'Founder bio (33 words)',
     category: 'bio',
     content: 'Full-stack software engineer with 4+ years of experience building high-throughput payment infrastructure and distributed Web3 systems across Sub-Saharan Africa. Passionate about developer tooling, instant low-latency settlement, and offline-first mobile applications.',
     wordCount: 33,
@@ -59,7 +59,7 @@ const DEFAULT_VAULT_ITEMS: VaultItem[] = [
   },
   {
     id: 'vault-story-1',
-    title: 'Personal Problem Origin Story',
+    title: 'Origin story: Cross-border payments',
     category: 'personal_story',
     content: 'Living in Lagos, I regularly experienced cross-border payment failures where remittances were stuck for 72 hours with arbitrary 12% FX fees. After losing a contract deposit due to a delayed banking clearing cycle, I committed to building transparent, real-time micro-settlement rails.',
     wordCount: 42,
@@ -67,7 +67,7 @@ const DEFAULT_VAULT_ITEMS: VaultItem[] = [
   },
   {
     id: 'vault-tam-1',
-    title: 'Africa Digital Payments TAM Model',
+    title: 'Market size & TAM breakdown',
     category: 'tam_model',
     content: 'Our Total Addressable Market (TAM) encompasses $115B in annual informal SME B2B transactions across West Africa. The Serviceable Addressable Market (SAM) is $18B in tech-enabled merchant trade, with our Year 1 Serviceable Obtainable Market (SOM) targeting $240M across 14,000 active cross-border merchants.',
     wordCount: 42,
@@ -75,7 +75,7 @@ const DEFAULT_VAULT_ITEMS: VaultItem[] = [
   },
   {
     id: 'vault-arch-1',
-    title: 'High-Concurrency Event-Driven Architecture',
+    title: 'Architecture & tech stack',
     category: 'tech_architecture',
     content: 'Built on a Rust transaction engine coupled with Node.js microservices, Postgres, and Redis cache. State verification is handled via optimistic rollups with cryptographic proof generation in under 400ms.',
     wordCount: 29,

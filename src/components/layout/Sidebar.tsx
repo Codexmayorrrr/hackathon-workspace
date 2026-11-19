@@ -84,7 +84,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
   // Secondary tools (Vault & Calendar)
   const toolItems = [
     {
-      label: 'Application Vault',
+      label: 'Reusable Vault',
       icon: FolderArchive,
       action: onOpenVault,
     },

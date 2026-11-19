@@ -22,12 +22,12 @@ interface ReusableVaultModalProps {
 }
 
 const CATEGORY_LABELS: Record<VaultCategory, string> = {
-  bio: 'Founder Bio',
-  problem_statement: 'Problem Statement',
-  tam_model: 'TAM / Market Model',
-  personal_story: 'Personal Origin Story',
-  tech_architecture: 'Tech Architecture',
-  general: 'General Asset',
+  bio: 'Bio',
+  problem_statement: 'Problem statement',
+  tam_model: 'Market size & metrics',
+  personal_story: 'Origin story',
+  tech_architecture: 'Architecture',
+  general: 'Notes & other',
 };
 
 export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
@@ -76,7 +76,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
   const handleSaveNew = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formTitle.trim() || !formContent.trim()) {
-      toast.error('Please enter a title and content');
+      toast.error('Enter a title and content to continue');
       return;
     }
 
@@ -87,7 +87,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
         content: formContent.trim(),
         wordCount: countWords(formContent),
       });
-      toast.success('Vault asset updated');
+      toast.success('Snippet updated');
       setEditingId(null);
     } else {
       addVaultItem({
@@ -96,7 +96,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
         content: formContent.trim(),
         wordCount: countWords(formContent),
       });
-      toast.success('Saved to Reusable Vault');
+      toast.success('Snippet saved to vault');
     }
 
     setIsAddingNew(false);
@@ -140,26 +140,21 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between pb-2">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#FDFDFD] flex items-center justify-center text-neutral-800">
+                <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-neutral-800">
                   <FolderArchive className="w-5 h-5 stroke-[1.75]" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-bold text-neutral-900 tracking-tight [text-wrap:balance]">
-                      Reusable Application Vault
-                    </h3>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FDFDFD] text-neutral-600 font-mono font-semibold">
-                      PRD §3.K
-                    </span>
-                  </div>
+                  <h3 className="text-lg font-bold text-neutral-900 tracking-tight [text-wrap:balance]">
+                    Reusable Vault
+                  </h3>
                   <p className="text-xs text-neutral-500 [text-wrap:pretty]">
-                    Store your bio, TAM models, and project stories once. Reuse across any hackathon workspace.
+                    Save your bio, project stories, and answers once. Insert them into any application with one click.
                   </p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-xl text-neutral-400 hover:text-neutral-700 hover:bg-[#FDFDFD] transition-[transform,background-color,color] duration-150 active:scale-[0.97]"
+                className="p-2 rounded-xl btn-tactile-ghost text-neutral-400 hover:text-neutral-700"
                 aria-label="Close modal"
               >
                 <X className="w-4 h-4 stroke-[1.75]" />
@@ -171,22 +166,22 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors active:scale-[0.97] ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap ${
                 selectedCategory === 'all'
-                  ? 'bg-neutral-900 text-white font-semibold'
-                  : 'bg-[#FDFDFD] text-neutral-600 hover:text-neutral-900'
+                  ? 'btn-tactile-primary font-semibold'
+                  : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-900'
               }`}
             >
-              All Assets ({vaultItems.length})
+              All ({vaultItems.length})
             </button>
             {Object.entries(CATEGORY_LABELS).map(([catKey, label]) => (
               <button
                 key={catKey}
                 onClick={() => setSelectedCategory(catKey)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-[transform,background-color,color] duration-150 active:scale-[0.97] ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap ${
                   selectedCategory === catKey
-                    ? 'bg-neutral-900 text-white font-semibold'
-                    : 'bg-[#FDFDFD] text-neutral-600 hover:text-neutral-900'
+                    ? 'btn-tactile-primary font-semibold'
+                    : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-900'
                 }`}
               >
                 {label}
@@ -200,13 +195,13 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
                 setEditingId(null);
                 setFormTitle('');
                 setFormContent('');
-                setFormCategory('bio');
+                setFormCategory(selectedCategory === 'all' ? 'bio' : (selectedCategory as VaultCategory));
                 setIsAddingNew(true);
               }}
-              className="btn-tactile-primary px-3.5 py-2 rounded-xl text-xs font-semibold active:scale-[0.97] text-white flex items-center justify-center gap-1.5 flex-shrink-0"
+              className="btn-tactile-primary px-3.5 py-2 rounded-xl text-xs font-semibold text-white flex items-center justify-center gap-1.5 flex-shrink-0"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2]" />
-              <span>New Asset</span>
+              <span>Add snippet</span>
             </button>
           )}
         </div>
@@ -223,7 +218,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
             <div className="flex items-center justify-between">
               <h4 className="text-xs sm:text-sm font-bold text-neutral-900 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-600 stroke-[1.75]" />
-                <span>{editingId ? 'Edit Vault Asset' : 'Add New Reusable Asset'}</span>
+                <span>{editingId ? 'Edit snippet' : 'Add new snippet'}</span>
               </h4>
               <button
                 type="button"
@@ -236,13 +231,13 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-neutral-600 block mb-1">Asset Title</label>
+                <label className="text-xs font-medium text-neutral-600 block mb-1">Title</label>
                 <input
                   type="text"
-                  placeholder="e.g. 50-Word Personal Origin Story"
+                  placeholder="e.g., Short bio or problem statement"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  className="w-full bg-white rounded-xl px-3.5 py-2.5 text-base sm:text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 border-0"
+                  className="w-full bg-[#F5F5F5] rounded-xl px-3.5 py-2.5 text-base sm:text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 border-0"
                   required
                 />
               </div>
@@ -252,7 +247,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
                 <select
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value as VaultCategory)}
-                  className="w-full bg-white rounded-xl px-3.5 py-2.5 text-base sm:text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 border-0"
+                  className="w-full bg-[#F5F5F5] rounded-xl px-3.5 py-2.5 text-base sm:text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 border-0"
                 >
                   {Object.entries(CATEGORY_LABELS).map(([catKey, label]) => (
                     <option key={catKey} value={catKey}>{label}</option>
@@ -263,17 +258,17 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="text-xs font-medium text-neutral-600">Asset Content</label>
+                <label className="text-xs font-medium text-neutral-600">Content</label>
                 <span className="text-[11px] font-mono text-neutral-400 tabular-nums">
                   {countWords(formContent)} words
                 </span>
               </div>
               <textarea
                 rows={4}
-                placeholder="Write or paste your reusable snippet here..."
+                placeholder="Write or paste your text here..."
                 value={formContent}
                 onChange={(e) => setFormContent(e.target.value)}
-                className="w-full bg-white rounded-xl p-3.5 text-base sm:text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 leading-relaxed border-0"
+                className="w-full bg-[#F5F5F5] rounded-xl p-3.5 text-base sm:text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 leading-relaxed border-0"
                 required
               />
             </div>
@@ -290,7 +285,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
                 type="submit"
                 className="btn-tactile-primary px-4.5 py-2 rounded-xl text-xs font-semibold text-white"
               >
-                {editingId ? 'Save Changes' : 'Add to Vault'}
+                {editingId ? 'Save changes' : 'Save snippet'}
               </button>
             </div>
           </motion.form>
@@ -299,9 +294,26 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
         {/* Vault Items List */}
         <div className="space-y-3.5">
           {filteredItems.length === 0 ? (
-            <div className="p-8 rounded-2xl bg-[#FDFDFD] text-center space-y-2">
-              <p className="text-sm font-semibold text-neutral-900">No assets in this category</p>
-              <p className="text-xs text-neutral-500">Save a reusable snippet above to start filling your vault.</p>
+            <div className="p-8 rounded-2xl bg-[#FDFDFD] text-center space-y-3">
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-neutral-900">No snippets in this category yet</p>
+                <p className="text-xs text-neutral-500 max-w-sm mx-auto [text-wrap:pretty]">
+                  Save your bio, answers, or project stories to reuse them across applications.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setEditingId(null);
+                  setFormTitle('');
+                  setFormContent('');
+                  setFormCategory(selectedCategory === 'all' ? 'bio' : (selectedCategory as VaultCategory));
+                  setIsAddingNew(true);
+                }}
+                className="btn-tactile-secondary px-3.5 py-1.5 rounded-xl text-xs font-medium inline-flex items-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5 stroke-[2]" />
+                <span>Add snippet</span>
+              </button>
             </div>
           ) : (
             filteredItems.map((item) => (
@@ -337,7 +349,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
                     <button
                       onClick={() => handleCopy(item)}
                       className="btn-tactile-secondary p-2 rounded-xl"
-                      title="Copy content"
+                      title="Copy text"
                     >
                       {copiedId === item.id ? (
                         <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
@@ -349,7 +361,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
                     <button
                       onClick={() => startEdit(item)}
                       className="btn-tactile-secondary p-2 rounded-xl"
-                      title="Edit asset"
+                      title="Edit snippet"
                     >
                       <Edit3 className="w-3.5 h-3.5 stroke-[1.75]" />
                     </button>
@@ -357,10 +369,10 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
                     <button
                       onClick={() => {
                         deleteVaultItem(item.id);
-                        toast.info('Removed from Vault');
+                        toast.success('Snippet deleted');
                       }}
                       className="btn-tactile-secondary p-2 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-neutral-400"
-                      title="Delete asset"
+                      title="Delete snippet"
                     >
                       <Trash2 className="w-3.5 h-3.5 stroke-[1.75]" />
                     </button>
@@ -379,7 +391,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
         <div className="pt-2 flex justify-end">
           <button
             onClick={onClose}
-            className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold active:scale-[0.97] text-white"
+            className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold text-white"
           >
             Done
           </button>
