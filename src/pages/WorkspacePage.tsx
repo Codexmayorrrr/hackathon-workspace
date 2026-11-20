@@ -26,7 +26,7 @@ import {
   FolderArchive
 } from 'lucide-react';
 import { MOCK_OPPORTUNITIES } from '../data/mockOpportunities';
-import { WorkspaceStage, ApplicationRequirement } from '../types';
+import { WorkspaceStage, ApplicationRequirement, VaultCategory } from '../types';
 import { useWorkspaceStore } from '../store/useWorkspaceStore';
 import { getCountdownParts, formatEventDate, generateReminderCheckpoints } from '../utils/dateUtils';
 import { CalendarSyncModal } from '../components/calendar/CalendarSyncModal';
@@ -81,8 +81,24 @@ export const WorkspacePage: React.FC = () => {
   const [helperModalOpen, setHelperModalOpen] = useState(false);
   const [activeHelperReq, setActiveHelperReq] = useState<ApplicationRequirement | null>(null);
   const [vaultModalOpen, setVaultModalOpen] = useState(false);
+  const [targetVaultReq, setTargetVaultReq] = useState<ApplicationRequirement | null>(null);
+  const [initialVaultForm, setInitialVaultForm] = useState<{
+    title: string;
+    category: VaultCategory;
+    content: string;
+  } | null>(null);
   const [coachModalOpen, setCoachModalOpen] = useState(false);
   const [activeTimerKey, setActiveTimerKey] = useState<'app_deadline' | 'event_start' | 'build_clock' | 'submission_cutoff' | 'pitch_slot'>('app_deadline');
+
+  const getAutoCategory = (title: string): VaultCategory => {
+    const t = title.toLowerCase();
+    if (t.includes('bio') || t.includes('founder') || t.includes('background') || t.includes('team')) return 'bio';
+    if (t.includes('problem') || t.includes('friction') || t.includes('why')) return 'problem_statement';
+    if (t.includes('market') || t.includes('tam') || t.includes('volume') || t.includes('business')) return 'tam_model';
+    if (t.includes('story') || t.includes('origin') || t.includes('personal')) return 'personal_story';
+    if (t.includes('architecture') || t.includes('tech') || t.includes('stack') || t.includes('infrastructure')) return 'tech_architecture';
+    return 'general';
+  };
 
   useEffect(() => {
     if (workspaceId && !workspace && opportunity) {
@@ -453,7 +469,20 @@ export const WorkspacePage: React.FC = () => {
                         setActiveHelperReq(req);
                         setHelperModalOpen(true);
                       }}
-                      onOpenVault={() => setVaultModalOpen(true)}
+                      onOpenVault={() => {
+                        setTargetVaultReq(req);
+                        setInitialVaultForm(null);
+                        setVaultModalOpen(true);
+                      }}
+                      onSaveToVault={(text) => {
+                        setTargetVaultReq(null);
+                        setInitialVaultForm({
+                          title: `${req.title} snippet`,
+                          category: getAutoCategory(req.title),
+                          content: text,
+                        });
+                        setVaultModalOpen(true);
+                      }}
                     />
                   ))}
                 </div>
@@ -836,19 +865,38 @@ export const WorkspacePage: React.FC = () => {
           currentDraft={effectiveWorkspace.items[activeHelperReq.id]?.draftText || ''}
           onApplyDraft={(text) => updateItemDraft(opportunity.id, activeHelperReq.id, text)}
           onOpenVault={() => {
+            setTargetVaultReq(activeHelperReq);
+            setInitialVaultForm(null);
+            setHelperModalOpen(false);
+            setVaultModalOpen(true);
+          }}
+          onSaveToVault={(text) => {
+            setTargetVaultReq(null);
+            setInitialVaultForm({
+              title: `${activeHelperReq.title} snippet`,
+              category: getAutoCategory(activeHelperReq.title),
+              content: text,
+            });
             setHelperModalOpen(false);
             setVaultModalOpen(true);
           }}
         />
       )}
 
-      {/* Reusable Application Vault Modal (PRD §3.K) */}
+      {/* Reusable Vault Modal */}
       <ReusableVaultModal
         isOpen={vaultModalOpen}
-        onClose={() => setVaultModalOpen(false)}
+        onClose={() => {
+          setVaultModalOpen(false);
+          setTargetVaultReq(null);
+          setInitialVaultForm(null);
+        }}
+        targetRequirement={targetVaultReq || activeHelperReq}
+        initialFormState={initialVaultForm}
         onInsertSnippet={(text) => {
-          if (activeHelperReq) {
-            updateItemDraft(opportunity.id, activeHelperReq.id, text);
+          const target = targetVaultReq || activeHelperReq;
+          if (target) {
+            updateItemDraft(opportunity.id, target.id, text);
           } else {
             // Find first text prompt requirement to populate
             const firstPrompt = opportunity.requirements.find((r) => r.type === 'text_prompt');
@@ -970,6 +1018,7 @@ interface InteractiveChecklistRowProps {
   onSaveUrl: (url: string) => void;
   onOpenHelper?: () => void;
   onOpenVault?: () => void;
+  onSaveToVault?: (text: string) => void;
 }
 
 const InteractiveChecklistRow: React.FC<InteractiveChecklistRowProps> = ({
@@ -980,12 +1029,37 @@ const InteractiveChecklistRow: React.FC<InteractiveChecklistRowProps> = ({
   onSaveUrl,
   onOpenHelper,
   onOpenVault,
+  onSaveToVault,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [draft, setDraft] = useState(itemState.draftText || '');
   const [url, setUrl] = useState(itemState.deliverableUrl || '');
   const [savedStatus, setSavedStatus] = useState<string | null>(null);
   const [copySuccess, setCopySuccess] = useState(false);
+
+  const vaultItems = useWorkspaceStore((state) => state.vaultItems);
+
+  // Auto-detect a matching snippet from the vault when draft is empty
+  const suggestedVaultItem = useMemo(() => {
+    if (draft.trim() || requirement.type !== 'text_prompt') return null;
+    const t = requirement.title.toLowerCase();
+    if (t.includes('bio') || t.includes('founder') || t.includes('background') || t.includes('team')) {
+      return vaultItems.find((i) => i.category === 'bio') || null;
+    }
+    if (t.includes('problem') || t.includes('friction') || t.includes('bottleneck') || t.includes('why')) {
+      return vaultItems.find((i) => i.category === 'problem_statement') || null;
+    }
+    if (t.includes('market') || t.includes('tam') || t.includes('volume') || t.includes('business')) {
+      return vaultItems.find((i) => i.category === 'tam_model') || null;
+    }
+    if (t.includes('story') || t.includes('origin') || t.includes('personal')) {
+      return vaultItems.find((i) => i.category === 'personal_story') || null;
+    }
+    if (t.includes('architecture') || t.includes('tech') || t.includes('stack') || t.includes('infrastructure')) {
+      return vaultItems.find((i) => i.category === 'tech_architecture') || null;
+    }
+    return null;
+  }, [draft, requirement, vaultItems]);
 
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -1206,6 +1280,29 @@ const InteractiveChecklistRow: React.FC<InteractiveChecklistRowProps> = ({
                     </div>
                   </div>
 
+                  {/* Matching Vault Snippet Instant Suggestion */}
+                  {suggestedVaultItem && (
+                    <div className="flex items-center justify-between p-2.5 rounded-xl bg-amber-50/70 text-xs">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 stroke-[2]" />
+                        <span className="text-amber-900 truncate">
+                          Matching snippet: <strong className="font-semibold">{suggestedVaultItem.title}</strong> ({suggestedVaultItem.wordCount}w)
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDraft(suggestedVaultItem.content);
+                          onSaveDraft(suggestedVaultItem.content);
+                          toast.success(`Inserted "${suggestedVaultItem.title}" into draft`);
+                        }}
+                        className="btn-tactile-secondary px-2.5 py-1 rounded-lg text-[11px] font-semibold text-neutral-900 flex-shrink-0 ml-2"
+                      >
+                        Insert
+                      </button>
+                    </div>
+                  )}
+
                   <textarea
                     value={draft}
                     onChange={handleDraftChange}
@@ -1221,14 +1318,28 @@ const InteractiveChecklistRow: React.FC<InteractiveChecklistRowProps> = ({
                         : 'Auto-saved locally. Copy directly into portal when ready.'}
                     </p>
 
-                    <button
-                      onClick={handleCopy}
-                      disabled={!draft}
-                      className="bg-[#F5F5F5] hover:bg-[#EBEBEB] px-3.5 py-1.5 rounded-lg text-xs font-medium disabled:opacity-40 flex items-center justify-center gap-1.5 w-full sm:w-auto active:scale-[0.97] text-neutral-800"
-                    >
-                      {copySuccess ? <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" /> : <Copy className="w-3.5 h-3.5 text-neutral-400 stroke-[1.75]" />}
-                      <span>{copySuccess ? 'Copied' : 'Copy Answer'}</span>
-                    </button>
+                    <div className="flex items-center gap-2 self-end sm:self-auto flex-wrap">
+                      {onSaveToVault && draft.trim().length > 10 && (
+                        <button
+                          type="button"
+                          onClick={() => onSaveToVault(draft.trim())}
+                          className="btn-tactile-secondary px-3 py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 text-neutral-700"
+                          title="Save this answer to your Reusable Vault"
+                        >
+                          <FolderArchive className="w-3.5 h-3.5 stroke-[1.75]" />
+                          <span>Save to Vault</span>
+                        </button>
+                      )}
+
+                      <button
+                        onClick={handleCopy}
+                        disabled={!draft}
+                        className="btn-tactile-secondary px-3.5 py-1.5 rounded-lg text-xs font-medium disabled:opacity-40 flex items-center justify-center gap-1.5 w-full sm:w-auto text-neutral-800"
+                      >
+                        {copySuccess ? <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" /> : <Copy className="w-3.5 h-3.5 text-neutral-400 stroke-[1.75]" />}
+                        <span>{copySuccess ? 'Copied' : 'Copy Answer'}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}

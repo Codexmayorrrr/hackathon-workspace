@@ -22,6 +22,7 @@ interface ApplicationHelperModalProps {
   currentDraft: string;
   onApplyDraft: (text: string) => void;
   onOpenVault: () => void;
+  onSaveToVault?: (text: string) => void;
 }
 
 export const ApplicationHelperModal: React.FC<ApplicationHelperModalProps> = ({
@@ -32,6 +33,7 @@ export const ApplicationHelperModal: React.FC<ApplicationHelperModalProps> = ({
   currentDraft,
   onApplyDraft,
   onOpenVault,
+  onSaveToVault,
 }) => {
   const maxWords = requirement.maxWords || 150;
   const judges = opportunity.judges || [];
@@ -302,16 +304,29 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
 
         {/* Action Footer */}
         <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(workingText);
-              toast.success('Copied draft to clipboard');
-            }}
-            className="btn-tactile-secondary px-4 py-2.5 rounded-xl text-xs font-medium w-full sm:w-auto text-center flex items-center justify-center gap-1.5"
-          >
-            <Copy className="w-3.5 h-3.5 stroke-[1.75]" />
-            <span>Copy to Clipboard</span>
-          </button>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(workingText);
+                toast.success('Copied draft to clipboard');
+              }}
+              className="btn-tactile-secondary px-4 py-2.5 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5"
+            >
+              <Copy className="w-3.5 h-3.5 stroke-[1.75]" />
+              <span>Copy</span>
+            </button>
+            {onSaveToVault && workingText.trim().length > 10 && (
+              <button
+                type="button"
+                onClick={() => onSaveToVault(workingText.trim())}
+                className="btn-tactile-secondary px-3.5 py-2.5 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5"
+                title="Save current draft to your Reusable Vault"
+              >
+                <FolderArchive className="w-3.5 h-3.5 stroke-[1.75]" />
+                <span>Save to Vault</span>
+              </button>
+            )}
+          </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto">
             <button
