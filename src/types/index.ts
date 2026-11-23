@@ -223,18 +223,73 @@ export interface InPersonLogistics {
   }[];
 }
 
+// Adaptive Workspace Navigation Models (PRD §4 & §7)
+export type WorkspaceSectionId = 
+  | 'overview'
+  | 'intel'
+  | 'tasks_deadlines'
+  | 'notes'
+  | 'team'
+  | 'application'
+  | 'ideas'
+  | 'build'
+  | 'pitch_documents'
+  | 'logistics'
+  | 'showcase'
+  | 'results';
+
+export type SectionState = 'unstarted' | 'active' | 'pending' | 'completed';
+
+export interface WorkspaceConfig {
+  opportunityType: OpportunityType;
+  sections: Record<WorkspaceSectionId, boolean>;
+  sectionOrder: WorkspaceSectionId[];
+  customActivatedSections?: WorkspaceSectionId[];
+}
+
+export interface WorkspaceTask {
+  id: string;
+  title: string;
+  dueDate?: string;
+  priority: 'low' | 'medium' | 'high';
+  completed: boolean;
+  category?: 'milestone' | 'custom' | 'application';
+  createdAt: string;
+}
+
+export type ResultOutcome = 
+  | 'pending_review' 
+  | 'shortlisted' 
+  | 'finalist' 
+  | 'winner' 
+  | 'grant_awarded' 
+  | 'not_selected';
+
+export interface WorkspaceResult {
+  outcome: ResultOutcome;
+  prizeWon?: string;
+  feedbackNotes?: string;
+  retrospective?: string;
+  updatedAt?: string;
+}
+
 export interface WorkspaceRecord {
   id: string; // matches opportunityId
   opportunityId: string;
   savedAt: string;
   stage: WorkspaceStage;
   items: Record<string, WorkspaceItemState>; // requirementId -> state
+  config?: WorkspaceConfig;
+  tasks?: WorkspaceTask[];
+  notes?: string;
+  results?: WorkspaceResult;
   selectedIdeaId?: string;
   githubRepoUrl?: string;
+  techStack?: string[];
   slideDeck?: SlideDeck;
+  proposalDraft?: string;
   logistics?: InPersonLogistics;
   teamMembers?: TeammateProfile[];
-  notes?: string;
   remindersEnabled: boolean;
   googleCalendarSynced: boolean;
   appleCalendarSynced: boolean;

@@ -9,7 +9,6 @@ import {
   Layers, 
   CheckSquare, 
   Users, 
-  HeartHandshake, 
   Trophy, 
   Lightbulb, 
   Copy, 
@@ -18,47 +17,66 @@ import {
   Sparkles, 
   ChevronDown, 
   ChevronUp, 
-  Linkedin, 
-  Twitter, 
-  Github,
-  Presentation,
-  Luggage,
-  FolderArchive
+  Presentation, 
+  Luggage, 
+  FolderArchive, 
+  SlidersHorizontal, 
+  FileText, 
+  Code2 
 } from 'lucide-react';
 import { MOCK_OPPORTUNITIES } from '../data/mockOpportunities';
-import { WorkspaceStage, ApplicationRequirement, VaultCategory } from '../types';
+import { 
+  WorkspaceStage, 
+  ApplicationRequirement, 
+  VaultCategory, 
+  WorkspaceSectionId, 
+  WorkspaceConfig 
+} from '../types';
 import { useWorkspaceStore } from '../store/useWorkspaceStore';
 import { getCountdownParts, formatEventDate, generateReminderCheckpoints } from '../utils/dateUtils';
+import { 
+  ALL_SECTIONS_META, 
+  generateAdaptiveWorkspaceConfig, 
+  getOrderedVisibleSections 
+} from '../utils/workspaceConfig';
 import { CalendarSyncModal } from '../components/calendar/CalendarSyncModal';
 import { ReminderTimeline } from '../components/workspace/ReminderTimeline';
 import { ApplicationHelperModal } from '../components/workspace/ApplicationHelperModal';
 import { ReusableVaultModal } from '../components/vault/ReusableVaultModal';
 import { IdeaSuggestionsEngine } from '../components/workspace/IdeaSuggestionsEngine';
-import { SlideDeckGenerator } from '../components/pitch/SlideDeckGenerator';
 import { PresentationCoach } from '../components/pitch/PresentationCoach';
 import { TeammateFinderBoard } from '../components/workspace/TeammateFinderBoard';
 import { InPersonLogistics } from '../components/workspace/InPersonLogistics';
+import { IntelSection } from '../components/workspace/IntelSection';
+import { TasksDeadlinesSection } from '../components/workspace/TasksDeadlinesSection';
+import { NotesSection } from '../components/workspace/NotesSection';
+import { BuildSection } from '../components/workspace/BuildSection';
+import { PitchDocumentsSection } from '../components/workspace/PitchDocumentsSection';
+import { ShowcaseSection } from '../components/workspace/ShowcaseSection';
+import { ResultsSection } from '../components/workspace/ResultsSection';
+import { CustomizeSectionsModal } from '../components/workspace/CustomizeSectionsModal';
 import { toast } from 'sonner';
 
-const TABS = [
-  { id: 'overview', label: 'Overview', icon: Layers },
-  { id: 'checklist', label: 'Application Checklist', icon: CheckSquare },
-  { id: 'ideas', label: 'Idea Suggestions (R&D)', icon: Lightbulb },
-  { id: 'pitch', label: 'Pitch Deck & Coach', icon: Presentation },
-  { id: 'team', label: 'Teammates', icon: Users },
-  { id: 'logistics', label: 'Logistics & Packing', icon: Luggage },
-  { id: 'judges', label: "Judges' Intelligence", icon: Users },
-  { id: 'sponsors', label: 'Sponsors & Overlap', icon: HeartHandshake },
-  { id: 'winners', label: 'Past Winners', icon: Trophy },
-];
+const SECTION_ICONS: Record<WorkspaceSectionId, any> = {
+  overview: Layers,
+  intel: Users,
+  tasks_deadlines: Calendar,
+  notes: FileText,
+  team: Users,
+  application: CheckSquare,
+  ideas: Lightbulb,
+  build: Code2,
+  pitch_documents: Presentation,
+  logistics: Luggage,
+  showcase: Sparkles,
+  results: Trophy,
+};
 
 const STAGES: WorkspaceStage[] = ['saved', 'preparing', 'applied', 'building', 'pitching', 'results'];
 
 export const WorkspacePage: React.FC = () => {
   const { workspaceId } = useParams<{ workspaceId: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const activeTab = searchParams.get('tab') || 'overview';
 
   const opportunity = MOCK_OPPORTUNITIES.find((opp) => opp.id === workspaceId);
   const workspace = useWorkspaceStore((state) => 
@@ -74,8 +92,8 @@ export const WorkspacePage: React.FC = () => {
   const toggleGoogleCalendar = useWorkspaceStore((state) => state.toggleGoogleCalendar);
 
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
-  const [winnerEditionFilter, setWinnerEditionFilter] = useState('all');
-  const [highlightedJudgeId, setHighlightedJudgeId] = useState<string | null>(null);
+  const [customizeModalOpen, setCustomizeModalOpen] = useState(false);
+  const [highlightedJudgeId] = useState<string | null>(null);
 
   // Phase 2 & 3 Modals
   const [helperModalOpen, setHelperModalOpen] = useState(false);
@@ -89,6 +107,34 @@ export const WorkspacePage: React.FC = () => {
   } | null>(null);
   const [coachModalOpen, setCoachModalOpen] = useState(false);
   const [activeTimerKey, setActiveTimerKey] = useState<'app_deadline' | 'event_start' | 'build_clock' | 'submission_cutoff' | 'pitch_slot'>('app_deadline');
+
+  const config: WorkspaceConfig = useMemo(() => {
+    if (!opportunity) {
+      return {
+        opportunityType: 'hackathon',
+        sections: { overview: true } as any,
+        sectionOrder: ['overview'],
+      };
+    }
+    return workspace?.config || generateAdaptiveWorkspaceConfig(opportunity);
+  }, [workspace?.config, opportunity]);
+
+  const visibleSections = useMemo(() => {
+    return getOrderedVisibleSections(config);
+  }, [config]);
+
+  // Canonical tab resolution
+  const requestedTab = searchParams.get('tab') || 'overview';
+  let currentSectionId: WorkspaceSectionId = 'overview';
+  if (requestedTab === 'checklist') currentSectionId = 'application';
+  else if (requestedTab === 'pitch') currentSectionId = 'pitch_documents';
+  else if (requestedTab === 'judges' || requestedTab === 'sponsors' || requestedTab === 'winners') currentSectionId = 'intel';
+  else if (Object.keys(ALL_SECTIONS_META).includes(requestedTab)) currentSectionId = requestedTab as WorkspaceSectionId;
+
+  // Fallback to first visible section if requested section is disabled
+  if (!config.sections[currentSectionId]) {
+    currentSectionId = visibleSections[0] || 'overview';
+  }
 
   const getAutoCategory = (title: string): VaultCategory => {
     const t = title.toLowerCase();
@@ -126,17 +172,6 @@ export const WorkspacePage: React.FC = () => {
 
   const handleTabChange = (tabId: string) => {
     setSearchParams({ tab: tabId });
-  };
-
-  const handleJumpToJudge = (judgeId: string) => {
-    setSearchParams({ tab: 'judges' });
-    setHighlightedJudgeId(judgeId);
-    setTimeout(() => {
-      const el = document.getElementById(`judge-${judgeId}`);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, 150);
   };
 
   if (!opportunity) {
@@ -322,17 +357,18 @@ export const WorkspacePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Workspace Tabs Navigation */}
-      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-xl py-2">
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
-          {TABS.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
+      {/* Workspace Tabs Navigation (Adaptive & Configurable) */}
+      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-xl py-2 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar flex-1 min-w-0">
+          {visibleSections.map((secId) => {
+            const meta = ALL_SECTIONS_META[secId];
+            const Icon = SECTION_ICONS[secId] || Layers;
+            const isActive = currentSectionId === secId;
 
             return (
               <button
-                key={tab.id}
-                onClick={() => handleTabChange(tab.id)}
+                key={secId}
+                onClick={() => handleTabChange(secId)}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-colors whitespace-nowrap active:scale-[0.97] ${
                   isActive
                     ? 'bg-[#F5F5F5] text-neutral-950 font-semibold'
@@ -340,22 +376,43 @@ export const WorkspacePage: React.FC = () => {
                 }`}
               >
                 <Icon className={`w-3.5 h-3.5 stroke-[1.75] ${isActive ? 'text-neutral-950' : 'text-neutral-400'}`} />
-                <span>{tab.label}</span>
-                {tab.id === 'checklist' && (
+                <span>{meta.shortLabel}</span>
+
+                {secId === 'application' && (
                   <span className="px-1.5 py-0.2 rounded-md text-[10px] font-mono font-semibold bg-[#EBEBEB] text-neutral-800 tabular-nums">
                     {completedTotal}/{totalItems}
                   </span>
+                )}
+
+                {secId === 'tasks_deadlines' && (effectiveWorkspace.tasks?.filter((t) => !t.completed).length ?? 0) > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-md text-[10px] font-mono font-semibold bg-neutral-200 text-neutral-800 tabular-nums">
+                    {effectiveWorkspace.tasks?.filter((t) => !t.completed).length}
+                  </span>
+                )}
+
+                {secId === 'results' && effectiveWorkspace.results?.outcome && effectiveWorkspace.results.outcome !== 'pending_review' && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 )}
               </button>
             );
           })}
         </div>
+
+        {/* Customize Navigation Button (PRD Rule 5) */}
+        <button
+          onClick={() => setCustomizeModalOpen(true)}
+          className="btn-tactile-secondary px-3 py-2 rounded-lg text-xs font-medium gap-1.5 flex-shrink-0 text-neutral-600 hover:text-neutral-950"
+          title="Customize workspace sections"
+        >
+          <SlidersHorizontal className="w-3.5 h-3.5 stroke-[1.75]" />
+          <span className="hidden sm:inline">Customize</span>
+        </button>
       </div>
 
       {/* TAB CONTENT AREAS */}
 
       {/* 1. OVERVIEW TAB */}
-      {activeTab === 'overview' && (
+      {currentSectionId === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           <div className="lg:col-span-2 space-y-6 sm:space-y-8">
             <div className="p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] space-y-4">
@@ -416,7 +473,7 @@ export const WorkspacePage: React.FC = () => {
       )}
 
       {/* 2. APPLICATION CHECKLIST TAB */}
-      {activeTab === 'checklist' && (
+      {currentSectionId === 'application' && (
         <div className="space-y-6 sm:space-y-8">
           {/* Progress Header */}
           <div className="p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] space-y-4">
@@ -492,355 +549,72 @@ export const WorkspacePage: React.FC = () => {
         </div>
       )}
 
-      {/* 3. JUDGES' INTELLIGENCE TAB */}
-      {activeTab === 'judges' && (
-        <div className="space-y-6 sm:space-y-8">
-          <div className="space-y-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
-              Judges' Intelligence & Backgrounds
-            </h2>
-            <p className="text-sm text-neutral-500" style={{ textWrap: 'pretty' }}>
-              Analyze judge domain areas and discover affiliations with event sponsors.
-            </p>
-          </div>
-
-          {opportunity.judges.length === 0 ? (
-            <div className="p-16 rounded-2xl bg-[#FDFDFD] text-center space-y-3">
-              <Users className="w-8 h-8 text-neutral-400 mx-auto stroke-[1.75]" />
-              <h3 className="text-sm font-semibold text-neutral-700">Judges haven't been announced yet</h3>
-              <p className="text-xs text-neutral-400 max-w-sm mx-auto" style={{ textWrap: 'pretty' }}>
-                Profiles and domain specializations will appear here once announced by organizers.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-              {opportunity.judges.map((judge) => {
-                const isTargetHighlighted = highlightedJudgeId === judge.id;
-                const matchedSponsor = opportunity.sponsors.find(
-                  (s) => s.id === judge.sponsorId || s.judgeRepresentativeId === judge.id
-                );
-
-                return (
-                  <motion.div
-                    key={judge.id}
-                    id={`judge-${judge.id}`}
-                    animate={{
-                      scale: isTargetHighlighted ? 1.02 : 1,
-                    }}
-                    transition={{ type: 'spring', duration: 0.4 }}
-                    className={`p-6 rounded-2xl transition-colors space-y-4 ${
-                      isTargetHighlighted
-                        ? 'bg-[#edf3ff] ring-1 ring-blue-500/30'
-                        : 'bg-[#FDFDFD] hover:bg-[#f7f7f9]'
-                    }`}
-                  >
-                    <div className="flex items-start gap-4">
-                      <img
-                        src={judge.avatarUrl}
-                        alt={judge.name}
-                        className="w-12 h-12 rounded-xl object-cover flex-shrink-0"
-                      />
-                      <div className="space-y-0.5">
-                        <h3 className="text-sm font-bold text-neutral-900">
-                          {judge.name}
-                        </h3>
-                        <p className="text-xs text-blue-600 font-medium">
-                          {judge.role}
-                        </p>
-                        <p className="text-[11px] text-neutral-400">
-                          {judge.company}
-                        </p>
-                      </div>
-                    </div>
-
-                    {matchedSponsor && (
-                      <div className="px-3 py-1.5 rounded-lg bg-white text-amber-800 text-[11px] font-medium flex items-center gap-2">
-                        <Sparkles className="w-3 h-3 text-amber-600 stroke-[1.75]" />
-                        <span>Sponsor Panelist: <strong>{matchedSponsor.name}</strong></span>
-                      </div>
-                    )}
-
-                    <p className="text-xs text-neutral-600 leading-relaxed" style={{ textWrap: 'pretty' }}>
-                      {judge.bio}
-                    </p>
-
-                    <div className="space-y-2 pt-2">
-                      <p className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">
-                        Notable Products:
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {judge.notableProducts.map((p) => (
-                          <span
-                            key={p}
-                            className="px-2.5 py-0.5 rounded-md text-[10px] bg-white text-neutral-700 font-mono"
-                          >
-                            {p}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 pt-1">
-                      {judge.socials.linkedin && (
-                        <a
-                          href={judge.socials.linkedin}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="p-2 rounded-lg bg-white text-neutral-600 hover:text-neutral-900 transition-colors active:scale-[0.97]"
-                        >
-                          <Linkedin className="w-3.5 h-3.5 stroke-[1.75]" />
-                        </a>
-                      )}
-                      {judge.socials.twitter && (
-                        <a
-                          href={judge.socials.twitter}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="p-2 rounded-lg bg-white text-neutral-600 hover:text-neutral-900 transition-colors active:scale-[0.97]"
-                        >
-                          <Twitter className="w-3.5 h-3.5 stroke-[1.75]" />
-                        </a>
-                      )}
-                      {judge.socials.github && (
-                        <a
-                          href={judge.socials.github}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="p-2 rounded-lg bg-white text-neutral-600 hover:text-neutral-900 transition-colors active:scale-[0.97]"
-                        >
-                          <Github className="w-3.5 h-3.5 stroke-[1.75]" />
-                        </a>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 4. SPONSORS & OVERLAP TAB */}
-      {activeTab === 'sponsors' && (
-        <div className="space-y-6 sm:space-y-8">
-          <div className="space-y-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
-              Sponsors, Bounties & Judging Panel Overlap
-            </h2>
-            <p className="text-sm text-neutral-500" style={{ textWrap: 'pretty' }}>
-              Identify sponsors whose team members sit on the judging panel to align submission deliverables.
-            </p>
-          </div>
-
-          {opportunity.sponsors.length === 0 ? (
-            <div className="p-16 rounded-2xl bg-[#FDFDFD] text-center space-y-3">
-              <HeartHandshake className="w-8 h-8 text-neutral-400 mx-auto stroke-[1.75]" />
-              <h3 className="text-sm font-semibold text-neutral-700">No partner bounties announced yet</h3>
-              <p className="text-xs text-neutral-400 max-w-sm mx-auto" style={{ textWrap: 'pretty' }}>
-                Sponsor tracks and API bounties will be updated once released by organizers.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-              {opportunity.sponsors.map((sponsor) => {
-                const repJudge = opportunity.judges.find(
-                  (j) => j.id === sponsor.judgeRepresentativeId || j.sponsorId === sponsor.id
-                );
-
-                return (
-                  <div
-                    key={sponsor.id}
-                    className="p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] hover:bg-[#f7f7f9] transition-colors space-y-4"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="flex items-center gap-2.5">
-                          <h3 className="text-base font-bold text-neutral-900">
-                            {sponsor.name}
-                          </h3>
-                          <span className="px-2.5 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider bg-white text-neutral-700">
-                            {sponsor.tier}
-                          </span>
-                        </div>
-                        <p className="text-xs font-semibold text-emerald-700 mt-1 tabular-nums">
-                          Prize Track: {sponsor.prizePool}
-                        </p>
-                      </div>
-
-                      {repJudge && (
-                        <button
-                          onClick={() => handleJumpToJudge(repJudge.id)}
-                          className="px-3 py-1.5 rounded-xl bg-white text-amber-800 hover:bg-neutral-50 transition-[transform,background-color] duration-150 text-xs font-semibold flex items-center gap-1.5 active:scale-[0.97]"
-                        >
-                          <Sparkles className="w-3 h-3 text-amber-600 stroke-[1.75]" />
-                          <span>Panelist: {repJudge.name} →</span>
-                        </button>
-                      )}
-                    </div>
-
-                    <div className="space-y-1.5 pt-2">
-                      <h4 className="text-xs font-semibold text-neutral-900">
-                        {sponsor.bountyTitle}
-                      </h4>
-                      <p className="text-xs text-neutral-500 leading-relaxed" style={{ textWrap: 'pretty' }}>
-                        {sponsor.bountyDescription}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 5. PAST WINNERS TAB */}
-      {activeTab === 'winners' && (
-        <div className="space-y-6 sm:space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
-                Past Winners Archive
-              </h2>
-              <p className="text-sm text-neutral-500" style={{ textWrap: 'pretty' }}>
-                Winning pitch decks, repositories, and problem statements from prior editions.
-              </p>
-            </div>
-
-            {opportunity.pastWinners.length > 0 && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-neutral-400 font-medium">Edition:</span>
-                <div className="flex items-center gap-1 bg-[#FDFDFD] p-1 rounded-2xl">
-                  {['all', '2025', '2024'].map((ed) => (
-                    <button
-                      key={ed}
-                      onClick={() => setWinnerEditionFilter(ed)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-medium capitalize transition-colors active:scale-[0.97] ${
-                        winnerEditionFilter === ed
-                          ? 'bg-white text-neutral-900 font-semibold'
-                          : 'text-neutral-600 hover:text-neutral-900'
-                      }`}
-                    >
-                      {ed === 'all' ? 'All Editions' : ed}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {opportunity.pastWinners.length === 0 ? (
-            <div className="p-16 rounded-2xl bg-[#FDFDFD] text-center space-y-3">
-              <Trophy className="w-8 h-8 text-neutral-400 mx-auto stroke-[1.75]" />
-              <h3 className="text-sm font-semibold text-neutral-700">First edition — no past winners yet</h3>
-              <p className="text-xs text-neutral-400 max-w-sm mx-auto" style={{ textWrap: 'pretty' }}>
-                Inaugural cohort for this opportunity. Winning projects will be archived here after demo day.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-              {opportunity.pastWinners
-                .filter((w) => winnerEditionFilter === 'all' || w.edition === winnerEditionFilter)
-                .map((winner) => (
-                  <div
-                    key={winner.id}
-                    className="p-6 rounded-2xl bg-[#FDFDFD] hover:bg-[#f7f7f9] transition-colors space-y-4 flex flex-col justify-between"
-                  >
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-blue-700 font-mono tabular-nums">
-                          {winner.edition} Cohort
-                        </span>
-                        <span className="px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-white text-emerald-700 tabular-nums">
-                          {winner.prizeWon}
-                        </span>
-                      </div>
-
-                      <h3 className="text-sm sm:text-base font-bold text-neutral-900">
-                        {winner.projectName}
-                      </h3>
-                      <p className="text-xs text-neutral-400">
-                        Team: {winner.teamName}
-                      </p>
-
-                      <p className="text-xs text-neutral-600 leading-relaxed pt-2" style={{ textWrap: 'pretty' }}>
-                        {winner.problemSolved}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-3 pt-3 text-xs">
-                      {winner.deckUrl && (
-                        <a
-                          href={winner.deckUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="bg-white hover:bg-neutral-50 px-3 py-1.5 rounded-xl text-blue-600 flex items-center gap-1.5 font-medium active:scale-[0.97]"
-                        >
-                          <span>Pitch Deck</span>
-                          <ExternalLink className="w-3 h-3 stroke-[1.75]" />
-                        </a>
-                      )}
-                      {winner.demoUrl && (
-                        <a
-                          href={winner.demoUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="bg-white hover:bg-neutral-50 px-3 py-1.5 rounded-xl text-rose-600 flex items-center gap-1.5 font-medium active:scale-[0.97]"
-                        >
-                          <span>Demo Video</span>
-                          <ExternalLink className="w-3 h-3 stroke-[1.75]" />
-                        </a>
-                      )}
-                      {winner.repoUrl && (
-                        <a
-                          href={winner.repoUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="bg-white hover:bg-neutral-50 px-3 py-1.5 rounded-xl text-neutral-700 flex items-center gap-1.5 active:scale-[0.97]"
-                        >
-                          <span>GitHub</span>
-                          <ExternalLink className="w-3 h-3 stroke-[1.75]" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 3. IDEA SUGGESTIONS & R&D (PRD §3.E) */}
-      {activeTab === 'ideas' && (
-        <IdeaSuggestionsEngine
+      {/* 3. INTEL & RESEARCH TAB */}
+      {currentSectionId === 'intel' && (
+        <IntelSection
           opportunity={opportunity}
-          workspaceId={opportunity.id}
+          highlightedJudgeId={highlightedJudgeId}
         />
       )}
 
-      {/* 4. PITCH DECK & PRESENTATION COACH (PRD §3.F & §3.I) */}
-      {activeTab === 'pitch' && (
-        <SlideDeckGenerator
-          workspaceId={opportunity.id}
-          opportunityTitle={opportunity.title}
-          onLaunchCoach={() => setCoachModalOpen(true)}
+      {/* 4. TASKS & DEADLINES TAB */}
+      {currentSectionId === 'tasks_deadlines' && (
+        <TasksDeadlinesSection
+          opportunity={opportunity}
+          onOpenCalendarSync={() => setCalendarModalOpen(true)}
         />
       )}
 
-      {/* 5. TEAMMATES & GAP MATCHING (PRD §3.L) */}
-      {activeTab === 'team' && (
+      {/* 5. NOTES & SCRATCHPAD TAB */}
+      {currentSectionId === 'notes' && (
+        <NotesSection opportunity={opportunity} />
+      )}
+
+      {/* 6. TEAMMATES & COLLABORATORS TAB */}
+      {currentSectionId === 'team' && (
         <TeammateFinderBoard
           workspaceId={opportunity.id}
           opportunityTitle={opportunity.title}
         />
       )}
 
-      {/* 6. LOGISTICS & IN-PERSON PACKING PLANNER (PRD §3.K) */}
-      {activeTab === 'logistics' && (
+      {/* 7. IDEA SUGGESTIONS & R&D TAB */}
+      {currentSectionId === 'ideas' && (
+        <IdeaSuggestionsEngine
+          opportunity={opportunity}
+          workspaceId={opportunity.id}
+        />
+      )}
+
+      {/* 8. BUILD & TECH STACK TAB */}
+      {currentSectionId === 'build' && (
+        <BuildSection opportunity={opportunity} />
+      )}
+
+      {/* 9. PITCH & DOCUMENTS TAB */}
+      {currentSectionId === 'pitch_documents' && (
+        <PitchDocumentsSection
+          opportunity={opportunity}
+          onLaunchCoach={() => setCoachModalOpen(true)}
+        />
+      )}
+
+      {/* 10. IN-PERSON LOGISTICS TAB */}
+      {currentSectionId === 'logistics' && (
         <InPersonLogistics
           workspaceId={opportunity.id}
           opportunityTitle={opportunity.title}
         />
+      )}
+
+      {/* 11. SHOWCASE & DEMOS TAB */}
+      {currentSectionId === 'showcase' && (
+        <ShowcaseSection opportunity={opportunity} />
+      )}
+
+      {/* 12. RESULTS & RETROSPECTIVE TAB */}
+      {currentSectionId === 'results' && (
+        <ResultsSection opportunity={opportunity} />
       )}
 
       {/* Calendar Modal */}
@@ -850,6 +624,13 @@ export const WorkspacePage: React.FC = () => {
         opportunityTitle={opportunity.title}
         isGoogleSynced={effectiveWorkspace.googleCalendarSynced}
         onToggleGoogleSync={(synced) => toggleGoogleCalendar(opportunity.id, synced)}
+      />
+
+      {/* Customize Navigation Modal (PRD Rule 5) */}
+      <CustomizeSectionsModal
+        isOpen={customizeModalOpen}
+        onClose={() => setCustomizeModalOpen(false)}
+        opportunity={opportunity}
       />
 
       {/* Application Helper Modal (PRD §3.C Strict Limit) */}

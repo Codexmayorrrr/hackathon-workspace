@@ -5,8 +5,13 @@ import {
   WorkspaceStage, 
   VaultItem, 
   SlideDeck, 
-  TeammateProfile 
+  TeammateProfile,
+  WorkspaceSectionId,
+  WorkspaceTask,
+  WorkspaceResult
 } from '../types';
+import { MOCK_OPPORTUNITIES } from '../data/mockOpportunities';
+import { generateAdaptiveWorkspaceConfig } from '../utils/workspaceConfig';
 
 interface WorkspaceStore {
   savedWorkspaces: Record<string, WorkspaceRecord>;
@@ -20,6 +25,15 @@ interface WorkspaceStore {
   unsaveOpportunity: (opportunityId: string) => void;
   setWorkspaceStage: (workspaceId: string, stage: WorkspaceStage) => void;
   
+  // Adaptive Navigation Actions (PRD §6 & §7)
+  toggleWorkspaceSection: (workspaceId: string, sectionId: WorkspaceSectionId) => void;
+  resetWorkspaceSections: (workspaceId: string) => void;
+
+  // Tasks & Deadlines Actions (PRD §3 Core)
+  addWorkspaceTask: (workspaceId: string, task: Omit<WorkspaceTask, 'id' | 'createdAt'>) => void;
+  toggleWorkspaceTask: (workspaceId: string, taskId: string) => void;
+  deleteWorkspaceTask: (workspaceId: string, taskId: string) => void;
+
   // Checklist & Draft Actions
   toggleItemCompleted: (workspaceId: string, requirementId: string) => void;
   updateItemDraft: (workspaceId: string, requirementId: string, text: string) => void;
@@ -30,6 +44,9 @@ interface WorkspaceStore {
   updateWorkspaceRepo: (workspaceId: string, repoUrl: string) => void;
   updateWorkspaceSlideDeck: (workspaceId: string, slideDeck: SlideDeck) => void;
   updateWorkspaceNotes: (workspaceId: string, notes: string) => void;
+  updateWorkspaceResults: (workspaceId: string, results: Partial<WorkspaceResult>) => void;
+  updateWorkspaceTechStack: (workspaceId: string, stack: string[]) => void;
+  updateWorkspaceProposalDraft: (workspaceId: string, proposal: string) => void;
   toggleLogisticsItemPacked: (workspaceId: string, itemId: string) => void;
   addTeammateToWorkspace: (workspaceId: string, teammate: TeammateProfile) => void;
 
@@ -98,6 +115,74 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
           remindersEnabled: true,
           googleCalendarSynced: false,
           appleCalendarSynced: false,
+          notes: 'Focus on sub-second local currency conversion via stablecoin micro-rails. Target Paystack Title Bounty.',
+          config: {
+            opportunityType: 'hackathon',
+            sections: {
+              overview: true,
+              application: true,
+              intel: true,
+              ideas: true,
+              build: true,
+              team: true,
+              pitch_documents: true,
+              logistics: true,
+              showcase: true,
+              results: true,
+              tasks_deadlines: true,
+              notes: true,
+            },
+            sectionOrder: [
+              'overview',
+              'application',
+              'intel',
+              'ideas',
+              'build',
+              'team',
+              'pitch_documents',
+              'logistics',
+              'showcase',
+              'results',
+              'tasks_deadlines',
+              'notes',
+            ],
+          },
+          tasks: [
+            {
+              id: 'task-lh-1',
+              title: 'Review judging criteria & sponsor bounty prompts',
+              dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+              priority: 'high',
+              completed: true,
+              category: 'milestone',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 'task-lh-2',
+              title: 'Finalize core team roster and assign lead architect',
+              priority: 'high',
+              completed: true,
+              category: 'milestone',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 'task-lh-3',
+              title: 'Connect GitHub repo and push initial scaffolding',
+              priority: 'medium',
+              completed: false,
+              category: 'custom',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 'task-lh-4',
+              title: 'Rehearse 3-minute pitch deck with Presentation Coach',
+              dueDate: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
+              priority: 'medium',
+              completed: false,
+              category: 'custom',
+              createdAt: new Date().toISOString(),
+            },
+          ],
           logistics: {
             venueName: 'The Zone Tech Hub, Gbagada',
             venueAddress: 'Plot 9, Gbagada Expressway, Lagos, Nigeria',
@@ -139,6 +224,234 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
             },
           ],
         },
+
+        // Pre-seeded Grant Workspace (Application & Funding focused)
+        'ethereum-climate-energy-grants': {
+          id: 'ethereum-climate-energy-grants',
+          opportunityId: 'ethereum-climate-energy-grants',
+          savedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+          stage: 'preparing',
+          items: {},
+          remindersEnabled: true,
+          googleCalendarSynced: false,
+          appleCalendarSynced: false,
+          notes: 'Propose an IoT telemetry daemon that writes signed solar kilowatt-hour batches onto Layer 2. Needs detailed 6-month budget breakdown.',
+          config: {
+            opportunityType: 'grant',
+            sections: {
+              overview: true,
+              intel: true,
+              application: true,
+              team: false,
+              pitch_documents: true,
+              tasks_deadlines: true,
+              notes: true,
+              results: true,
+              ideas: false,
+              build: true, // Activated by repo requirement (Rule 2)
+              showcase: false,
+              logistics: false,
+            },
+            sectionOrder: [
+              'overview',
+              'intel',
+              'application',
+              'build',
+              'pitch_documents',
+              'tasks_deadlines',
+              'notes',
+              'results',
+            ],
+          },
+          tasks: [
+            {
+              id: 'task-gr-1',
+              title: 'Draft carbon offset methodology & verification formula',
+              dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+              priority: 'high',
+              completed: false,
+              category: 'application',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 'task-gr-2',
+              title: 'Prepare 6-month budget breakdown ($50k non-dilutive)',
+              dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+              priority: 'high',
+              completed: false,
+              category: 'application',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 'task-gr-3',
+              title: 'Publish open-source smart contract repository on GitHub',
+              priority: 'medium',
+              completed: true,
+              category: 'custom',
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        },
+
+        // Pre-seeded Accelerator Workspace (Growth & Pitch focused)
+        'techstars-lagos-2026': {
+          id: 'techstars-lagos-2026',
+          opportunityId: 'techstars-lagos-2026',
+          savedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+          stage: 'saved',
+          items: {},
+          remindersEnabled: true,
+          googleCalendarSynced: false,
+          appleCalendarSynced: false,
+          notes: 'Focus on founder-market fit and 18% MoM GMV growth. Bayo Adeleye values capital efficiency.',
+          config: {
+            opportunityType: 'venture_hub',
+            sections: {
+              overview: true,
+              intel: true,
+              application: true,
+              team: true,
+              ideas: true,
+              build: true,
+              pitch_documents: true,
+              tasks_deadlines: true,
+              notes: true,
+              results: true,
+              showcase: true,
+              logistics: true,
+            },
+            sectionOrder: [
+              'overview',
+              'intel',
+              'application',
+              'team',
+              'ideas',
+              'build',
+              'pitch_documents',
+              'tasks_deadlines',
+              'notes',
+              'results',
+              'showcase',
+              'logistics',
+            ],
+          },
+          tasks: [
+            {
+              id: 'task-ts-1',
+              title: 'Record 60-second unscripted founder video',
+              dueDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString(),
+              priority: 'high',
+              completed: false,
+              category: 'application',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 'task-ts-2',
+              title: 'Update 15-slide investor pitch deck with latest cohort metrics',
+              dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+              priority: 'high',
+              completed: false,
+              category: 'application',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 'task-ts-3',
+              title: 'Gather references from 2 enterprise pilot customers',
+              priority: 'medium',
+              completed: false,
+              category: 'custom',
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        },
+
+        // Pre-seeded Tech Event Workspace (Participation & Logistics focused)
+        'afrotech-global-summit': {
+          id: 'afrotech-global-summit',
+          opportunityId: 'afrotech-global-summit',
+          savedAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
+          stage: 'saved',
+          items: {},
+          remindersEnabled: true,
+          googleCalendarSynced: false,
+          appleCalendarSynced: false,
+          notes: 'Accra International Conference Centre. Book flight arriving by Nov 25. Target meeting partners from Sequoia & Future Africa.',
+          config: {
+            opportunityType: 'event',
+            sections: {
+              overview: true,
+              intel: true,
+              logistics: true,
+              tasks_deadlines: true,
+              notes: true,
+              team: false,
+              application: true, // Has application requirement (Rule 2)
+              pitch_documents: true, // Main stage pitch deck requirement (Rule 2)
+              results: true, // Venture syndicate prize (Rule 2)
+              ideas: false,
+              build: false,
+              showcase: false,
+            },
+            sectionOrder: [
+              'overview',
+              'intel',
+              'logistics',
+              'tasks_deadlines',
+              'notes',
+              'application',
+              'pitch_documents',
+              'results',
+            ],
+          },
+          tasks: [
+            {
+              id: 'task-evt-1',
+              title: 'Confirm conference pass & registration badge',
+              priority: 'high',
+              completed: true,
+              category: 'milestone',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 'task-evt-2',
+              title: 'Finalize main stage 12-slide pitch presentation',
+              dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+              priority: 'high',
+              completed: false,
+              category: 'application',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 'task-evt-3',
+              title: 'Book flights to Accra (Kotoka International Airport) & hotel',
+              dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+              priority: 'high',
+              completed: true,
+              category: 'custom',
+              createdAt: new Date().toISOString(),
+            },
+          ],
+          logistics: {
+            venueName: 'Accra International Conference Centre',
+            venueAddress: 'Castle Rd, Accra, Ghana',
+            mapDirections: '15 mins from Kotoka International Airport (ACC)',
+            travelDates: 'Dec 1 – Dec 3, 2026',
+            packingList: [
+              { id: 'ep1', item: 'Passport & Ghana Entry Visa', category: 'documents', packed: true },
+              { id: 'ep2', item: 'Conference Pass Barcode QR', category: 'documents', packed: true },
+              { id: 'ep3', item: 'USB-C Display Dongle & Clicker', category: 'hardware', packed: false },
+              { id: 'ep4', item: 'Business cards / NFC Tap card', category: 'essentials', packed: true },
+            ],
+            schedule: [
+              { time: 'Day 1 · 09:00 AM', activity: 'Registration & Welcome Keynote' },
+              { time: 'Day 1 · 02:00 PM', activity: 'Main Stage Pitch Competition' },
+              { time: 'Day 2 · 06:00 PM', activity: 'VIP Investor Gala & Award Announcements' },
+            ],
+            emergencyContacts: [
+              { name: 'Events Desk Accra', role: 'Support', contact: '+233 24 555 0192' },
+            ],
+          },
+        },
       },
       selectedInterests: [],
       vaultItems: DEFAULT_VAULT_ITEMS,
@@ -154,12 +467,45 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
       saveOpportunity: (opportunityId: string) => {
         set((state) => {
           if (state.savedWorkspaces[opportunityId]) return state;
+          const opp = MOCK_OPPORTUNITIES.find((o) => o.id === opportunityId);
+          const config = opp ? generateAdaptiveWorkspaceConfig(opp) : undefined;
+          const initialTasks: WorkspaceTask[] = opp ? [
+            {
+              id: `task-${Date.now()}-1`,
+              title: `Review eligibility & selection criteria for ${opp.title}`,
+              priority: 'high',
+              completed: true,
+              category: 'milestone',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: `task-${Date.now()}-2`,
+              title: `Complete mandatory application deliverables`,
+              dueDate: opp.applicationDeadline,
+              priority: 'high',
+              completed: false,
+              category: 'application',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: `task-${Date.now()}-3`,
+              title: `Submit final application before cutoff`,
+              priority: 'medium',
+              completed: false,
+              category: 'custom',
+              createdAt: new Date().toISOString(),
+            },
+          ] : [];
+
           const newWorkspace: WorkspaceRecord = {
             id: opportunityId,
             opportunityId,
             savedAt: new Date().toISOString(),
             stage: 'saved',
             items: {},
+            config,
+            tasks: initialTasks,
+            notes: '',
             remindersEnabled: true,
             googleCalendarSynced: false,
             appleCalendarSynced: false,
@@ -168,6 +514,162 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
             savedWorkspaces: {
               ...state.savedWorkspaces,
               [opportunityId]: newWorkspace,
+            },
+          };
+        });
+      },
+
+      toggleWorkspaceSection: (workspaceId: string, sectionId: WorkspaceSectionId) => {
+        set((state) => {
+          const ws = state.savedWorkspaces[workspaceId];
+          if (!ws) return state;
+          const opp = MOCK_OPPORTUNITIES.find((o) => o.id === ws.opportunityId);
+          const currentConfig = ws.config || (opp ? generateAdaptiveWorkspaceConfig(opp) : undefined);
+          if (!currentConfig) return state;
+
+          const currentEnabled = !!currentConfig.sections[sectionId];
+          const nextSections = {
+            ...currentConfig.sections,
+            [sectionId]: !currentEnabled,
+          };
+
+          return {
+            savedWorkspaces: {
+              ...state.savedWorkspaces,
+              [workspaceId]: {
+                ...ws,
+                config: {
+                  ...currentConfig,
+                  sections: nextSections,
+                },
+              },
+            },
+          };
+        });
+      },
+
+      resetWorkspaceSections: (workspaceId: string) => {
+        set((state) => {
+          const ws = state.savedWorkspaces[workspaceId];
+          if (!ws) return state;
+          const opp = MOCK_OPPORTUNITIES.find((o) => o.id === ws.opportunityId);
+          if (!opp) return state;
+          const defaultConfig = generateAdaptiveWorkspaceConfig(opp);
+          return {
+            savedWorkspaces: {
+              ...state.savedWorkspaces,
+              [workspaceId]: {
+                ...ws,
+                config: defaultConfig,
+              },
+            },
+          };
+        });
+      },
+
+      addWorkspaceTask: (workspaceId: string, task: Omit<WorkspaceTask, 'id' | 'createdAt'>) => {
+        set((state) => {
+          const ws = state.savedWorkspaces[workspaceId];
+          if (!ws) return state;
+          const newTask: WorkspaceTask = {
+            ...task,
+            id: `task-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+            createdAt: new Date().toISOString(),
+          };
+          return {
+            savedWorkspaces: {
+              ...state.savedWorkspaces,
+              [workspaceId]: {
+                ...ws,
+                tasks: [newTask, ...(ws.tasks || [])],
+              },
+            },
+          };
+        });
+      },
+
+      toggleWorkspaceTask: (workspaceId: string, taskId: string) => {
+        set((state) => {
+          const ws = state.savedWorkspaces[workspaceId];
+          if (!ws || !ws.tasks) return state;
+          return {
+            savedWorkspaces: {
+              ...state.savedWorkspaces,
+              [workspaceId]: {
+                ...ws,
+                tasks: ws.tasks.map((t) =>
+                  t.id === taskId ? { ...t, completed: !t.completed } : t
+                ),
+              },
+            },
+          };
+        });
+      },
+
+      deleteWorkspaceTask: (workspaceId: string, taskId: string) => {
+        set((state) => {
+          const ws = state.savedWorkspaces[workspaceId];
+          if (!ws || !ws.tasks) return state;
+          return {
+            savedWorkspaces: {
+              ...state.savedWorkspaces,
+              [workspaceId]: {
+                ...ws,
+                tasks: ws.tasks.filter((t) => t.id !== taskId),
+              },
+            },
+          };
+        });
+      },
+
+      updateWorkspaceResults: (workspaceId: string, results: Partial<WorkspaceResult>) => {
+        set((state) => {
+          const ws = state.savedWorkspaces[workspaceId];
+          if (!ws) return state;
+          const currentResult = ws.results || { outcome: 'pending_review' };
+          return {
+            savedWorkspaces: {
+              ...state.savedWorkspaces,
+              [workspaceId]: {
+                ...ws,
+                results: {
+                  ...currentResult,
+                  ...results,
+                  updatedAt: new Date().toISOString(),
+                },
+              },
+            },
+          };
+        });
+      },
+
+      updateWorkspaceTechStack: (workspaceId: string, stack: string[]) => {
+        set((state) => {
+          const ws = state.savedWorkspaces[workspaceId];
+          if (!ws) return state;
+          return {
+            savedWorkspaces: {
+              ...state.savedWorkspaces,
+              [workspaceId]: {
+                ...ws,
+                techStack: stack,
+              },
+            },
+          };
+        });
+      },
+
+      updateWorkspaceProposalDraft: (workspaceId: string, proposal: string) => {
+        set((state) => {
+          const ws = state.savedWorkspaces[workspaceId];
+          if (!ws) return state;
+          return {
+            savedWorkspaces: {
+              ...state.savedWorkspaces,
+              [workspaceId]: {
+                ...ws,
+                proposalDraft: proposal,
+              },
             },
           };
         });
