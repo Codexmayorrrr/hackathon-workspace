@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
-  X,
   Mic,
   Play,
   Pause,
@@ -180,71 +179,100 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
       titleId="coach-modal-title"
       descriptionId="coach-modal-desc"
       maxWidthClass="max-w-5xl"
-    >
-      <div className="space-y-5 flex flex-col">
-        {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
-          <div className="flex items-center gap-3 min-w-0">
-            <div
-              aria-hidden="true"
-              className="w-10 h-10 rounded-xl bg-[#EFE6FF] text-[#3B0764] flex items-center justify-center flex-shrink-0"
-            >
-              <Mic className="w-5 h-5 stroke-[1.75]" />
-            </div>
-            <div className="min-w-0">
-              <h2 id="coach-modal-title" className="text-lg font-bold text-[#18181B] tracking-tight truncate">
-                Presentation Coach{' '}
-                {opportunityTitle && (
-                  <span className="text-xs text-[#52525B] font-normal">
-                    · {opportunityTitle}
-                  </span>
-                )}
-              </h2>
-              <p id="coach-modal-desc" className="text-xs text-[#52525B]">
-                {mode === 'rehearsal'
-                  ? 'Rehearsal mode: synced teleprompter timed to each slide budget.'
-                  : 'Stage mode: live countdown with Q&A pause and manual slide overrides.'}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="flex items-center bg-[#F4F4F6] rounded-xl p-1 text-xs" role="group" aria-label="Coach mode">
-              <button
-                type="button"
-                onClick={() => setMode('rehearsal')}
-                aria-pressed={mode === 'rehearsal'}
-                className={`px-3 py-1.5 rounded-lg font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
-                  mode === 'rehearsal'
-                    ? 'bg-white text-[#18181B] font-semibold'
-                    : 'text-[#52525B] hover:text-[#18181B]'
-                }`}
-              >
-                Rehearsal
-              </button>
-              <button
-                type="button"
-                onClick={() => setMode('live')}
-                aria-pressed={mode === 'live'}
-                className={`px-3 py-1.5 rounded-lg font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
-                  mode === 'live'
-                    ? 'bg-white text-[#18181B] font-semibold'
-                    : 'text-[#52525B] hover:text-[#18181B]'
-                }`}
-              >
-                Live Stage
-              </button>
-            </div>
-
+      title="Presentation coach"
+      description={`${opportunityTitle ? `${opportunityTitle} · ` : ''}${
+        mode === 'rehearsal'
+          ? 'Synced teleprompter timed to each slide budget.'
+          : 'Live countdown with Q&A pause and manual slide cues.'
+      }`}
+      icon={<Mic className="w-4 h-4 stroke-[1.75]" />}
+      iconToneClass="bg-[#EFE6FF] text-[#3B0764]"
+      closeLabel="Close presentation coach dialog"
+      footer={
+        isFinished ? (
+          <div className="flex justify-end">
             <button
               type="button"
-              onClick={onClose}
-              className="w-9 h-9 rounded-xl btn-tactile-ghost flex items-center justify-center"
-              aria-label="Close Presentation Coach dialog"
+              onClick={handleReset}
+              className="btn-tactile-primary px-6 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 min-h-[40px]"
             >
-              <X aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
+              <RotateCcw aria-hidden="true" className="w-3.5 h-3.5 stroke-[2]" />
+              <span>Rehearse again</span>
             </button>
           </div>
+        ) : (
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-2.5">
+              {!isRunning ? (
+                <button
+                  type="button"
+                  onClick={handleStartRehearsal}
+                  className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 min-h-[40px]"
+                >
+                  <Play aria-hidden="true" className="w-3.5 h-3.5 fill-white stroke-[2]" />
+                  <span>Start rehearsal</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handlePauseToggle}
+                  className="btn-tactile-secondary px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 min-h-[40px]"
+                >
+                  <Pause aria-hidden="true" className="w-3.5 h-3.5 stroke-[2]" />
+                  <span>Pause</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={handleReset}
+                className="btn-tactile-secondary w-10 h-10 rounded-xl flex items-center justify-center"
+                title="Reset rehearsal session"
+                aria-label="Reset rehearsal session"
+              >
+                <RotateCcw aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
+              </button>
+            </div>
+
+            <div className="text-xs text-[#52525B] font-mono flex items-center gap-2 tabular-nums">
+              <Clock aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
+              <span>Target: {slideDeck.targetTimeMinutes}m 00s</span>
+            </div>
+          </div>
+        )
+      }
+    >
+      <div className="flex flex-col space-y-4">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="inline-flex items-center bg-[#F4F4F6] rounded-xl p-1 text-xs" role="group" aria-label="Coach mode">
+            <button
+              type="button"
+              onClick={() => setMode('rehearsal')}
+              aria-pressed={mode === 'rehearsal'}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] min-h-[34px] ${
+                mode === 'rehearsal'
+                  ? 'bg-white text-[#18181B] font-semibold'
+                  : 'text-[#52525B] hover:text-[#18181B]'
+              }`}
+            >
+              Rehearsal
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('live')}
+              aria-pressed={mode === 'live'}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] min-h-[34px] ${
+                mode === 'live'
+                  ? 'bg-white text-[#18181B] font-semibold'
+                  : 'text-[#52525B] hover:text-[#18181B]'
+              }`}
+            >
+              Live stage
+            </button>
+          </div>
+          <span className="text-xs text-[#63636B] font-mono tabular-nums">
+            Slide {currentSlide.slideNumber} of {slides.length}
+          </span>
         </div>
 
         {/* REHEARSAL SUMMARY VIEW */}
@@ -253,37 +281,37 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-            className="p-6 sm:p-10 rounded-2xl bg-[#F4F4F6] text-center space-y-6"
+            className="p-6 sm:p-8 rounded-2xl bg-[#F4F4F6] text-center space-y-6"
           >
             <div
               aria-hidden="true"
-              className="w-14 h-14 rounded-2xl bg-[#ECFDF5] flex items-center justify-center text-[#065F46] mx-auto"
+              className="w-12 h-12 rounded-2xl bg-[#ECFDF5] flex items-center justify-center text-[#065F46] mx-auto"
             >
-              <CheckCircle2 className="w-7 h-7 stroke-[2]" />
+              <CheckCircle2 className="w-6 h-6 stroke-[2]" />
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-2xl font-bold text-[#18181B] tracking-tight">
-                Rehearsal Complete
+              <h3 className="text-xl sm:text-2xl font-bold text-[#18181B] tracking-tight">
+                Rehearsal complete
               </h3>
               <p className="text-xs sm:text-sm text-[#52525B]">
-                Review your cadence against your {slideDeck.targetTimeMinutes}-minute presentation target.
+                Compare your pacing against your {slideDeck.targetTimeMinutes}-minute presentation target.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-xl mx-auto">
               <div className="surface-card p-4 rounded-xl space-y-1">
-                <span className="text-xs text-[#63636B] font-medium">Total Duration</span>
+                <span className="text-xs text-[#63636B] font-medium">Total duration</span>
                 <p className="text-2xl font-bold font-mono text-[#18181B] tabular-nums">
                   {formatTime(elapsedSeconds)}
                 </p>
-                <span className="text-[11px] text-[#52525B]">
+                <span className="text-xs text-[#52525B] tabular-nums">
                   Target: {formatTime(targetTimeSeconds)}
                 </span>
               </div>
 
               <div className="surface-card p-4 rounded-xl space-y-1">
-                <span className="text-xs text-[#63636B] font-medium">Pacing Variance</span>
+                <span className="text-xs text-[#63636B] font-medium">Pacing variance</span>
                 <p
                   className={`text-2xl font-bold font-mono tabular-nums ${
                     Math.abs(deltaSeconds) <= 10 ? 'text-emerald-700' : 'text-amber-800'
@@ -291,17 +319,17 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
                 >
                   {deltaSeconds > 0 ? `+${deltaSeconds}s` : `${deltaSeconds}s`}
                 </p>
-                <span className="text-[11px] text-[#52525B]">
+                <span className="text-xs text-[#52525B]">
                   {Math.abs(deltaSeconds) <= 10 ? 'Within target window' : 'Adjust slide pace'}
                 </span>
               </div>
 
               <div className="surface-card p-4 rounded-xl space-y-1">
-                <span className="text-xs text-[#63636B] font-medium">Slides Covered</span>
+                <span className="text-xs text-[#63636B] font-medium">Slides covered</span>
                 <p className="text-2xl font-bold font-mono text-[#18181B] tabular-nums">
                   {slides.length} / {slides.length}
                 </p>
-                <span className="text-[11px] text-emerald-700 font-semibold">
+                <span className="text-xs text-emerald-700 font-semibold">
                   100% covered
                 </span>
               </div>
@@ -309,7 +337,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
 
             <div className="max-w-xl mx-auto space-y-2 text-start">
               <span className="text-xs font-semibold text-[#63636B] block">
-                Per-Slide Pace Audit
+                Per-slide pacing audit
               </span>
               <div className="space-y-1.5">
                 {slides.map((s, idx) => {
@@ -339,17 +367,6 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
                   );
                 })}
               </div>
-            </div>
-
-            <div className="flex items-center justify-center pt-2">
-              <button
-                type="button"
-                onClick={handleReset}
-                className="btn-tactile-primary px-6 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 min-h-[40px]"
-              >
-                <RotateCcw aria-hidden="true" className="w-3.5 h-3.5 stroke-[2]" />
-                <span>Rehearse again</span>
-              </button>
             </div>
           </motion.div>
         ) : (
@@ -445,7 +462,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
 
             {/* Right Column: Synchronized Mini Slide & Next Slide Preview */}
             <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
-              <div className="surface-card aspect-[16/9] w-full rounded-2xl p-5 flex flex-col justify-between">
+              <div className="bg-[#EFEFF2] aspect-[16/9] w-full rounded-2xl p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between text-[11px] text-[#63636B]">
                   <span className="font-semibold">
                     {mode === 'live' ? 'Audience View' : 'Active Slide'}
@@ -479,9 +496,9 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
 
               {nextSlide ? (
                 <div className="p-4 rounded-xl bg-[#F4F4F6] space-y-1">
-                  <div className="flex items-center justify-between text-[11px] text-[#63636B]">
-                    <span className="font-semibold">Up Next</span>
-                    <span className="font-mono">Slide {nextSlide.slideNumber}</span>
+                  <div className="flex items-center justify-between text-xs text-[#63636B]">
+                    <span className="font-semibold">Up next</span>
+                    <span className="font-mono tabular-nums">Slide {nextSlide.slideNumber}</span>
                   </div>
                   <h4 className="text-xs font-bold text-[#18181B] truncate">
                     {nextSlide.title}
@@ -492,13 +509,13 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
                 </div>
               ) : (
                 <div className="p-4 rounded-xl bg-[#F4F4F6] text-xs text-[#52525B] text-center">
-                  Final Slide (Conclusion & Q&A)
+                  Final slide (Conclusion & Q&A)
                 </div>
               )}
 
               <div className="p-4 rounded-xl bg-[#F4F4F6] space-y-2.5">
                 <span className="text-xs font-semibold text-[#18181B] block">
-                  Stage Controls
+                  Stage controls
                 </span>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <button
@@ -529,48 +546,6 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Global Bottom Controls Bar */}
-        {!isFinished && (
-          <div className="pt-3 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2.5">
-              {!isRunning ? (
-                <button
-                  type="button"
-                  onClick={handleStartRehearsal}
-                  className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 min-h-[42px]"
-                >
-                  <Play aria-hidden="true" className="w-4 h-4 fill-white stroke-[2]" />
-                  <span>Start rehearsal</span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handlePauseToggle}
-                  className="btn-tactile-secondary px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 min-h-[42px]"
-                >
-                  <Pause aria-hidden="true" className="w-4 h-4 stroke-[2]" />
-                  <span>Pause</span>
-                </button>
-              )}
-
-              <button
-                type="button"
-                onClick={handleReset}
-                className="btn-tactile-secondary w-10 h-10 rounded-xl flex items-center justify-center"
-                title="Reset rehearsal session"
-                aria-label="Reset rehearsal session"
-              >
-                <RotateCcw aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
-              </button>
-            </div>
-
-            <div className="text-xs text-[#52525B] font-mono flex items-center gap-2 tabular-nums">
-              <Clock aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
-              <span>Slot Target: {slideDeck.targetTimeMinutes}m 00s</span>
             </div>
           </div>
         )}

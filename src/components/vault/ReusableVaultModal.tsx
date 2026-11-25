@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-  X,
   FolderArchive,
   Copy,
   Check,
@@ -160,52 +159,39 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
       titleId="vault-modal-title"
       descriptionId="vault-modal-desc"
       maxWidthClass="max-w-2xl"
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4 pb-3">
-        <div className="flex items-center gap-3">
-          <div
-            aria-hidden="true"
-            className="w-10 h-10 rounded-xl bg-[#F4F4F6] flex items-center justify-center text-[#18181B]"
+      title="Reusable Vault"
+      description="Store bios, origins, and core answers once to insert into any application."
+      icon={<FolderArchive className="w-4 h-4 stroke-[1.75]" />}
+      closeLabel="Close Reusable Vault dialog"
+      footer={
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold w-full sm:w-auto min-h-[40px]"
           >
-            <FolderArchive className="w-5 h-5 stroke-[1.75]" />
-          </div>
-          <div>
-            <h2 id="vault-modal-title" className="text-lg font-bold text-[#18181B] tracking-tight">
-              Reusable Vault
-            </h2>
-            <p id="vault-modal-desc" className="text-xs text-[#52525B]">
-              Save bios, origins, and core stories once. Insert them into any application in one click.
-            </p>
-          </div>
+            Done
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="w-9 h-9 rounded-xl btn-tactile-ghost flex items-center justify-center flex-shrink-0"
-          aria-label="Close Reusable Vault dialog"
-        >
-          <X aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
-        </button>
-      </div>
-
-      <div className="space-y-5 pt-4">
+      }
+    >
+      <div className="space-y-5">
         {/* Target Requirement Destination Banner */}
         {targetRequirement && (
           <div className="p-3.5 rounded-xl bg-[#18181B] text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-2 min-w-0">
               <Sparkles aria-hidden="true" className="w-4 h-4 text-[#DECAFF] stroke-[2] flex-shrink-0" />
               <span className="truncate">
-                Destination: <strong className="text-white">{targetRequirement.title}</strong>
+                Target field: <strong className="text-white">{targetRequirement.title}</strong>
                 {targetRequirement.maxWords && (
-                  <span className="text-neutral-200 font-mono text-[11px] ms-1.5">
-                    (limit: {targetRequirement.maxWords} words)
+                  <span className="text-neutral-200 font-mono text-[11px] ms-1.5 tabular-nums">
+                    ({targetRequirement.maxWords} words max)
                   </span>
                 )}
               </span>
             </div>
             <span className="text-[11px] text-neutral-200 flex-shrink-0">
-              Select Insert on any snippet
+              Choose Insert on any snippet
             </span>
           </div>
         )}
@@ -215,7 +201,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
           <label htmlFor="vault-search" className="sr-only">
             Search reusable vault snippets
           </label>
-          <Search aria-hidden="true" className="w-4 h-4 text-[#63636B] absolute start-3.5 top-2.5 stroke-[1.75] pointer-events-none" />
+          <Search aria-hidden="true" className="w-4 h-4 text-[#63636B] absolute start-3.5 top-1/2 -translate-y-1/2 stroke-[1.75] pointer-events-none" />
           <input
             id="vault-search"
             type="search"
@@ -225,14 +211,14 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
             spellCheck={false}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search snippets by title or content..."
-            className="field-surface w-full rounded-xl ps-9 pe-16 py-2 text-base sm:text-[13px]"
+            placeholder="Search snippets by title or keyword…"
+            className="field-surface w-full rounded-xl ps-10 pe-16 py-2.5 text-base sm:text-sm"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute end-3 top-2 text-xs font-medium text-[#52525B] hover:text-[#18181B]"
+              className="absolute inset-y-0 end-2 px-2 flex items-center text-xs font-medium text-[#52525B] hover:text-[#18181B]"
             >
               Clear
             </button>
@@ -437,7 +423,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
               return (
                 <div
                   key={item.id}
-                  className="p-5 rounded-2xl bg-[#F4F4F6] space-y-3"
+                  className="p-4 rounded-2xl bg-[#F4F4F6] space-y-2.5"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -517,17 +503,6 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
               );
             })
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="pt-2 flex justify-end">
-          <button
-            type="button"
-            onClick={onClose}
-            className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold min-h-[40px]"
-          >
-            Done
-          </button>
         </div>
       </div>
     </AccessibleModal>

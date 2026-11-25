@@ -10,23 +10,18 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useAllOpportunities, useWorkspaceStore } from '../store/useWorkspaceStore';
-import { Opportunity, OpportunityType } from '../types';
+import { Opportunity } from '../types';
 import { EventBanner } from '../components/ui/EventBanner';
 import { CATEGORY_THEMES } from '../utils/categoryTheme';
 import { getRelativeDeadline } from '../utils/dateUtils';
 import { CreateOpportunityModal } from '../components/organizer/CreateOpportunityModal';
 import { BannerEditorModal } from '../components/organizer/BannerEditorModal';
+import {
+  computeOpportunityGroupCounts,
+  OpportunityGroupTab,
+  OpportunityGroupTabs,
+} from '../components/discovery/OpportunityGroupTabs';
 import { toast } from 'sonner';
-
-type FilterType = 'all' | OpportunityType;
-
-const FILTER_OPTIONS: Array<{ value: FilterType; label: string }> = [
-  { value: 'all', label: 'All Events' },
-  { value: 'hackathon', label: 'Hackathons' },
-  { value: 'event', label: 'Conferences & Events' },
-  { value: 'grant', label: 'Grants' },
-  { value: 'venture_hub', label: 'Accelerators' },
-];
 
 export const OrganizerEventsPage: React.FC = () => {
   const allOpportunities = useAllOpportunities();
@@ -35,13 +30,18 @@ export const OrganizerEventsPage: React.FC = () => {
   const deleteCustomOpportunity = useWorkspaceStore((state) => state.deleteCustomOpportunity);
   const restoreCustomOpportunity = useWorkspaceStore((state) => state.restoreCustomOpportunity);
 
-  const [filterType, setFilterType] = useState<FilterType>('all');
+  const [filterType, setFilterType] = useState<OpportunityGroupTab>('all');
   const [createOpen, setCreateOpen] = useState(false);
   const [editingBannerOpp, setEditingBannerOpp] = useState<Opportunity | null>(null);
 
   const customIds = useMemo(
     () => new Set(customOpportunities.map((c) => c.id)),
     [customOpportunities]
+  );
+
+  const groupCounts = useMemo(
+    () => computeOpportunityGroupCounts(allOpportunities),
+    [allOpportunities]
   );
 
   const filteredEvents = useMemo(() => {
@@ -90,34 +90,22 @@ export const OrganizerEventsPage: React.FC = () => {
         </button>
       </div>
 
-      {/* Category Filter Bar */}
-      <div
-        role="group"
-        aria-label="Filter hosted events by category"
-        className="flex items-center gap-2 flex-wrap"
-      >
-        {FILTER_OPTIONS.map((option) => {
-          const isSelected = filterType === option.value;
-          return (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => setFilterType(option.value)}
-              aria-pressed={isSelected}
-              className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-colors min-h-[36px] active:scale-[0.96] ${
-                isSelected
-                  ? 'bg-[#18181B] text-white font-semibold'
-                  : 'bg-[#FFFFFF] text-[#52525B] hover:text-[#18181B] hover:bg-[#EFEFF2]'
-              }`}
-            >
-              {option.label}
-            </button>
-          );
-        })}
-      </div>
+      {/* Group Tab Selector */}
+      <OpportunityGroupTabs
+        activeGroup={filterType}
+        onSelectGroup={setFilterType}
+        counts={groupCounts}
+        idPrefix="org-events"
+        layoutId="org-events-active-pill"
+      />
 
       {/* Events Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div
+        id="org-events-panel"
+        role="tabpanel"
+        aria-labelledby={`org-events-tab-${filterType}`}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+      >
         {filteredEvents.map((opp) => {
           const theme = CATEGORY_THEMES[opp.type] || CATEGORY_THEMES.hackathon;
           const deadline = getRelativeDeadline(opp.applicationDeadline);

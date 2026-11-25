@@ -1,7 +1,6 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
-  X,
   Layers,
   Check,
   RotateCcw,
@@ -27,20 +26,21 @@ export const CustomizeSectionsModal: React.FC<CustomizeSectionsModalProps> = ({
   const workspace = useWorkspaceStore((state) => state.getWorkspace(opportunity.id));
   const toggleWorkspaceSection = useWorkspaceStore((state) => state.toggleWorkspaceSection);
   const resetWorkspaceSections = useWorkspaceStore((state) => state.resetWorkspaceSections);
+  const shouldReduceMotion = useReducedMotion();
 
   const currentSections = workspace?.config?.sections || {
     overview: true,
-    intel: true,
-    tasks_deadlines: true,
-    notes: true,
-    team: true,
     application: true,
+    intel: true,
     ideas: true,
     build: true,
+    team: true,
     pitch_documents: true,
-    logistics: true,
+    logistics: false,
     showcase: true,
     results: true,
+    tasks_deadlines: true,
+    notes: true,
   };
 
   const allSectionsList: SectionMeta[] = Object.values(ALL_SECTIONS_META);
@@ -48,10 +48,10 @@ export const CustomizeSectionsModal: React.FC<CustomizeSectionsModalProps> = ({
   const contextualSections = allSectionsList.filter((s) => !s.isCore);
 
   const handleToggle = (id: WorkspaceSectionId) => {
-    toggleWorkspaceSection(opportunity.id, id);
     const willBeEnabled = !currentSections[id];
+    toggleWorkspaceSection(opportunity.id, id);
     toast.success(
-      willBeEnabled ? `Shown "${ALL_SECTIONS_META[id].label}"` : `Hidden "${ALL_SECTIONS_META[id].label}"`
+      willBeEnabled ? `Shown “${ALL_SECTIONS_META[id].label}”` : `Hidden “${ALL_SECTIONS_META[id].label}”`
     );
   };
 
@@ -67,54 +67,50 @@ export const CustomizeSectionsModal: React.FC<CustomizeSectionsModalProps> = ({
       titleId="customize-sections-title"
       descriptionId="customize-sections-desc"
       maxWidthClass="max-w-xl"
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4 pb-3">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <Layers aria-hidden="true" className="w-4 h-4 text-[#18181B] stroke-[1.75]" />
-            <h2
-              id="customize-sections-title"
-              className="text-base font-semibold text-[#18181B] tracking-tight"
-            >
-              Customize workspace navigation
-            </h2>
-          </div>
-          <p id="customize-sections-desc" className="text-xs text-[#52525B] leading-relaxed">
-            Show or hide sections to fit the requirements of this {opportunity.type.replace('_', ' ')}.
-          </p>
+      title="Customize workspace sections"
+      description={`Show or hide tabs to fit this ${opportunity.type.replace('_', ' ')}.`}
+      icon={<Layers className="w-4 h-4 stroke-[1.75]" />}
+      closeLabel="Close customize sections dialog"
+      footer={
+        <div className="flex items-center justify-between gap-3">
+          <button
+            type="button"
+            onClick={handleReset}
+            className="btn-tactile-secondary px-3.5 py-2.5 rounded-xl text-xs font-medium gap-1.5 min-h-[40px]"
+          >
+            <RotateCcw aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
+            <span>Reset defaults</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold min-h-[40px]"
+          >
+            Done
+          </button>
         </div>
-
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close customize navigation dialog"
-          className="w-9 h-9 rounded-xl btn-tactile-ghost flex items-center justify-center flex-shrink-0"
-        >
-          <X aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
-        </button>
-      </div>
-
-      {/* Section Toggles Scrollable Area */}
-      <div className="py-5 space-y-6">
+      }
+    >
+      <div className="space-y-6">
         {/* Core Sections */}
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-semibold text-[#63636B]">
+            <h3 className="text-sm font-semibold text-[#18181B]">
               Core sections
-            </span>
-            <span className="text-[11px] text-[#63636B] font-mono">Always visible</span>
+            </h3>
+            <span className="text-xs text-[#63636B] font-mono">Always visible</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {coreSections.map((section) => (
               <div
                 key={section.id}
-                className="p-3 rounded-xl bg-[#F4F4F6] flex items-center justify-between gap-2"
+                className="p-3.5 rounded-xl bg-[#F4F4F6] flex items-center justify-between gap-2.5"
               >
-                <div className="min-w-0">
+                <div className="min-w-0 space-y-0.5">
                   <p className="text-xs font-semibold text-[#18181B] truncate">{section.label}</p>
-                  <p className="text-[11px] text-[#52525B] line-clamp-1">{section.description}</p>
+                  <p className="text-xs text-[#52525B] line-clamp-1 leading-snug">{section.description}</p>
                 </div>
                 <span
                   aria-hidden="true"
@@ -127,11 +123,11 @@ export const CustomizeSectionsModal: React.FC<CustomizeSectionsModalProps> = ({
           </div>
         </div>
 
-        {/* Contextual Sections */}
+        {/* Optional Sections */}
         <div className="space-y-3">
-          <span className="text-xs font-semibold text-[#63636B] block">
-            Contextual sections
-          </span>
+          <h3 className="text-sm font-semibold text-[#18181B]">
+            Optional sections
+          </h3>
 
           <div className="space-y-2.5">
             {contextualSections.map((section) => {
@@ -157,29 +153,32 @@ export const CustomizeSectionsModal: React.FC<CustomizeSectionsModalProps> = ({
                         {section.label}
                       </span>
                       {isEnabled && (
-                        <span className="px-1.5 py-0.5 rounded text-[11px] font-semibold bg-[#ECFDF5] text-[#065F46]">
+                        <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-[#ECFDF5] text-[#065F46]">
                           Active
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-[#52525B] leading-snug">
+                    <p className="text-xs text-[#52525B] leading-snug text-pretty">
                       {section.description}
                     </p>
                   </div>
 
-                  {/* Switch Visual */}
+                  {/* Pure Spring Switch Visual */}
                   <span
                     aria-hidden="true"
-                    className={`w-10 h-6 rounded-full transition-colors relative flex items-center flex-shrink-0 ${
+                    className={`w-10 h-6 rounded-full transition-colors duration-150 relative flex items-center flex-shrink-0 ${
                       isEnabled ? 'bg-[#18181B]' : 'bg-neutral-300'
                     }`}
                   >
                     <motion.span
-                      layout
-                      transition={{ type: 'spring', duration: 0.2, bounce: 0 }}
-                      className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                        isEnabled ? 'translate-x-5' : 'translate-x-1'
-                      }`}
+                      initial={false}
+                      animate={{ x: isEnabled ? 20 : 4 }}
+                      transition={
+                        shouldReduceMotion
+                          ? { duration: 0.01 }
+                          : { type: 'spring', stiffness: 500, damping: 34 }
+                      }
+                      className="w-4 h-4 rounded-full bg-white block"
                     />
                   </span>
                 </button>
@@ -191,30 +190,10 @@ export const CustomizeSectionsModal: React.FC<CustomizeSectionsModalProps> = ({
         {/* Data Safety Notice */}
         <div className="p-3.5 rounded-xl bg-[#F4F4F6] flex items-start gap-2.5 text-xs text-[#52525B]">
           <ShieldCheck aria-hidden="true" className="w-4 h-4 text-[#18181B] flex-shrink-0 mt-0.5 stroke-[1.75]" />
-          <p className="leading-relaxed">
+          <p className="leading-relaxed text-pretty">
             <strong className="text-[#18181B]">Your work stays intact:</strong> Hiding a section never deletes existing drafts, tasks, or documents. Re-enabling restores them immediately.
           </p>
         </div>
-      </div>
-
-      {/* Footer Controls */}
-      <div className="flex items-center justify-between pt-2 gap-3">
-        <button
-          type="button"
-          onClick={handleReset}
-          className="btn-tactile-secondary px-3.5 py-2 rounded-xl text-xs font-medium gap-1.5 min-h-[38px]"
-        >
-          <RotateCcw aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
-          <span>Reset defaults</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={onClose}
-          className="btn-tactile-primary px-5 py-2 rounded-xl text-xs font-semibold min-h-[38px]"
-        >
-          Done
-        </button>
       </div>
     </AccessibleModal>
   );

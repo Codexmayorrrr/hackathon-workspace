@@ -1,10 +1,15 @@
 import React, { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { motion, LayoutGroup } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Opportunity, OpportunityType } from '../types';
 import { CATEGORY_THEMES } from '../utils/categoryTheme';
 import { InterestBoostBar } from '../components/discovery/InterestBoostBar';
+import {
+  computeOpportunityGroupCounts,
+  OpportunityGroupTab,
+  OpportunityGroupTabs,
+} from '../components/discovery/OpportunityGroupTabs';
 import { OpportunityCard } from '../components/discovery/OpportunityCard';
 import { useAllOpportunities, useWorkspaceStore } from '../store/useWorkspaceStore';
 
@@ -37,10 +42,25 @@ const SECTIONS: SectionConfig[] = [
   },
 ];
 
+const VALID_GROUPS = new Set<OpportunityGroupTab>(['all', 'hackathon', 'event', 'grant', 'venture_hub']);
+
 export const DiscoverPage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const selectedInterests = useWorkspaceStore((state) => state.selectedInterests);
   const customOpportunities = useWorkspaceStore((state) => state.customOpportunities);
   const allOpportunities = useAllOpportunities();
+
+  const rawGroup = searchParams.get('group') as OpportunityGroupTab | null;
+  const activeGroup: OpportunityGroupTab =
+    rawGroup && VALID_GROUPS.has(rawGroup) ? rawGroup : 'all';
+
+  const handleSelectGroup = (group: OpportunityGroupTab) => {
+    if (group === 'all') {
+      setSearchParams({});
+    } else {
+      setSearchParams({ group });
+    }
+  };
 
   const customIds = useMemo(
     () => new Set(customOpportunities.map((c) => c.id)),
@@ -83,9 +103,17 @@ export const DiscoverPage: React.FC = () => {
     return grouped;
   }, [allOpportunities]);
 
+  const groupCounts = useMemo(
+    () => computeOpportunityGroupCounts(allOpportunities),
+    [allOpportunities]
+  );
+
+  const visibleSections =
+    activeGroup === 'all' ? SECTIONS : SECTIONS.filter((s) => s.type === activeGroup);
+
   return (
     <div className="space-y-8 sm:space-y-10 min-w-0">
-      {/* Page Header */}
+      {/* Page Header & Controls */}
       <div className="space-y-4">
         <div className="space-y-2">
           <h1 className="text-2xl sm:text-3xl font-bold text-[#18181B] tracking-tight">
@@ -96,19 +124,32 @@ export const DiscoverPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Filter Strip */}
-        <div className="pt-1">
-          <InterestBoostBar />
-        </div>
+        {/* Group Tab Selector */}
+        <OpportunityGroupTabs
+          activeGroup={activeGroup}
+          onSelectGroup={handleSelectGroup}
+          counts={groupCounts}
+          idPrefix="discover-groups"
+          layoutId="discover-group-active-pill"
+        />
+
+        {/* Domain Filter Strip */}
+        <InterestBoostBar />
       </div>
 
-      {/* Discovery Rails */}
-      <LayoutGroup>
-        <div className="space-y-10 sm:space-y-12">
-          {SECTIONS.map((section) => {
+      {/* Active Tab Panel */}
+      <div
+        id="discover-groups-panel"
+        role="tabpanel"
+        aria-labelledby={`discover-groups-tab-${activeGroup}`}
+        className="space-y-10 sm:space-y-12"
+      >
+        <LayoutGroup>
+          {visibleSections.map((section) => {
             const rawItems = opportunitiesByType[section.type] || [];
             const sortedItems = sortSectionOpportunities(rawItems);
-            const displayItems = sortedItems.slice(0, 3);
+            const displayItems =
+              activeGroup === 'all' ? sortedItems.slice(0, 3) : sortedItems;
             const theme = CATEGORY_THEMES[section.type];
             const SectionIcon = theme.icon;
 
@@ -136,16 +177,30 @@ export const DiscoverPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <Link
-                    to={`/discover/${section.type}`}
-                    className="btn-tactile-secondary inline-flex items-center gap-1.5 ps-3.5 pe-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap self-start sm:self-auto min-h-[36px] group/rail"
-                  >
-                    <span>View all {section.title.split(' ')[1] || ''}</span>
-                    <ArrowRight aria-hidden="true" className="w-3.5 h-3.5 text-[#52525B] stroke-[1.75] rtl:-scale-x-100 transition-transform duration-150 group-hover/rail:translate-x-0.5" />
-                  </Link>
+                  {activeGroup === 'all' ? (
+                    <button
+                      type="button"
+                      onClick={() => handleSelectGroup(section.type)}
+                      className="btn-tactile-secondary inline-flex items-center gap-1.5 ps-3.5 pe-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap self-start sm:self-auto min-h-[36px] group/rail"
+                    >
+                      <span>View all {section.title.split(' ')[1] || ''}</span>
+                      <ArrowRight
+                        aria-hidden="true"
+                        className="w-3.5 h-3.5 text-[#52525B] stroke-[1.75] rtl:-scale-x-100 transition-transform duration-150 group-hover/rail:translate-x-0.5"
+                      />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleSelectGroup('all')}
+                      className="btn-tactile-secondary inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium whitespace-nowrap self-start sm:self-auto min-h-[36px]"
+                    >
+                      <span>Show all groups</span>
+                    </button>
+                  )}
                 </div>
 
-                {/* 3-Column Grid Cards */}
+                {/* Grid Cards */}
                 <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
                   {displayItems.map((opportunity) => {
                     const isMatched =
@@ -164,8 +219,8 @@ export const DiscoverPage: React.FC = () => {
               </section>
             );
           })}
-        </div>
-      </LayoutGroup>
+        </LayoutGroup>
+      </div>
     </div>
   );
 };

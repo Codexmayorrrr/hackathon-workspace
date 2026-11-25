@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Calendar, Check, Copy, RefreshCw, ExternalLink } from 'lucide-react';
+import { Calendar, Check, Copy, RefreshCw, ExternalLink, Smartphone } from 'lucide-react';
 import { AccessibleModal } from '../ui/AccessibleModal';
 import { toast } from 'sonner';
 
@@ -35,7 +35,7 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
   const handleRegenerateToken = () => {
     const newToken = 'feed-' + Math.random().toString(36).substring(2, 10);
     setCalendarToken(newToken);
-    toast.info('New private calendar link generated');
+    toast.info('Generated new private calendar link');
   };
 
   return (
@@ -45,70 +45,58 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
       titleId="calendar-sync-title"
       descriptionId="calendar-sync-desc"
       maxWidthClass="max-w-lg"
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4 pb-3">
-        <div className="flex items-center gap-3">
-          <div
-            aria-hidden="true"
-            className="w-10 h-10 rounded-xl bg-[#F4F4F6] flex items-center justify-center text-[#18181B]"
+      title="Calendar sync"
+      description="Keep submission deadlines synced across all of your devices."
+      icon={<Calendar className="w-4 h-4 stroke-[1.75]" />}
+      closeLabel="Close calendar sync dialog"
+      footer={
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold w-full sm:w-auto min-h-[40px]"
           >
-            <Calendar className="w-4 h-4 stroke-[1.75]" />
-          </div>
-          <div>
-            <h2 id="calendar-sync-title" className="text-base font-bold text-[#18181B] tracking-tight">
-              Calendar sync
-            </h2>
-            <p id="calendar-sync-desc" className="text-xs text-[#52525B]">
-              Keep submission deadlines synced across your devices
-            </p>
-          </div>
+            Done
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="w-9 h-9 btn-tactile-ghost rounded-xl flex items-center justify-center flex-shrink-0"
-          aria-label="Close calendar sync dialog"
-        >
-          <X aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
-        </button>
-      </div>
+      }
+    >
+      <div className="space-y-4">
+        {opportunityTitle && (
+          <div className="px-3.5 py-2.5 rounded-xl bg-[#F4F4F6] text-xs text-[#52525B]">
+            <span>Configuring deadlines for</span>{' '}
+            <strong className="text-[#18181B] font-semibold">{opportunityTitle}</strong>
+          </div>
+        )}
 
-      {opportunityTitle && (
-        <div className="mt-4 px-3.5 py-2.5 rounded-xl bg-[#F4F4F6] text-xs text-[#52525B]">
-          <span>Configuring for:</span>{' '}
-          <strong className="text-[#18181B] font-semibold ms-1">{opportunityTitle}</strong>
-        </div>
-      )}
-
-      <div className="mt-5 space-y-4">
         {/* Google Calendar Section */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-[#F4F4F6] space-y-3">
+        <div className="p-4 rounded-2xl bg-[#F4F4F6] space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 min-w-0">
               <div
                 aria-hidden="true"
-                className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-rose-700 font-bold text-xs"
+                className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-rose-700 font-bold text-xs flex-shrink-0"
               >
                 G
               </div>
-              <div>
+              <div className="min-w-0">
                 <h3 className="text-sm font-semibold text-[#18181B]">Google Calendar</h3>
-                <p className="text-xs text-[#52525B]">
+                <p className="text-xs text-[#52525B] truncate">
                   {googleConnected ? 'Connected as builder@gmail.com' : 'Not connected'}
                 </p>
               </div>
             </div>
+
             {googleConnected ? (
               <button
                 type="button"
                 onClick={() => {
                   const next = !isGoogleSynced;
                   onToggleGoogleSync?.(next);
-                  toast.success(next ? 'Deadline synced to Google Calendar' : 'Removed from Google Calendar');
+                  toast.success(next ? 'Synced deadline to Google Calendar' : 'Removed from Google Calendar');
                 }}
                 aria-pressed={isGoogleSynced}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold w-full sm:w-auto text-center justify-center transition-[transform,background-color,color] duration-150 active:scale-[0.96] min-h-[38px] ${
+                className={`px-4 py-2 rounded-xl text-xs font-semibold w-full sm:w-auto text-center justify-center transition-[transform,background-color,color] duration-150 active:scale-[0.96] min-h-[38px] flex-shrink-0 ${
                   isGoogleSynced
                     ? 'bg-[#047857] hover:bg-emerald-800 text-white'
                     : 'btn-tactile-secondary bg-white'
@@ -123,42 +111,42 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
                   setGoogleConnected(true);
                   toast.success('Connected Google Calendar');
                 }}
-                className="btn-tactile-primary px-4 py-2 rounded-xl text-xs font-semibold w-full sm:w-auto text-center justify-center min-h-[38px]"
+                className="btn-tactile-primary px-4 py-2 rounded-xl text-xs font-semibold w-full sm:w-auto text-center justify-center min-h-[38px] flex-shrink-0"
               >
-                Connect
+                Connect account
               </button>
             )}
           </div>
-          <p className="text-xs text-[#52525B] leading-relaxed">
-            Creates a submission block ending at the deadline with a direct link to your checklist and drafts.
+          <p className="text-xs text-[#52525B] leading-relaxed text-pretty">
+            Creates a calendar block ending at submission cutoff with a direct link back to your workspace.
           </p>
         </div>
 
         {/* Apple Calendar Section */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-[#F4F4F6] space-y-3">
+        <div className="p-4 rounded-2xl bg-[#F4F4F6] space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 min-w-0">
               <div
                 aria-hidden="true"
-                className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#18181B] font-semibold text-xs"
+                className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#18181B] flex-shrink-0"
               >
-                
+                <Smartphone className="w-4 h-4 stroke-[1.75]" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <h3 className="text-sm font-semibold text-[#18181B]">Apple Calendar (iOS & macOS)</h3>
                 <p className="text-xs text-[#52525B]">Subscribed calendar feed</p>
               </div>
             </div>
             <a
               href={webcalUrl}
-              className="btn-tactile-secondary bg-white inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium w-full sm:w-auto min-h-[38px]"
+              className="btn-tactile-secondary bg-white inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium w-full sm:w-auto min-h-[38px] flex-shrink-0"
             >
               <span>Subscribe</span>
               <ExternalLink aria-hidden="true" className="w-3.5 h-3.5 text-[#52525B] stroke-[1.75]" />
             </a>
           </div>
-          <p className="text-xs text-[#52525B] leading-relaxed">
-            Subscribes Apple Calendar via WebCal and updates automatically when deadlines change.
+          <p className="text-xs text-[#52525B] leading-relaxed text-pretty">
+            Subscribes Apple Calendar via WebCal and updates automatically when dates change.
           </p>
         </div>
 
@@ -173,7 +161,7 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
               type="text"
               readOnly
               value={icsUrl}
-              className="field-surface flex-1 min-w-0 rounded-xl px-3.5 py-2.5 text-xs text-[#52525B] font-mono truncate select-all"
+              className="field-surface flex-1 min-w-0 rounded-xl px-3.5 py-2.5 text-base sm:text-xs text-[#52525B] font-mono truncate select-all"
             />
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
@@ -200,17 +188,6 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Footer */}
-      <div className="mt-6 pt-2 flex justify-end">
-        <button
-          type="button"
-          onClick={onClose}
-          className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold w-full sm:w-auto min-h-[40px]"
-        >
-          Done
-        </button>
       </div>
     </AccessibleModal>
   );

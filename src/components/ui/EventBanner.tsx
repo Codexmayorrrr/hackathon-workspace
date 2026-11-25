@@ -156,11 +156,11 @@ export const EventBanner: React.FC<EventBannerProps> = ({
         <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-2 z-10">
           {organizerName ? (
             <span
-              className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-semibold backdrop-blur-md truncate max-w-[75%] ${
+              className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-semibold backdrop-blur-md max-w-[78%] min-w-0 ${
                 showPhoto ? 'bg-[#18181B]/80 text-white' : palette.pillBg
               }`}
             >
-              Hosted by {organizerName}
+              <span className="truncate">Hosted by {organizerName}</span>
             </span>
           ) : (
             <span />

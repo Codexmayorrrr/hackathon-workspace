@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  X,
   Sparkles,
   Check,
   Copy,
@@ -141,41 +140,38 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
       titleId="app-helper-title"
       descriptionId="app-helper-desc"
       maxWidthClass="max-w-2xl"
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4 pb-3">
-        <div className="flex items-center gap-3">
-          <div
-            aria-hidden="true"
-            className="w-10 h-10 rounded-xl bg-[#EFE6FF] text-[#3B0764] flex items-center justify-center flex-shrink-0"
+      title="Draft assistant"
+      description={`Calibrated answer templates aligned with the ${maxWords}-word limit and evaluator priorities.`}
+      icon={<Sparkles className="w-4 h-4 stroke-[1.75]" />}
+      iconToneClass="bg-[#EFE6FF] text-[#3B0764]"
+      closeLabel="Close draft assistant dialog"
+      footer={
+        <div className="flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn-tactile-secondary px-4 py-2.5 rounded-xl text-xs font-medium min-h-[40px]"
           >
-            <Sparkles className="w-5 h-5 stroke-[1.75]" />
-          </div>
-          <div>
-            <h2 id="app-helper-title" className="text-lg font-bold text-[#18181B] tracking-tight">
-              Draft Assistant
-            </h2>
-            <p id="app-helper-desc" className="text-xs text-[#52525B]">
-              Pre-sized answer templates calibrated to the {maxWords}-word limit and evaluator priorities.
-            </p>
-          </div>
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSaveToDraft}
+            disabled={isOver}
+            className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold disabled:opacity-50 inline-flex items-center justify-center gap-2 min-h-[40px]"
+          >
+            <CheckCircle2 aria-hidden="true" className="w-4 h-4 stroke-[2]" />
+            <span>Apply draft</span>
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="w-9 h-9 rounded-xl btn-tactile-ghost flex items-center justify-center flex-shrink-0"
-          aria-label="Close Draft Assistant dialog"
-        >
-          <X aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
-        </button>
-      </div>
-
-      <div className="space-y-5 pt-4">
+      }
+    >
+      <div className="space-y-5">
         {/* Question Context Banner */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-[#F4F4F6] space-y-2">
+        <div className="p-4 rounded-2xl bg-[#F4F4F6] space-y-2">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <span className="text-xs font-medium text-[#63636B]">
-              Target Question
+              Target question
             </span>
             <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-md bg-white text-[#18181B] tabular-nums">
               Max {maxWords} words
@@ -185,7 +181,7 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
             {requirement.title}
           </h3>
           {requirement.description && (
-            <p className="text-xs text-[#52525B] leading-relaxed">
+            <p className="text-xs text-[#52525B] leading-relaxed text-pretty">
               {requirement.description}
             </p>
           )}
@@ -202,13 +198,13 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
             </div>
             <div className="space-y-1">
               <p className="text-xs font-semibold text-[#18181B] flex items-center gap-1.5 flex-wrap">
-                <span>Evaluator note:</span>
+                <span>Evaluator priority:</span>
                 <span className="text-[#52525B] font-normal">
                   {primaryJudge.name} ({primaryJudge.role} at {primaryJudge.company})
                 </span>
               </p>
-              <p className="text-xs text-[#52525B] leading-relaxed">
-                Infrastructure evaluators favor specific latency, fee, or customer validation metrics over broad claims.
+              <p className="text-xs text-[#52525B] leading-relaxed text-pretty">
+                Evaluators favor specific latency, fee, or customer validation metrics over broad claims.
               </p>
             </div>
           </div>
@@ -217,14 +213,14 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
         {/* Preset Length Selector */}
         <div className="space-y-2.5">
           <div className="flex items-center justify-between gap-2 flex-wrap">
-            <span className="text-xs font-semibold text-[#18181B] flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-[#18181B] flex items-center gap-2">
               <Sliders aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
-              <span>Calibrated presets (under {maxWords} words)</span>
-            </span>
+              <span>Calibrated presets</span>
+            </h3>
             <button
               type="button"
               onClick={onOpenVault}
-              className="text-xs font-medium text-[#18181B] hover:underline flex items-center gap-1.5 py-1"
+              className="text-xs font-medium text-[#18181B] hover:underline flex items-center gap-1.5 py-1 min-h-[32px]"
             >
               <FolderArchive aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
               <span>Insert from Vault</span>
@@ -241,15 +237,15 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
                   key={key}
                   onClick={() => handleApplyPreset(key)}
                   aria-pressed={isSelected}
-                  className={`p-3.5 rounded-xl text-start transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
+                  className={`!flex flex-col items-stretch justify-between gap-1 p-3.5 rounded-xl text-start transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
                     isSelected ? 'btn-tactile-primary' : 'btn-tactile-secondary'
                   }`}
                 >
-                  <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="font-semibold">{preset.label}</span>
-                    {isSelected && <Check aria-hidden="true" className="w-3.5 h-3.5 stroke-[2.5]" />}
+                  <div className="flex items-center justify-between gap-2 text-xs">
+                    <span className="font-semibold leading-snug">{preset.label}</span>
+                    {isSelected && <Check aria-hidden="true" className="w-3.5 h-3.5 stroke-[2.5] flex-shrink-0" />}
                   </div>
-                  <p className={`text-[11px] font-mono tabular-nums ${isSelected ? 'text-neutral-200' : 'text-[#52525B]'}`}>
+                  <p className={`text-xs font-mono tabular-nums ${isSelected ? 'text-neutral-200' : 'text-[#52525B]'}`}>
                     {preset.targetWords} words
                   </p>
                 </button>
@@ -262,7 +258,7 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <label htmlFor="helper-draft-editor" className="text-xs font-medium text-[#52525B]">
-              Draft editor
+              Draft response
             </label>
             <div className="flex items-center gap-2 font-mono text-xs tabular-nums">
               <span className={`font-semibold ${isOver ? 'text-rose-700' : 'text-[#18181B]'}`}>
@@ -282,66 +278,46 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
 
           <textarea
             id="helper-draft-editor"
-            rows={6}
+            rows={5}
             value={workingText}
             onChange={(e) => setWorkingText(e.target.value)}
+            aria-invalid={isOver}
             className="field-surface w-full rounded-xl p-4 text-base sm:text-sm leading-relaxed"
-            placeholder="Edit or refine your answer..."
+            placeholder="Describe your product architecture, validation metrics, and launch scope."
           />
 
           {isOver && (
             <p role="alert" className="text-xs text-rose-700 font-medium flex items-center gap-1.5">
               <ShieldAlert aria-hidden="true" className="w-4 h-4 flex-shrink-0 stroke-[2]" />
               <span>
-                External portal forms truncate text beyond {maxWords} words. Trim before applying.
+                External portal forms cut off text beyond {maxWords} words. Trim {Math.abs(remaining)} words to apply.
               </span>
             </p>
           )}
-        </div>
 
-        {/* Action Footer */}
-        <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2 flex-wrap">
+          {/* Secondary Utility Actions */}
+          <div className="flex items-center gap-2 flex-wrap pt-1">
             <button
               type="button"
               onClick={() => {
                 navigator.clipboard.writeText(workingText);
                 toast.success('Copied draft');
               }}
-              className="btn-tactile-secondary px-4 py-2 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 min-h-[38px]"
+              className="btn-tactile-secondary px-3.5 py-2 rounded-xl text-xs font-medium inline-flex items-center justify-center gap-1.5 min-h-[36px]"
             >
               <Copy aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
-              <span>Copy</span>
+              <span>Copy text</span>
             </button>
             {onSaveToVault && workingText.trim().length > 10 && (
               <button
                 type="button"
                 onClick={() => onSaveToVault(workingText.trim())}
-                className="btn-tactile-secondary px-4 py-2 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 min-h-[38px]"
+                className="btn-tactile-secondary px-3.5 py-2 rounded-xl text-xs font-medium inline-flex items-center justify-center gap-1.5 min-h-[36px]"
               >
                 <FolderArchive aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
                 <span>Save to Vault</span>
               </button>
             )}
-          </div>
-
-          <div className="flex items-center gap-2.5">
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn-tactile-secondary px-4 py-2 rounded-xl text-xs font-medium flex-1 sm:flex-none min-h-[40px]"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleSaveToDraft}
-              disabled={isOver}
-              className="btn-tactile-primary px-5 py-2 rounded-xl text-xs font-semibold disabled:opacity-50 flex-1 sm:flex-none flex items-center justify-center gap-2 min-h-[40px]"
-            >
-              <CheckCircle2 aria-hidden="true" className="w-4 h-4 stroke-[2]" />
-              <span>Apply draft</span>
-            </button>
           </div>
         </div>
       </div>

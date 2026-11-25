@@ -1,8 +1,13 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useMemo } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Filter } from 'lucide-react';
 import { OpportunityCard } from '../components/discovery/OpportunityCard';
 import { InterestBoostBar } from '../components/discovery/InterestBoostBar';
+import {
+  computeOpportunityGroupCounts,
+  OpportunityGroupTab,
+  OpportunityGroupTabs,
+} from '../components/discovery/OpportunityGroupTabs';
 import { useAllOpportunities, useWorkspaceStore } from '../store/useWorkspaceStore';
 import { OpportunityType } from '../types';
 
@@ -27,8 +32,25 @@ const SECTION_TITLES: Record<string, { title: string; subtitle: string }> = {
 
 export const SectionRailPage: React.FC = () => {
   const { sectionType } = useParams<{ sectionType: string }>();
+  const navigate = useNavigate();
   const selectedInterests = useWorkspaceStore((state) => state.selectedInterests);
   const allOpportunities = useAllOpportunities();
+
+  const activeGroup: OpportunityGroupTab =
+    sectionType && SECTION_TITLES[sectionType] ? (sectionType as OpportunityType) : 'all';
+
+  const groupCounts = useMemo(
+    () => computeOpportunityGroupCounts(allOpportunities),
+    [allOpportunities]
+  );
+
+  const handleSelectGroup = (group: OpportunityGroupTab) => {
+    if (group === 'all') {
+      navigate('/discover');
+    } else {
+      navigate(`/discover/${group}`);
+    }
+  };
 
   const meta = (sectionType && SECTION_TITLES[sectionType]) || {
     title: 'Explore Opportunities',
@@ -68,13 +90,25 @@ export const SectionRailPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Filter Strip */}
-      <div>
+      {/* Group Tabs & Filter Strip */}
+      <div className="space-y-4">
+        <OpportunityGroupTabs
+          activeGroup={activeGroup}
+          onSelectGroup={handleSelectGroup}
+          counts={groupCounts}
+          idPrefix="section-groups"
+          layoutId="section-group-active-pill"
+        />
         <InterestBoostBar />
       </div>
 
       {/* Results Grid */}
-      <div className="space-y-5">
+      <div
+        id="section-groups-panel"
+        role="tabpanel"
+        aria-labelledby={`section-groups-tab-${activeGroup}`}
+        className="space-y-5"
+      >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#52525B]">
           <div className="flex items-center gap-2">
             <Filter aria-hidden="true" className="w-3.5 h-3.5 text-[#63636B] stroke-[1.75]" />
