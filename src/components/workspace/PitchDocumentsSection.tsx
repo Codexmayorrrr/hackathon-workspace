@@ -43,7 +43,7 @@ export const PitchDocumentsSection: React.FC<PitchDocumentsSectionProps> = ({
               aria-pressed={activeSubTab === 'slides'}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] min-h-[34px] ${
                 activeSubTab === 'slides'
-                  ? 'bg-white shadow-border text-[#18181B] font-semibold'
+                  ? 'bg-white text-[#18181B] font-semibold'
                   : 'text-[#52525B] hover:text-[#18181B]'
               }`}
             >
@@ -57,7 +57,7 @@ export const PitchDocumentsSection: React.FC<PitchDocumentsSectionProps> = ({
               aria-pressed={activeSubTab === 'proposals'}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] min-h-[34px] ${
                 activeSubTab === 'proposals'
-                  ? 'bg-white shadow-border text-[#18181B] font-semibold'
+                  ? 'bg-white text-[#18181B] font-semibold'
                   : 'text-[#52525B] hover:text-[#18181B]'
               }`}
             >

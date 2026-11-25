@@ -87,6 +87,14 @@ export interface ResearchedIdea {
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
 }
 
+export type PlatformRole = 'developer' | 'organizer';
+
+export type BannerThemeId =
+  | 'lavender_mesh'
+  | 'emerald_circuit'
+  | 'amber_horizon'
+  | 'indigo_grid';
+
 export interface Opportunity {
   id: string;
   slug: string;
@@ -98,6 +106,11 @@ export interface Opportunity {
   location?: string;
   prizePool: string;
   tags: string[]; // e.g., ["Web3", "AI / ML", "Fintech"]
+  bannerUrl?: string;
+  bannerTheme?: BannerThemeId;
+  organizerName?: string;
+  applicantCount?: number;
+  submissionCount?: number;
   applicationDeadline: string; // ISO 8601 UTC
   registrationOpens: string;
   eventStart?: string;
@@ -311,6 +324,25 @@ export interface ReminderCheckpoint {
   interval: ReminderInterval;
   targetDate: string; // ISO string
   status: ReminderStatus;
+}
+
+export type SubmissionReviewStatus = 'pending' | 'shortlisted' | 'winner' | 'declined';
+
+export interface OrganizerSubmission {
+  id: string;
+  opportunityId: string;
+  teamName: string;
+  builderNames: string[];
+  projectTitle: string;
+  tagline: string;
+  trackName: string;
+  repoUrl: string;
+  demoUrl?: string;
+  deckSummary: string;
+  submittedAt: string;
+  status: SubmissionReviewStatus;
+  score?: number;
+  evaluatorNotes?: string;
 }
 
 export const ALL_INTEREST_TAGS = [

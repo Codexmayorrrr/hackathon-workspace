@@ -236,10 +236,10 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
                   key={tpl.id}
                   onClick={() => handleSelectTemplate(tpl.id)}
                   aria-pressed={isSelected}
-                  className={`text-start p-4 rounded-xl transition-[transform,background-color,box-shadow] duration-150 active:scale-[0.97] space-y-2 min-w-0 ${
+                  className={`text-start p-4 rounded-xl transition-[transform,background-color] duration-150 active:scale-[0.97] space-y-2 min-w-0 ${
                     isSelected
-                      ? 'bg-white shadow-border'
-                      : 'bg-[#EFEFF2] hover:bg-[#E6E6EB]'
+                      ? 'bg-[#EFE6FF]'
+                      : 'bg-[#EFEFF2] hover:bg-[#E5E5EA]'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -472,7 +472,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
                 <div className="space-y-2.5 pt-2">
                   {currentSlide.bullets.map((b, i) => (
                     <div key={i} className="p-3 rounded-xl bg-[#F4F4F6] flex items-center gap-3 text-xs sm:text-sm text-[#18181B]">
-                      <span className="w-6 h-6 rounded-lg bg-white shadow-border flex items-center justify-center font-mono font-bold text-xs text-[#18181B] flex-shrink-0">
+                      <span className="w-6 h-6 rounded-lg bg-white flex items-center justify-center font-mono font-bold text-xs text-[#18181B] flex-shrink-0">
                         {i + 1}
                       </span>
                       <span>{b}</span>

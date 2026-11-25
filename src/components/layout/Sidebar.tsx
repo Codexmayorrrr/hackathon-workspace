@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
   Compass,
@@ -14,20 +14,44 @@ import {
   PanelLeftOpen,
   Clock,
   Sparkles,
+  LayoutDashboard,
+  CalendarDays,
+  Inbox,
+  Plus,
+  Code2,
+  Megaphone,
 } from 'lucide-react';
-import { useWorkspaceStore } from '../../store/useWorkspaceStore';
-import { MOCK_OPPORTUNITIES } from '../../data/mockOpportunities';
+import { useAllOpportunities, useWorkspaceStore } from '../../store/useWorkspaceStore';
 import { getUserTimezone, getTimezoneAbbreviation } from '../../utils/dateUtils';
 import { CATEGORY_THEMES } from '../../utils/categoryTheme';
+import { PlatformRole } from '../../types';
 
 interface SidebarProps {
   onOpenVault: () => void;
   onOpenCalendar: () => void;
+  onOpenCreateEvent: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar }) => {
+interface SidebarNavItem {
+  label: string;
+  path: string;
+  icon: typeof Compass;
+  exact: boolean;
+  badge?: number;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({
+  onOpenVault,
+  onOpenCalendar,
+  onOpenCreateEvent,
+}) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const allOpportunities = useAllOpportunities();
+  const activeRole = useWorkspaceStore((state) => state.activeRole);
+  const setRole = useWorkspaceStore((state) => state.setRole);
   const savedWorkspaces = useWorkspaceStore((state) => state.savedWorkspaces);
+  const organizerSubmissions = useWorkspaceStore((state) => state.organizerSubmissions);
   const shouldReduceMotion = useReducedMotion();
 
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
@@ -52,60 +76,127 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
     (w) => w.stage === 'saved' || w.stage === 'preparing'
   ).length;
 
-  const primaryNavItems = [
-    {
-      label: 'Home',
-      path: '/discover',
-      icon: Compass,
-      exact: false,
-    },
-    {
-      label: 'Saved Queue',
-      path: '/saved',
-      icon: BookmarkCheck,
-      badge: activeSavedCount > 0 ? activeSavedCount : undefined,
-      exact: true,
-    },
-    {
-      label: 'Reminders',
-      path: '/notifications',
-      icon: Bell,
-      exact: true,
-    },
-    {
-      label: 'Winners',
-      path: '/winners',
-      icon: Trophy,
-      exact: true,
-    },
-  ];
+  const pendingSubmissionsCount = organizerSubmissions.filter(
+    (s) => s.status === 'pending'
+  ).length;
 
-  const toolItems = [
-    {
-      label: 'Reusable Vault',
-      icon: FolderArchive,
-      action: onOpenVault,
-    },
-    {
-      label: 'Calendar Sync',
-      icon: Calendar,
-      action: onOpenCalendar,
-    },
-  ];
+  const handleRoleSwitch = (nextRole: PlatformRole) => {
+    setRole(nextRole);
+    if (nextRole === 'organizer' && !location.pathname.startsWith('/organizer')) {
+      navigate('/organizer');
+    } else if (nextRole === 'developer' && location.pathname.startsWith('/organizer')) {
+      navigate('/discover');
+    }
+  };
 
-  const pinnedList = Object.values(savedWorkspaces)
-    .map((ws) => {
-      const opp = MOCK_OPPORTUNITIES.find((o) => o.id === ws.opportunityId);
-      return {
-        id: ws.opportunityId,
-        title: opp?.title || ws.opportunityId,
-        type: opp?.type || 'hackathon',
-        initial: (opp?.title || ws.opportunityId).charAt(0).toUpperCase(),
-        savedAt: ws.savedAt,
-      };
-    })
-    .sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime())
-    .slice(0, 6);
+  const primaryNavItems: SidebarNavItem[] =
+    activeRole === 'organizer'
+      ? [
+          {
+            label: 'Overview',
+            path: '/organizer',
+            icon: LayoutDashboard,
+            exact: true,
+          },
+          {
+            label: 'Hosted Events',
+            path: '/organizer/events',
+            icon: CalendarDays,
+            badge: allOpportunities.length,
+            exact: true,
+          },
+          {
+            label: 'Submissions',
+            path: '/organizer/submissions',
+            icon: Inbox,
+            badge: pendingSubmissionsCount > 0 ? pendingSubmissionsCount : undefined,
+            exact: true,
+          },
+          {
+            label: 'Public Feed',
+            path: '/discover',
+            icon: Compass,
+            exact: true,
+          },
+        ]
+      : [
+          {
+            label: 'Home',
+            path: '/discover',
+            icon: Compass,
+            exact: false,
+          },
+          {
+            label: 'Saved Queue',
+            path: '/saved',
+            icon: BookmarkCheck,
+            badge: activeSavedCount > 0 ? activeSavedCount : undefined,
+            exact: true,
+          },
+          {
+            label: 'Reminders',
+            path: '/notifications',
+            icon: Bell,
+            exact: true,
+          },
+          {
+            label: 'Winners',
+            path: '/winners',
+            icon: Trophy,
+            exact: true,
+          },
+        ];
+
+  const toolItems =
+    activeRole === 'organizer'
+      ? [
+          {
+            label: 'Publish Event',
+            icon: Plus,
+            action: onOpenCreateEvent,
+          },
+          {
+            label: 'Calendar Sync',
+            icon: Calendar,
+            action: onOpenCalendar,
+          },
+        ]
+      : [
+          {
+            label: 'Reusable Vault',
+            icon: FolderArchive,
+            action: onOpenVault,
+          },
+          {
+            label: 'Calendar Sync',
+            icon: Calendar,
+            action: onOpenCalendar,
+          },
+        ];
+
+  const pinnedList =
+    activeRole === 'organizer'
+      ? allOpportunities.slice(0, 6).map((opp) => ({
+          id: opp.id,
+          to: `/opportunities/${opp.slug}`,
+          title: opp.title,
+          type: opp.type,
+          initial: opp.title.charAt(0).toUpperCase(),
+        }))
+      : Object.values(savedWorkspaces)
+          .map((ws) => {
+            const opp = allOpportunities.find((o) => o.id === ws.opportunityId);
+            return {
+              id: ws.opportunityId,
+              to: `/workspaces/${ws.opportunityId}`,
+              title: opp?.title || ws.opportunityId,
+              type: opp?.type || 'hackathon',
+              initial: (opp?.title || ws.opportunityId).charAt(0).toUpperCase(),
+              savedAt: ws.savedAt,
+            };
+          })
+          .sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime())
+          .slice(0, 6);
 
   const tzAbbr = getTimezoneAbbreviation();
   const tzName = getUserTimezone();
@@ -113,7 +204,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
   return (
     <aside
       aria-label="Primary Sidebar Navigation"
-      className={`hidden md:flex flex-col flex-shrink-0 min-h-[100dvh] bg-[#EFEFF2] select-none transition-[width] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] z-20 ${
+      className={`hidden md:flex flex-col flex-shrink-0 min-h-[100dvh] bg-[#EAEAEF] select-none transition-[width] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] z-20 ${
         isCollapsed ? 'w-16' : 'w-60'
       }`}
     >
@@ -122,7 +213,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
         {!isCollapsed ? (
           <div className="flex items-center justify-between w-full gap-2">
             <NavLink
-              to="/discover"
+              to={activeRole === 'organizer' ? '/organizer' : '/discover'}
               className="flex items-center gap-2.5 rounded-lg py-1 group active:scale-[0.96] transition-transform duration-150"
             >
               <div
@@ -163,6 +254,60 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
         )}
       </div>
 
+      {/* Role Switcher (Developer <-> Organizer) */}
+      <div className="px-2.5 pb-2">
+        {!isCollapsed ? (
+          <div
+            role="group"
+            aria-label="Platform role workspace switcher"
+            className="bg-[#DFDFE6] p-1 rounded-xl grid grid-cols-2 gap-1"
+          >
+            <button
+              type="button"
+              onClick={() => handleRoleSwitch('developer')}
+              aria-pressed={activeRole === 'developer'}
+              className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs transition-[background-color,color,transform] duration-150 min-h-[32px] active:scale-[0.96] ${
+                activeRole === 'developer'
+                  ? 'bg-white text-[#18181B] font-semibold'
+                  : 'text-[#52525B] font-medium hover:text-[#18181B]'
+              }`}
+            >
+              <Code2 aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.8]" />
+              <span>Developer</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleRoleSwitch('organizer')}
+              aria-pressed={activeRole === 'organizer'}
+              className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs transition-[background-color,color,transform] duration-150 min-h-[32px] active:scale-[0.96] ${
+                activeRole === 'organizer'
+                  ? 'bg-white text-[#18181B] font-semibold'
+                  : 'text-[#52525B] font-medium hover:text-[#18181B]'
+              }`}
+            >
+              <Megaphone aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.8]" />
+              <span>Organizer</span>
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() =>
+              handleRoleSwitch(activeRole === 'developer' ? 'organizer' : 'developer')
+            }
+            title={`Role: ${activeRole === 'developer' ? 'Developer (click for Organizer)' : 'Organizer (click for Developer)'}`}
+            aria-label={`Switch to ${activeRole === 'developer' ? 'Organizer' : 'Developer'} role`}
+            className="w-10 h-10 mx-auto rounded-xl bg-white text-[#18181B] flex items-center justify-center active:scale-[0.96] transition-transform"
+          >
+            {activeRole === 'developer' ? (
+              <Code2 aria-hidden="true" className="w-4 h-4 stroke-[2]" />
+            ) : (
+              <Megaphone aria-hidden="true" className="w-4 h-4 stroke-[2]" />
+            )}
+          </button>
+        )}
+      </div>
+
       {/* 2. Primary Navigation */}
       <nav aria-label="Primary pages" className="px-2.5 py-2 flex flex-col gap-1">
         {primaryNavItems.map((item) => {
@@ -181,7 +326,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
                 aria-current={isActive ? 'page' : undefined}
                 className={`relative flex items-center justify-center w-10 h-10 mx-auto rounded-xl transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
                   isActive
-                    ? 'bg-white text-[#18181B] font-semibold shadow-border'
+                    ? 'bg-white text-[#18181B] font-semibold'
                     : 'text-[#52525B] hover:bg-[#EBECEF] hover:text-[#18181B]'
                 }`}
               >
@@ -206,7 +351,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
               aria-current={isActive ? 'page' : undefined}
               className={`group flex items-center justify-between px-3 py-2 rounded-xl text-[13px] transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
                 isActive
-                  ? 'bg-white text-[#18181B] font-semibold shadow-border'
+                  ? 'bg-white text-[#18181B] font-semibold'
                   : 'text-[#52525B] font-medium hover:text-[#18181B] hover:bg-[#EBECEF]/80'
               }`}
             >
@@ -272,7 +417,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
         })}
       </div>
 
-      {/* 4. Collapsible Pinned Workspaces */}
+      {/* 4. Collapsible Pinned Workspaces / Hosted Programs */}
       <div className="flex-1 px-2.5 py-2 overflow-y-auto no-scrollbar">
         {!isCollapsed ? (
           <div className="flex flex-col gap-1">
@@ -282,7 +427,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
               aria-expanded={pinnedExpanded}
               className="flex items-center justify-between w-full px-3 py-1.5 rounded-lg text-xs font-semibold text-[#63636B] hover:text-[#18181B] transition-colors"
             >
-              <span>Pinned</span>
+              <span>{activeRole === 'organizer' ? 'Live Listings' : 'Pinned'}</span>
               {pinnedExpanded ? (
                 <ChevronDown aria-hidden="true" className="w-3.5 h-3.5 stroke-[2]" />
               ) : (
@@ -301,17 +446,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
                 >
                   {pinnedList.length > 0 ? (
                     pinnedList.map((pin) => {
-                      const isPinActive = location.pathname === `/workspaces/${pin.id}`;
+                      const isPinActive = location.pathname === pin.to;
                       const badgeStyle = CATEGORY_THEMES[pin.type]?.badgeClasses || 'bg-[#EFE6FF] text-[#3B0764]';
                       return (
                         <NavLink
                           key={pin.id}
-                          to={`/workspaces/${pin.id}`}
+                          to={pin.to}
                           title={pin.title}
                           aria-current={isPinActive ? 'page' : undefined}
                           className={`group flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
                             isPinActive
-                              ? 'bg-white text-[#18181B] font-semibold shadow-border'
+                              ? 'bg-white text-[#18181B] font-semibold'
                               : 'text-[#52525B] font-medium hover:text-[#18181B] hover:bg-[#EBECEF]/80'
                           }`}
                         >
@@ -341,12 +486,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
         ) : (
           <div className="flex flex-col items-center gap-2 pt-2">
             {pinnedList.slice(0, 4).map((pin) => {
-              const isPinActive = location.pathname === `/workspaces/${pin.id}`;
+              const isPinActive = location.pathname === pin.to;
               const badgeStyle = CATEGORY_THEMES[pin.type]?.badgeClasses || 'bg-[#EFE6FF] text-[#3B0764]';
               return (
                 <NavLink
                   key={pin.id}
-                  to={`/workspaces/${pin.id}`}
+                  to={pin.to}
                   title={pin.title}
                   aria-label={pin.title}
                   aria-current={isPinActive ? 'page' : undefined}

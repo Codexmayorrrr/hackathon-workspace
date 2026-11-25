@@ -1,10 +1,9 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Filter } from 'lucide-react';
-import { MOCK_OPPORTUNITIES } from '../data/mockOpportunities';
 import { OpportunityCard } from '../components/discovery/OpportunityCard';
 import { InterestBoostBar } from '../components/discovery/InterestBoostBar';
-import { useWorkspaceStore } from '../store/useWorkspaceStore';
+import { useAllOpportunities, useWorkspaceStore } from '../store/useWorkspaceStore';
 import { OpportunityType } from '../types';
 
 const SECTION_TITLES: Record<string, { title: string; subtitle: string }> = {
@@ -29,13 +28,14 @@ const SECTION_TITLES: Record<string, { title: string; subtitle: string }> = {
 export const SectionRailPage: React.FC = () => {
   const { sectionType } = useParams<{ sectionType: string }>();
   const selectedInterests = useWorkspaceStore((state) => state.selectedInterests);
+  const allOpportunities = useAllOpportunities();
 
   const meta = (sectionType && SECTION_TITLES[sectionType]) || {
     title: 'Explore Opportunities',
     subtitle: 'Browse all opportunities',
   };
 
-  const rawItems = MOCK_OPPORTUNITIES.filter(
+  const rawItems = allOpportunities.filter(
     (opp) => opp.type === (sectionType as OpportunityType)
   );
 

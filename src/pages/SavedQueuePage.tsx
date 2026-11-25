@@ -11,8 +11,7 @@ import {
   CalendarSync,
   Compass,
 } from 'lucide-react';
-import { useWorkspaceStore } from '../store/useWorkspaceStore';
-import { MOCK_OPPORTUNITIES } from '../data/mockOpportunities';
+import { useAllOpportunities, useWorkspaceStore } from '../store/useWorkspaceStore';
 import { getRelativeDeadline } from '../utils/dateUtils';
 import { CATEGORY_THEMES } from '../utils/categoryTheme';
 import { CalendarSyncModal } from '../components/calendar/CalendarSyncModal';
@@ -20,6 +19,7 @@ import { toast } from 'sonner';
 
 export const SavedQueuePage: React.FC = () => {
   const navigate = useNavigate();
+  const allOpportunities = useAllOpportunities();
   const savedWorkspaces = useWorkspaceStore((state) => state.savedWorkspaces);
   const setWorkspaceStage = useWorkspaceStore((state) => state.setWorkspaceStage);
 
@@ -29,7 +29,7 @@ export const SavedQueuePage: React.FC = () => {
 
   const savedList = Object.values(savedWorkspaces)
     .map((ws) => {
-      const opp = MOCK_OPPORTUNITIES.find((o) => o.id === ws.opportunityId);
+      const opp = allOpportunities.find((o) => o.id === ws.opportunityId);
       return { workspace: ws, opportunity: opp };
     })
     .filter((item) => item.opportunity !== undefined);
@@ -312,7 +312,7 @@ export const SavedQueuePage: React.FC = () => {
         onClose={() => setCalendarModalOpen(false)}
         opportunityTitle={
           selectedOppForCalendar
-            ? MOCK_OPPORTUNITIES.find((o) => o.id === selectedOppForCalendar)?.title
+            ? allOpportunities.find((o) => o.id === selectedOppForCalendar)?.title
             : undefined
         }
       />

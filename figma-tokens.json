@@ -4,13 +4,14 @@
   "author": "Mayowa (Product Designer & UX Engineer)",
   "color": {
     "canvas": {
-      "default": { "value": "#F5F5F7", "type": "color", "description": "Borderless soft paper canvas background" }
+      "default": { "value": "#F3F3F6", "type": "color", "description": "Flat borderless & shadowless paper canvas" }
     },
     "surface": {
-      "primary": { "value": "#FFFFFF", "type": "color", "description": "Elevated primary card and workspace surface" },
-      "secondary": { "value": "#EFEFF2", "type": "color", "description": "Sidebar, nested wells, and secondary controls" },
-      "hover": { "value": "#E6E6EB", "type": "color", "description": "Hover state for secondary surfaces" },
-      "active": { "value": "#DDDDE3", "type": "color", "description": "Active press state for secondary surfaces" }
+      "primary": { "value": "#FFFFFF", "type": "color", "description": "Primary flat card and workspace surface" },
+      "secondary": { "value": "#EFEFF2", "type": "color", "description": "Nested wells, inputs, and secondary controls" },
+      "sidebar": { "value": "#EAEAEF", "type": "color", "description": "Persistent sidebar navigation surface" },
+      "hover": { "value": "#E5E5EA", "type": "color", "description": "Hover state for secondary surfaces" },
+      "active": { "value": "#DCDCE2", "type": "color", "description": "Active press state for secondary surfaces" }
     },
     "text": {
       "primary": { "value": "#18181B", "type": "color", "description": "Obsidian primary text and CTA fill" },
@@ -28,11 +29,5 @@
   },
   "typography": {
     "fontFamily": { "value": "Instrument Sans, system-ui, sans-serif", "type": "fontFamilies" }
-  },
-  "elevation": {
-    "shadowBorder": {
-      "value": "0 1px 2px 0 oklch(0 0 0 / 0.03), 0 4px 12px -2px oklch(0 0 0 / 0.04)",
-      "type": "boxShadow"
-    }
   }
 }

@@ -14,18 +14,19 @@ import {
   Bookmark,
   CheckCircle2,
 } from 'lucide-react';
-import { MOCK_OPPORTUNITIES } from '../data/mockOpportunities';
 import { RequirementType } from '../types';
 import { getRelativeDeadline, formatEventDate } from '../utils/dateUtils';
 import { CATEGORY_THEMES } from '../utils/categoryTheme';
-import { useWorkspaceStore } from '../store/useWorkspaceStore';
+import { useAllOpportunities, useWorkspaceStore } from '../store/useWorkspaceStore';
+import { EventBanner } from '../components/ui/EventBanner';
 import { toast } from 'sonner';
 
 export const OpportunityDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
 
-  const opportunity = MOCK_OPPORTUNITIES.find((opp) => opp.slug === slug);
+  const allOpportunities = useAllOpportunities();
+  const opportunity = allOpportunities.find((opp) => opp.slug === slug);
   const isSaved = useWorkspaceStore((state) =>
     opportunity ? state.isSaved(opportunity.id) : false
   );
@@ -106,8 +107,18 @@ export const OpportunityDetailPage: React.FC = () => {
       </div>
 
       {/* Hero Overview Card */}
-      <div className="surface-card p-6 sm:p-8 rounded-2xl space-y-6">
-        <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+      <div className="surface-card rounded-2xl overflow-hidden">
+        <EventBanner
+          title={opportunity.title}
+          type={opportunity.type}
+          bannerUrl={opportunity.bannerUrl}
+          bannerTheme={opportunity.bannerTheme}
+          organizerName={opportunity.organizerName}
+          variant="hero"
+        />
+
+        <div className="p-6 sm:p-8 space-y-6">
+          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
           <div className="space-y-3 min-w-0">
             <div className="flex items-center gap-2 text-xs text-[#52525B] font-medium flex-wrap">
               <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold ${theme.badgeClasses}`}>
@@ -184,6 +195,7 @@ export const OpportunityDetailPage: React.FC = () => {
               {opportunity.location || opportunity.format}
             </p>
           </div>
+        </div>
         </div>
       </div>
 

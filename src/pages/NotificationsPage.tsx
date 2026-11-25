@@ -7,16 +7,16 @@ import {
   ArrowRight,
   Compass,
 } from 'lucide-react';
-import { useWorkspaceStore } from '../store/useWorkspaceStore';
-import { MOCK_OPPORTUNITIES } from '../data/mockOpportunities';
+import { useAllOpportunities, useWorkspaceStore } from '../store/useWorkspaceStore';
 import { getRelativeDeadline } from '../utils/dateUtils';
 
 export const NotificationsPage: React.FC = () => {
+  const allOpportunities = useAllOpportunities();
   const savedWorkspaces = useWorkspaceStore((state) => state.savedWorkspaces);
 
   const notifications = Object.values(savedWorkspaces)
     .map((ws) => {
-      const opp = MOCK_OPPORTUNITIES.find((o) => o.id === ws.opportunityId);
+      const opp = allOpportunities.find((o) => o.id === ws.opportunityId);
       if (!opp) return null;
 
       const deadline = getRelativeDeadline(opp.applicationDeadline);

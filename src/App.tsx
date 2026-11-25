@@ -9,15 +9,18 @@ import { SavedQueuePage } from './pages/SavedQueuePage';
 import { WorkspacePage } from './pages/WorkspacePage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import { WinnersLeaderboardPage } from './pages/WinnersLeaderboardPage';
+import { OrganizerDashboardPage } from './pages/OrganizerDashboardPage';
+import { OrganizerEventsPage } from './pages/OrganizerEventsPage';
+import { OrganizerSubmissionsPage } from './pages/OrganizerSubmissionsPage';
 
 export function App() {
   return (
     <MotionConfig reducedMotion="user">
       <BrowserRouter>
         <Toaster
-          theme="light"
+          theme="dark"
           position="top-right"
-          richColors
+          visibleToasts={1}
           closeButton
           swipeDirections={['top', 'right', 'left']}
           mobileOffset={{
@@ -28,10 +31,10 @@ export function App() {
           toastOptions={{
             style: {
               fontFamily: 'inherit',
-              background: '#FFFFFF',
+              background: '#18181B',
               border: 'none',
-              boxShadow: '0 10px 28px -6px oklch(0 0 0 / 0.12)',
-              color: '#18181B',
+              boxShadow: 'none',
+              color: '#FFFFFF',
               borderRadius: '16px',
               padding: '14px 18px',
             },
@@ -47,6 +50,9 @@ export function App() {
             <Route path="workspaces/:workspaceId" element={<WorkspacePage />} />
             <Route path="notifications" element={<NotificationsPage />} />
             <Route path="winners" element={<WinnersLeaderboardPage />} />
+            <Route path="organizer" element={<OrganizerDashboardPage />} />
+            <Route path="organizer/events" element={<OrganizerEventsPage />} />
+            <Route path="organizer/submissions" element={<OrganizerSubmissionsPage />} />
             <Route path="*" element={<Navigate to="/discover" replace />} />
           </Route>
         </Routes>

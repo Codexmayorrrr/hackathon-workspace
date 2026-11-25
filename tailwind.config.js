@@ -47,11 +47,6 @@ export default {
         '2xl': '1rem',
         '3xl': '1.25rem',
       },
-      boxShadow: {
-        'border': 'var(--shadow-border)',
-        'border-hover': 'var(--shadow-border-hover)',
-        'dialog': '0 18px 40px -8px oklch(0 0 0 / 0.14)',
-      },
     },
   },
   plugins: [],

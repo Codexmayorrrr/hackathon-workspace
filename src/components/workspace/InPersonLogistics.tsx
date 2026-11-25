@@ -188,7 +188,7 @@ export const InPersonLogistics: React.FC<InPersonLogisticsProps> = ({
                     <span className="font-semibold text-[#18181B] block">{c.name}</span>
                     <span className="text-[11px] text-[#52525B]">{c.role}</span>
                   </div>
-                  <span className="font-mono font-medium text-[#18181B] bg-white shadow-border px-2.5 py-1 rounded-lg flex-shrink-0">
+                  <span className="font-mono font-medium text-[#18181B] bg-white px-2.5 py-1 rounded-lg flex-shrink-0">
                     {c.contact}
                   </span>
                 </div>

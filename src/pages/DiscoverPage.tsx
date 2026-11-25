@@ -2,12 +2,11 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, LayoutGroup } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { MOCK_OPPORTUNITIES } from '../data/mockOpportunities';
 import { Opportunity, OpportunityType } from '../types';
 import { CATEGORY_THEMES } from '../utils/categoryTheme';
 import { InterestBoostBar } from '../components/discovery/InterestBoostBar';
 import { OpportunityCard } from '../components/discovery/OpportunityCard';
-import { useWorkspaceStore } from '../store/useWorkspaceStore';
+import { useAllOpportunities, useWorkspaceStore } from '../store/useWorkspaceStore';
 
 interface SectionConfig {
   type: OpportunityType;
@@ -40,6 +39,13 @@ const SECTIONS: SectionConfig[] = [
 
 export const DiscoverPage: React.FC = () => {
   const selectedInterests = useWorkspaceStore((state) => state.selectedInterests);
+  const customOpportunities = useWorkspaceStore((state) => state.customOpportunities);
+  const allOpportunities = useAllOpportunities();
+
+  const customIds = useMemo(
+    () => new Set(customOpportunities.map((c) => c.id)),
+    [customOpportunities]
+  );
 
   const sortSectionOpportunities = (items: Opportunity[]) => {
     return [...items].sort((a, b) => {
@@ -50,6 +56,12 @@ export const DiscoverPage: React.FC = () => {
         if (aMatches && !bMatches) return -1;
         if (!aMatches && bMatches) return 1;
       }
+
+      const aCustom = customIds.has(a.id);
+      const bCustom = customIds.has(b.id);
+      if (aCustom && !bCustom) return -1;
+      if (!aCustom && bCustom) return 1;
+
       return new Date(a.applicationDeadline).getTime() - new Date(b.applicationDeadline).getTime();
     });
   };
@@ -62,14 +74,14 @@ export const DiscoverPage: React.FC = () => {
       venture_hub: [],
     };
 
-    MOCK_OPPORTUNITIES.forEach((opp) => {
+    allOpportunities.forEach((opp) => {
       if (grouped[opp.type]) {
         grouped[opp.type].push(opp);
       }
     });
 
     return grouped;
-  }, []);
+  }, [allOpportunities]);
 
   return (
     <div className="space-y-8 sm:space-y-10 min-w-0">

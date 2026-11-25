@@ -88,7 +88,7 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
             <div className="flex items-center gap-3">
               <div
                 aria-hidden="true"
-                className="w-8 h-8 rounded-lg bg-white shadow-border flex items-center justify-center text-rose-700 font-bold text-xs"
+                className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-rose-700 font-bold text-xs"
               >
                 G
               </div>
@@ -140,7 +140,7 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
             <div className="flex items-center gap-3">
               <div
                 aria-hidden="true"
-                className="w-8 h-8 rounded-lg bg-white shadow-border flex items-center justify-center text-[#18181B] font-semibold text-xs"
+                className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#18181B] font-semibold text-xs"
               >
                 
               </div>

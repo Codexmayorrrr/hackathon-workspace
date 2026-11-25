@@ -348,7 +348,7 @@ export const TasksDeadlinesSection: React.FC<TasksDeadlinesSectionProps> = ({
                 aria-pressed={filter === f}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-[transform,background-color,color] duration-150 capitalize min-h-[32px] ${
                   filter === f
-                    ? 'bg-white shadow-border text-[#18181B] font-semibold'
+                    ? 'bg-white text-[#18181B] font-semibold'
                     : 'text-[#52525B] hover:text-[#18181B]'
                 }`}
               >

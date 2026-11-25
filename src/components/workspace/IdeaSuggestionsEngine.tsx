@@ -62,8 +62,8 @@ export const IdeaSuggestionsEngine: React.FC<IdeaSuggestionsEngineProps> = ({
           return (
             <article
               key={idea.id}
-              className={`surface-card p-6 sm:p-8 rounded-2xl space-y-5 ${
-                isSelected ? 'shadow-border-hover bg-white' : 'surface-card-interactive'
+              className={`p-6 sm:p-8 rounded-2xl space-y-5 transition-colors duration-150 ${
+                isSelected ? 'bg-[#F4EEFF]' : 'surface-card surface-card-interactive'
               }`}
             >
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">

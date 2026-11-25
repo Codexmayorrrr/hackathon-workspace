@@ -139,7 +139,7 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
               {Array.from(coveredSkills).map((s) => (
                 <span
                   key={s}
-                  className="text-xs font-medium bg-white shadow-border text-[#065F46] px-2.5 py-0.5 rounded-md flex items-center gap-1"
+                  className="text-xs font-medium bg-white text-[#065F46] px-2.5 py-0.5 rounded-md flex items-center gap-1"
                 >
                   <Check aria-hidden="true" className="w-3 h-3 stroke-[2.5]" />
                   <span>{s}</span>

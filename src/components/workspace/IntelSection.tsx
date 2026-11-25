@@ -71,7 +71,7 @@ export const IntelSection: React.FC<IntelSectionProps> = ({
                   aria-pressed={isSelected}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] min-h-[32px] ${
                     isSelected
-                      ? 'bg-white shadow-border text-[#18181B] font-semibold'
+                      ? 'bg-white text-[#18181B] font-semibold'
                       : 'text-[#52525B] hover:text-[#18181B]'
                   }`}
                 >
@@ -154,8 +154,8 @@ export const IntelSection: React.FC<IntelSectionProps> = ({
                 <article
                   key={judge.id}
                   id={`judge-${judge.id}`}
-                  className={`surface-card p-6 rounded-2xl flex flex-col justify-between space-y-4 ${
-                    isHighlighted ? 'shadow-border-hover bg-white' : 'surface-card-interactive'
+                  className={`p-6 rounded-2xl flex flex-col justify-between space-y-4 transition-colors duration-150 ${
+                    isHighlighted ? 'bg-[#F4EEFF]' : 'surface-card surface-card-interactive'
                   }`}
                 >
                   <div className="space-y-3.5">

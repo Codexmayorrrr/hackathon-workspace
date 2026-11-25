@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { 
@@ -8,15 +9,60 @@ import {
   TeammateProfile,
   WorkspaceSectionId,
   WorkspaceTask,
-  WorkspaceResult
+  WorkspaceResult,
+  PlatformRole,
+  BannerThemeId,
+  Opportunity,
+  OrganizerSubmission,
+  SubmissionReviewStatus,
 } from '../types';
-import { MOCK_OPPORTUNITIES } from '../data/mockOpportunities';
+import { MOCK_OPPORTUNITIES, MOCK_ORGANIZER_SUBMISSIONS } from '../data/mockOpportunities';
 import { generateAdaptiveWorkspaceConfig } from '../utils/workspaceConfig';
 
+const mergeOpportunitiesList = (
+  customOpportunities: Opportunity[] = [],
+  overrides: Record<string, { bannerUrl?: string; bannerTheme?: BannerThemeId }> = {}
+): Opportunity[] => {
+  const combined = [...customOpportunities, ...MOCK_OPPORTUNITIES];
+  return combined.map((opp) => {
+    const override = overrides[opp.id];
+    if (!override) return opp;
+    return {
+      ...opp,
+      bannerUrl: override.bannerUrl !== undefined ? override.bannerUrl : opp.bannerUrl,
+      bannerTheme: override.bannerTheme !== undefined ? override.bannerTheme : opp.bannerTheme,
+    };
+  });
+};
+
 interface WorkspaceStore {
+  activeRole: PlatformRole;
   savedWorkspaces: Record<string, WorkspaceRecord>;
   selectedInterests: string[];
   vaultItems: VaultItem[];
+  customOpportunities: Opportunity[];
+  opportunityBannerOverrides: Record<string, { bannerUrl?: string; bannerTheme?: BannerThemeId }>;
+  organizerSubmissions: OrganizerSubmission[];
+  
+  // Dual-Role & Organizer Actions
+  setRole: (role: PlatformRole) => void;
+  publishOpportunity: (
+    opp: Omit<Opportunity, 'id' | 'slug' | 'judges' | 'sponsors' | 'pastWinners'> & {
+      id?: string;
+      slug?: string;
+    }
+  ) => Opportunity;
+  updateOpportunityBanner: (
+    opportunityId: string,
+    banner: { bannerUrl?: string; bannerTheme?: BannerThemeId }
+  ) => void;
+  deleteCustomOpportunity: (opportunityId: string) => void;
+  restoreCustomOpportunity: (opp: Opportunity) => void;
+  updateSubmissionStatus: (
+    submissionId: string,
+    status: SubmissionReviewStatus,
+    evaluatorNotes?: string
+  ) => void;
   
   // Workspace Actions
   isSaved: (opportunityId: string) => boolean;
@@ -455,8 +501,109 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
           },
         },
       },
+      activeRole: 'developer',
       selectedInterests: [],
       vaultItems: DEFAULT_VAULT_ITEMS,
+      customOpportunities: [],
+      opportunityBannerOverrides: {},
+      organizerSubmissions: MOCK_ORGANIZER_SUBMISSIONS,
+
+      setRole: (role: PlatformRole) => {
+        set({ activeRole: role });
+      },
+
+      publishOpportunity: (oppInput) => {
+        const baseSlug = (oppInput.slug || oppInput.title)
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+        const uniqueSuffix = Math.random().toString(36).slice(2, 6);
+        const id = oppInput.id || `${baseSlug || 'event'}-${uniqueSuffix}`;
+        const created: Opportunity = {
+          ...oppInput,
+          id,
+          slug: oppInput.slug || id,
+          applicantCount: oppInput.applicantCount ?? 1,
+          submissionCount: oppInput.submissionCount ?? 0,
+          judges: [
+            {
+              id: `judge-${uniqueSuffix}`,
+              name: oppInput.organizerName || 'Program Review Panel',
+              role: 'Lead Reviewer',
+              company: oppInput.organizerName || 'Host Organization',
+              avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+              bio: 'Program review lead evaluating technical craft, user utility, and working product execution.',
+              notableProducts: [oppInput.title],
+              socials: {},
+              preferredThemes: oppInput.tags,
+            },
+          ],
+          sponsors: [],
+          pastWinners: [],
+        };
+        set((state) => ({
+          customOpportunities: [created, ...(state.customOpportunities ?? [])],
+        }));
+        return created;
+      },
+
+      updateOpportunityBanner: (opportunityId, banner) => {
+        set((state) => {
+          const updatedCustom = (state.customOpportunities ?? []).map((opp) =>
+            opp.id === opportunityId
+              ? {
+                  ...opp,
+                  bannerUrl: banner.bannerUrl !== undefined ? banner.bannerUrl : opp.bannerUrl,
+                  bannerTheme: banner.bannerTheme !== undefined ? banner.bannerTheme : opp.bannerTheme,
+                }
+              : opp
+          );
+          return {
+            customOpportunities: updatedCustom,
+            opportunityBannerOverrides: {
+              ...(state.opportunityBannerOverrides ?? {}),
+              [opportunityId]: {
+                ...(state.opportunityBannerOverrides?.[opportunityId] ?? {}),
+                ...banner,
+              },
+            },
+          };
+        });
+      },
+
+      deleteCustomOpportunity: (opportunityId: string) => {
+        set((state) => ({
+          customOpportunities: (state.customOpportunities ?? []).filter(
+            (opp) => opp.id !== opportunityId
+          ),
+        }));
+      },
+
+      restoreCustomOpportunity: (opp: Opportunity) => {
+        set((state) => {
+          const exists = (state.customOpportunities ?? []).some((item) => item.id === opp.id);
+          if (exists) return state;
+          return {
+            customOpportunities: [opp, ...(state.customOpportunities ?? [])],
+          };
+        });
+      },
+
+      updateSubmissionStatus: (submissionId, status, evaluatorNotes) => {
+        set((state) => ({
+          organizerSubmissions: (state.organizerSubmissions ?? MOCK_ORGANIZER_SUBMISSIONS).map(
+            (sub) =>
+              sub.id === submissionId
+                ? {
+                    ...sub,
+                    status,
+                    evaluatorNotes:
+                      evaluatorNotes !== undefined ? evaluatorNotes : sub.evaluatorNotes,
+                  }
+                : sub
+          ),
+        }));
+      },
 
       isSaved: (opportunityId: string) => {
         return !!get().savedWorkspaces[opportunityId];
@@ -469,7 +616,11 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
       saveOpportunity: (opportunityId: string) => {
         set((state) => {
           if (state.savedWorkspaces[opportunityId]) return state;
-          const opp = MOCK_OPPORTUNITIES.find((o) => o.id === opportunityId);
+          const allOpps = mergeOpportunitiesList(
+            state.customOpportunities,
+            state.opportunityBannerOverrides
+          );
+          const opp = allOpps.find((o) => o.id === opportunityId);
           const config = opp ? generateAdaptiveWorkspaceConfig(opp) : undefined;
           const initialTasks: WorkspaceTask[] = opp ? [
             {
@@ -525,7 +676,10 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
         set((state) => {
           const ws = state.savedWorkspaces[workspaceId];
           if (!ws) return state;
-          const opp = MOCK_OPPORTUNITIES.find((o) => o.id === ws.opportunityId);
+          const opp = mergeOpportunitiesList(
+            state.customOpportunities,
+            state.opportunityBannerOverrides
+          ).find((o) => o.id === ws.opportunityId);
           const currentConfig = ws.config || (opp ? generateAdaptiveWorkspaceConfig(opp) : undefined);
           if (!currentConfig) return state;
 
@@ -554,7 +708,10 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
         set((state) => {
           const ws = state.savedWorkspaces[workspaceId];
           if (!ws) return state;
-          const opp = MOCK_OPPORTUNITIES.find((o) => o.id === ws.opportunityId);
+          const opp = mergeOpportunitiesList(
+            state.customOpportunities,
+            state.opportunityBannerOverrides
+          ).find((o) => o.id === ws.opportunityId);
           if (!opp) return state;
           const defaultConfig = generateAdaptiveWorkspaceConfig(opp);
           return {
@@ -1015,3 +1172,12 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
     }
   )
 );
+
+export function useAllOpportunities(): Opportunity[] {
+  const customOpportunities = useWorkspaceStore((state) => state.customOpportunities);
+  const overrides = useWorkspaceStore((state) => state.opportunityBannerOverrides);
+  return useMemo(
+    () => mergeOpportunitiesList(customOpportunities, overrides),
+    [customOpportunities, overrides]
+  );
+}

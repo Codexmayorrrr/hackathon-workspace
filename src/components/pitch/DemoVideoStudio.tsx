@@ -110,7 +110,7 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
           <div className="flex items-start gap-3">
             <div
               aria-hidden="true"
-              className="w-10 h-10 rounded-xl bg-white shadow-border flex items-center justify-center text-[#18181B] flex-shrink-0"
+              className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-[#18181B] flex-shrink-0"
             >
               <Video className="w-5 h-5 stroke-[1.75]" />
             </div>
@@ -260,9 +260,9 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
                 key={scene.id}
                 onClick={() => handleSeekScene(idx)}
                 aria-current={isActive ? 'step' : undefined}
-                className={`w-full text-start p-4 rounded-xl transition-[transform,background-color,box-shadow] duration-150 active:scale-[0.98] space-y-2 ${
+                className={`w-full text-start p-4 rounded-xl transition-[transform,background-color] duration-150 active:scale-[0.98] space-y-2 ${
                   isActive
-                    ? 'surface-card bg-white shadow-border-hover'
+                    ? 'bg-[#EFE6FF]'
                     : 'bg-[#F4F4F6] hover:bg-[#EBECEF]'
                 }`}
               >

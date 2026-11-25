@@ -7,12 +7,11 @@
 
 ## Surfaces & Subtle Depth
 
-- **Borderless planar canvas (`#F5F5F7`) paired with pure white elevated cards (`#FFFFFF`).**
-  Why: Soft paper-gray ground and elevated pure white cards establish crisp hierarchy through surface luminance and diffuse elevation without any borders, rings, or dividers.
-- **Pure diffuse ambient shadows for elevation (`.surface-card`), zero `1px` outlines or border dividers.**
-  `--shadow-border`: `0 1px 2px 0 oklch(0 0 0 / 0.03), 0 4px 12px -2px oklch(0 0 0 / 0.04)`.
-  Why: Whitespace and tonal contrast separate cards, modals, and list groups cleanly without visual border noise.
-- **Nested secondary wells, inputs, secondary buttons, and persistent sidebar use `#EFEFF2` (hover `#E6E6EB`, active `#DDDDE3`) with zero borders.**
+- **Flat borderless, shadowless canvas (`#F3F3F6`) paired with crisp white cards (`#FFFFFF`).**
+  Why: Soft cool-neutral ground and pure white card planes establish clear visual hierarchy purely through surface luminance, with zero borders, dividers, outlines, or box shadows.
+- **Zero drop shadows or perimeter strokes across UI components.**
+  Why: Pure flat planes reduce visual clutter and foreground data scarcity cleanly.
+- **Nested secondary wells and controls use `#EFEFF2` (hover `#E5E5EA`, active `#DCDCE2`); sidebar uses `#EAEAEF`.**
 
 ---
 

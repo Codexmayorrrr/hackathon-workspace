@@ -207,7 +207,7 @@ export const AccessibleModal: React.FC<AccessibleModalProps> = ({
                   : { duration: 0.2, ease: [0.23, 1, 0.32, 1] }
               }
               style={{ transformOrigin: isMobileSheet ? 'bottom center' : 'center' }}
-              className="w-full bg-white rounded-t-3xl sm:rounded-2xl relative max-h-[90dvh] sm:max-h-[92dvh] flex flex-col overflow-hidden shadow-dialog focus-visible:outline-none"
+              className="w-full bg-white rounded-t-3xl sm:rounded-2xl relative max-h-[90dvh] sm:max-h-[92dvh] flex flex-col overflow-hidden focus-visible:outline-none"
             >
               {/* Mobile 44px touch-none drag handle strip */}
               <div

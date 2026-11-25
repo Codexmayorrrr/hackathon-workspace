@@ -12,6 +12,7 @@ import { Opportunity } from '../../types';
 import { getRelativeDeadline } from '../../utils/dateUtils';
 import { CATEGORY_THEMES } from '../../utils/categoryTheme';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
+import { EventBanner } from '../ui/EventBanner';
 import { toast } from 'sonner';
 
 interface OpportunityCardProps {
@@ -66,30 +67,41 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
     <motion.article
       layout
       transition={{ type: 'spring', duration: 0.32, bounce: 0.05 }}
-      className="group surface-card surface-card-interactive rounded-2xl p-6 flex flex-col justify-between min-w-0"
+      className="group surface-card surface-card-interactive rounded-2xl overflow-hidden flex flex-col min-w-0"
     >
-      {/* Top Meta Header */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between gap-2 text-xs">
-          <div className="flex items-center gap-2 flex-wrap min-w-0">
-            <span
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold ${theme.badgeClasses}`}
-            >
-              <CategoryIcon aria-hidden="true" className="w-3 h-3 stroke-[2]" />
-              <span>{theme.label}</span>
+      <EventBanner
+        title={opportunity.title}
+        type={opportunity.type}
+        bannerUrl={opportunity.bannerUrl}
+        bannerTheme={opportunity.bannerTheme}
+        organizerName={opportunity.organizerName}
+        variant="card"
+        badgeSlot={
+          isMatched ? (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-orange-100 text-orange-950 text-[11px] font-semibold">
+              <Sparkles aria-hidden="true" className="w-3 h-3 stroke-[2]" />
+              <span>Matched</span>
             </span>
+          ) : undefined
+        }
+      />
 
-            <span className="text-[11px] font-medium text-[#63636B] capitalize">
-              {opportunity.format}
-            </span>
-
-            {isMatched && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-orange-100 text-orange-950 text-[11px] font-semibold">
-                <Sparkles aria-hidden="true" className="w-3 h-3 stroke-[2]" />
-                <span>Matched</span>
+      <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between min-w-0">
+        {/* Top Meta Header */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2 flex-wrap min-w-0">
+              <span
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold ${theme.badgeClasses}`}
+              >
+                <CategoryIcon aria-hidden="true" className="w-3 h-3 stroke-[2]" />
+                <span>{theme.label}</span>
               </span>
-            )}
-          </div>
+
+              <span className="text-[11px] font-medium text-[#63636B] capitalize">
+                {opportunity.format}
+              </span>
+            </div>
 
           <div className="flex items-center gap-1.5 text-[#52525B] text-[11px] font-mono font-medium tabular-nums flex-shrink-0">
             <span aria-hidden="true" className={`w-1.5 h-1.5 rounded-full ${urgencyDot}`} />
@@ -186,6 +198,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
             <ArrowRight aria-hidden="true" className="w-3.5 h-3.5 text-[#52525B] stroke-[1.75] rtl:-scale-x-100 transition-transform duration-150 group-hover/btn:translate-x-0.5" />
           </Link>
         )}
+        </div>
       </div>
     </motion.article>
   );

@@ -25,7 +25,6 @@ import {
   FileText,
   Code2,
 } from 'lucide-react';
-import { MOCK_OPPORTUNITIES } from '../data/mockOpportunities';
 import {
   WorkspaceStage,
   ApplicationRequirement,
@@ -33,7 +32,8 @@ import {
   WorkspaceSectionId,
   WorkspaceConfig,
 } from '../types';
-import { useWorkspaceStore } from '../store/useWorkspaceStore';
+import { useAllOpportunities, useWorkspaceStore } from '../store/useWorkspaceStore';
+import { EventBanner } from '../components/ui/EventBanner';
 import { getCountdownParts, formatEventDate, generateReminderCheckpoints } from '../utils/dateUtils';
 import {
   ALL_SECTIONS_META,
@@ -86,7 +86,8 @@ export const WorkspacePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
-  const opportunity = MOCK_OPPORTUNITIES.find((opp) => opp.id === workspaceId);
+  const allOpportunities = useAllOpportunities();
+  const opportunity = allOpportunities.find((opp) => opp.id === workspaceId);
   const workspace = useWorkspaceStore((state) =>
     workspaceId ? state.getWorkspace(workspaceId) : undefined
   );
@@ -301,8 +302,18 @@ export const WorkspacePage: React.FC = () => {
       </div>
 
       {/* Workspace Header Card */}
-      <div className="surface-card p-5 sm:p-8 rounded-2xl space-y-6 min-w-0">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 min-w-0">
+      <div className="surface-card rounded-2xl overflow-hidden min-w-0">
+        <EventBanner
+          title={opportunity.title}
+          type={opportunity.type}
+          bannerUrl={opportunity.bannerUrl}
+          bannerTheme={opportunity.bannerTheme}
+          organizerName={opportunity.organizerName}
+          variant="hero"
+        />
+
+        <div className="p-5 sm:p-8 space-y-6 min-w-0">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 min-w-0">
           <div className="space-y-3 min-w-0">
             <div className="flex items-center gap-2 text-xs text-[#52525B] font-medium flex-wrap">
               <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold ${theme.badgeClasses}`}>
@@ -395,7 +406,7 @@ export const WorkspacePage: React.FC = () => {
                   aria-pressed={isCurrent}
                   className={`relative px-3 py-1.5 rounded-lg text-xs capitalize transition-[transform,background-color,color] duration-150 whitespace-nowrap active:scale-[0.96] min-h-[32px] ${
                     isCurrent
-                      ? 'text-[#18181B] font-semibold bg-white shadow-border'
+                      ? 'text-[#18181B] font-semibold bg-white'
                       : isPastStage
                       ? 'text-[#065F46] font-medium'
                       : 'text-[#52525B] font-medium hover:text-[#18181B]'
@@ -410,10 +421,11 @@ export const WorkspacePage: React.FC = () => {
             })}
           </div>
         </div>
+        </div>
       </div>
 
       {/* Workspace Tabs Navigation (Wraps cleanly on desktop so zero tabs ever hide at 1440px) */}
-      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] md:top-0 z-20 bg-[#F5F5F7]/95 backdrop-blur-xl py-3 flex items-start md:items-center justify-between gap-3">
+      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] md:top-0 z-20 bg-[#F3F3F6]/95 backdrop-blur-xl py-3 flex items-start md:items-center justify-between gap-3">
         <div className="relative flex-1 min-w-0">
           <div
             role="tablist"
@@ -444,9 +456,9 @@ export const WorkspacePage: React.FC = () => {
                   tabIndex={isActive ? 0 : -1}
                   onKeyDown={(e) => handleTabKeyDown(e, idx)}
                   onClick={() => handleTabChange(secId)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-[transform,background-color,color,box-shadow] duration-150 whitespace-nowrap snap-start active:scale-[0.96] min-h-[36px] ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-[transform,background-color,color] duration-150 whitespace-nowrap snap-start active:scale-[0.96] min-h-[36px] ${
                     isActive
-                      ? 'bg-white shadow-border text-[#18181B] font-semibold'
+                      ? 'bg-white text-[#18181B] font-semibold'
                       : 'text-[#52525B] hover:text-[#18181B] hover:bg-[#EBECEF]/70'
                   }`}
                 >
@@ -486,7 +498,7 @@ export const WorkspacePage: React.FC = () => {
           {/* Mobile scroll affordance cue when horizontally scrolling */}
           <div
             aria-hidden="true"
-            className="md:hidden pointer-events-none absolute inset-y-0 end-0 w-8 bg-gradient-to-l from-[#F5F5F7] via-[#F5F5F7]/85 to-transparent flex items-center justify-end"
+            className="md:hidden pointer-events-none absolute inset-y-0 end-0 w-8 bg-gradient-to-l from-[#F3F3F6] via-[#F3F3F6]/85 to-transparent flex items-center justify-end"
           >
             <ChevronRight className="w-4 h-4 text-[#52525B] stroke-[2]" />
           </div>

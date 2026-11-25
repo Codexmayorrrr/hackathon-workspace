@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Compass,
   BookmarkCheck,
@@ -7,23 +7,48 @@ import {
   Calendar,
   Trophy,
   FolderArchive,
+  LayoutDashboard,
+  CalendarDays,
+  Inbox,
+  Plus,
 } from 'lucide-react';
 import { TimezoneIndicator } from './TimezoneIndicator';
 import { Sidebar } from './Sidebar';
 import { CalendarSyncModal } from '../calendar/CalendarSyncModal';
 import { ReusableVaultModal } from '../vault/ReusableVaultModal';
-import { useWorkspaceStore } from '../../store/useWorkspaceStore';
-import { MOCK_OPPORTUNITIES } from '../../data/mockOpportunities';
+import { CreateOpportunityModal } from '../organizer/CreateOpportunityModal';
+import { useAllOpportunities, useWorkspaceStore } from '../../store/useWorkspaceStore';
+import { PlatformRole } from '../../types';
 
 export const AppShell: React.FC = () => {
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
   const [vaultModalOpen, setVaultModalOpen] = useState(false);
+  const [createEventModalOpen, setCreateEventModalOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const allOpportunities = useAllOpportunities();
+  const activeRole = useWorkspaceStore((state) => state.activeRole);
+  const setRole = useWorkspaceStore((state) => state.setRole);
   const savedWorkspaces = useWorkspaceStore((state) => state.savedWorkspaces);
+  const organizerSubmissions = useWorkspaceStore((state) => state.organizerSubmissions);
 
   const activeSavedCount = Object.values(savedWorkspaces).filter(
     (w) => w.stage === 'saved' || w.stage === 'preparing'
   ).length;
+
+  const pendingSubmissionsCount = organizerSubmissions.filter(
+    (s) => s.status === 'pending'
+  ).length;
+
+  const handleMobileRoleSwitch = (nextRole: PlatformRole) => {
+    setRole(nextRole);
+    if (nextRole === 'organizer' && !location.pathname.startsWith('/organizer')) {
+      navigate('/organizer');
+    } else if (nextRole === 'developer' && location.pathname.startsWith('/organizer')) {
+      navigate('/discover');
+    }
+  };
 
   useEffect(() => {
     const path = location.pathname;
@@ -34,49 +59,84 @@ export const AppShell: React.FC = () => {
       pageTitle = 'Explore Category · HackWorkspace';
     } else if (path.startsWith('/opportunities/')) {
       const slug = path.replace('/opportunities/', '');
-      const opp = MOCK_OPPORTUNITIES.find((o) => o.slug === slug);
+      const opp = allOpportunities.find((o) => o.slug === slug);
       pageTitle = opp ? `${opp.title} · HackWorkspace` : 'Opportunity Details · HackWorkspace';
     } else if (path === '/saved') {
       pageTitle = 'Saved Queue · HackWorkspace';
     } else if (path.startsWith('/workspaces/')) {
       const id = path.replace('/workspaces/', '');
-      const opp = MOCK_OPPORTUNITIES.find((o) => o.id === id);
+      const opp = allOpportunities.find((o) => o.id === id);
       pageTitle = opp ? `${opp.title} · Workspace · HackWorkspace` : 'Workspace · HackWorkspace';
     } else if (path === '/notifications') {
       pageTitle = 'Reminders · HackWorkspace';
     } else if (path === '/winners') {
       pageTitle = 'Winners & Talent · HackWorkspace';
+    } else if (path === '/organizer') {
+      pageTitle = 'Organizer Studio · HackWorkspace';
+    } else if (path === '/organizer/events') {
+      pageTitle = 'Hosted Events & Banners · Organizer · HackWorkspace';
+    } else if (path === '/organizer/submissions') {
+      pageTitle = 'Submissions Inbox · Organizer · HackWorkspace';
     }
     document.title = pageTitle;
-  }, [location.pathname]);
+  }, [location.pathname, allOpportunities]);
 
-  const mobileNavLinks = [
-    {
-      label: 'Discover',
-      path: '/discover',
-      icon: Compass,
-      exact: false,
-    },
-    {
-      label: 'Saved',
-      path: '/saved',
-      icon: BookmarkCheck,
-      badge: activeSavedCount > 0 ? activeSavedCount : undefined,
-      exact: true,
-    },
-    {
-      label: 'Reminders',
-      path: '/notifications',
-      icon: Bell,
-      exact: true,
-    },
-    {
-      label: 'Winners',
-      path: '/winners',
-      icon: Trophy,
-      exact: true,
-    },
-  ];
+  const mobileNavLinks =
+    activeRole === 'organizer'
+      ? [
+          {
+            label: 'Overview',
+            path: '/organizer',
+            icon: LayoutDashboard,
+            exact: true,
+          },
+          {
+            label: 'Events',
+            path: '/organizer/events',
+            icon: CalendarDays,
+            exact: true,
+          },
+          {
+            label: 'Inbox',
+            path: '/organizer/submissions',
+            icon: Inbox,
+            badge: pendingSubmissionsCount > 0 ? pendingSubmissionsCount : undefined,
+            exact: true,
+          },
+          {
+            label: 'Feed',
+            path: '/discover',
+            icon: Compass,
+            exact: true,
+          },
+        ]
+      : [
+          {
+            label: 'Discover',
+            path: '/discover',
+            icon: Compass,
+            exact: false,
+          },
+          {
+            label: 'Saved',
+            path: '/saved',
+            icon: BookmarkCheck,
+            badge: activeSavedCount > 0 ? activeSavedCount : undefined,
+            exact: true,
+          },
+          {
+            label: 'Reminders',
+            path: '/notifications',
+            icon: Bell,
+            exact: true,
+          },
+          {
+            label: 'Winners',
+            path: '/winners',
+            icon: Trophy,
+            exact: true,
+          },
+        ];
 
   return (
     <>
@@ -86,21 +146,22 @@ export const AppShell: React.FC = () => {
 
       <div
         id="app-shell-root"
-        className="min-h-[100dvh] bg-[#F5F5F7] text-[#18181B] flex flex-col md:flex-row antialiased"
+        className="min-h-[100dvh] bg-[#F3F3F6] text-[#18181B] flex flex-col md:flex-row antialiased"
       >
         {/* Desktop & Tablet Sidebar (>= 768px) */}
         <Sidebar
           onOpenVault={() => setVaultModalOpen(true)}
           onOpenCalendar={() => setCalendarModalOpen(true)}
+          onOpenCreateEvent={() => setCreateEventModalOpen(true)}
         />
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0 min-h-[100dvh] bg-[#F5F5F7]">
+        <div className="flex-1 flex flex-col min-w-0 min-h-[100dvh] bg-[#F3F3F6]">
           {/* Mobile Top Header (< 768px) - Reflows safely down to 320px and clears safe-area notch */}
-          <header className="md:hidden flex items-center justify-between gap-2 min-h-[calc(3.5rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top)] ps-[max(0.75rem,env(safe-area-inset-left))] pe-[max(0.75rem,env(safe-area-inset-right))] bg-white/95 backdrop-blur-xl shadow-[0_4px_16px_-4px_oklch(0_0_0/0.05)] sticky top-0 z-30">
+          <header className="md:hidden flex items-center justify-between gap-1.5 min-h-[calc(3.5rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top)] ps-[max(0.625rem,env(safe-area-inset-left))] pe-[max(0.625rem,env(safe-area-inset-right))] bg-white/95 backdrop-blur-xl sticky top-0 z-30">
             <NavLink
-              to="/discover"
-              className="flex items-center gap-2 min-w-0 rounded-lg py-1 active:scale-[0.96] transition-transform duration-150"
+              to={activeRole === 'organizer' ? '/organizer' : '/discover'}
+              className="flex items-center gap-1.5 min-w-0 rounded-lg py-1 active:scale-[0.96] transition-transform duration-150"
             >
               <div
                 aria-hidden="true"
@@ -113,16 +174,65 @@ export const AppShell: React.FC = () => {
               </span>
             </NavLink>
 
-            <div className="flex items-center gap-1.5 flex-shrink-0">
-              <TimezoneIndicator compact />
-              <button
-                type="button"
-                onClick={() => setVaultModalOpen(true)}
-                aria-label="Open Reusable Vault"
-                className="relative w-9 h-9 rounded-xl btn-tactile-secondary text-[#18181B] flex items-center justify-center before:content-[''] before:absolute before:-inset-1"
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <div className="hidden min-[420px]:block">
+                <TimezoneIndicator compact />
+              </div>
+
+              {/* Dual-role Segmented Pill */}
+              <div
+                role="group"
+                aria-label="Switch platform role"
+                className="flex items-center bg-[#F4F4F6] p-0.5 rounded-xl gap-0.5"
               >
-                <FolderArchive aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
-              </button>
+                <button
+                  type="button"
+                  onClick={() => handleMobileRoleSwitch('developer')}
+                  aria-pressed={activeRole === 'developer'}
+                  aria-label="Developer role"
+                  className={`px-1.5 py-1 rounded-[10px] text-[11px] leading-none min-h-[30px] transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
+                    activeRole === 'developer'
+                      ? 'bg-white text-[#18181B] font-semibold'
+                      : 'text-[#52525B] font-medium'
+                  }`}
+                >
+                  Dev
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleMobileRoleSwitch('organizer')}
+                  aria-pressed={activeRole === 'organizer'}
+                  aria-label="Organizer role"
+                  className={`px-1.5 py-1 rounded-[10px] text-[11px] leading-none min-h-[30px] transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
+                    activeRole === 'organizer'
+                      ? 'bg-[#18181B] text-white font-semibold'
+                      : 'text-[#52525B] font-medium'
+                  }`}
+                >
+                  Org
+                </button>
+              </div>
+
+              {activeRole === 'organizer' ? (
+                <button
+                  type="button"
+                  onClick={() => setCreateEventModalOpen(true)}
+                  aria-label="Publish new event"
+                  className="relative w-9 h-9 rounded-xl btn-tactile-primary flex items-center justify-center before:content-[''] before:absolute before:-inset-1"
+                >
+                  <Plus aria-hidden="true" className="w-4 h-4 stroke-[2.2]" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setVaultModalOpen(true)}
+                  aria-label="Open Reusable Vault"
+                  className="relative w-9 h-9 rounded-xl btn-tactile-secondary text-[#18181B] flex items-center justify-center before:content-[''] before:absolute before:-inset-1"
+                >
+                  <FolderArchive aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
+                </button>
+              )}
+
               <button
                 type="button"
                 onClick={() => setCalendarModalOpen(true)}
@@ -147,7 +257,7 @@ export const AppShell: React.FC = () => {
         {/* Mobile Fixed Bottom Nav (< 768px) - 4 even flex slots fit cleanly at 320px */}
         <nav
           aria-label="Primary mobile navigation"
-          className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl shadow-[0_-4px_16px_-4px_oklch(0_0_0/0.06)] ps-[max(0.375rem,env(safe-area-inset-left))] pe-[max(0.375rem,env(safe-area-inset-right))] pt-1.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-1"
+          className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl ps-[max(0.375rem,env(safe-area-inset-left))] pe-[max(0.375rem,env(safe-area-inset-right))] pt-1.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-1"
         >
           {mobileNavLinks.map((item) => {
             const Icon = item.icon;
@@ -196,6 +306,11 @@ export const AppShell: React.FC = () => {
       <ReusableVaultModal
         isOpen={vaultModalOpen}
         onClose={() => setVaultModalOpen(false)}
+      />
+
+      <CreateOpportunityModal
+        isOpen={createEventModalOpen}
+        onClose={() => setCreateEventModalOpen(false)}
       />
     </>
   );

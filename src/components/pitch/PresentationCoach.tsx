@@ -216,7 +216,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
                 aria-pressed={mode === 'rehearsal'}
                 className={`px-3 py-1.5 rounded-lg font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
                   mode === 'rehearsal'
-                    ? 'bg-white shadow-border text-[#18181B] font-semibold'
+                    ? 'bg-white text-[#18181B] font-semibold'
                     : 'text-[#52525B] hover:text-[#18181B]'
                 }`}
               >
@@ -228,7 +228,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
                 aria-pressed={mode === 'live'}
                 className={`px-3 py-1.5 rounded-lg font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
                   mode === 'live'
-                    ? 'bg-white shadow-border text-[#18181B] font-semibold'
+                    ? 'bg-white text-[#18181B] font-semibold'
                     : 'text-[#52525B] hover:text-[#18181B]'
                 }`}
               >
@@ -374,7 +374,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
                   <span className={`text-xs font-mono font-semibold px-2.5 py-0.5 rounded-md tabular-nums ${paceColor}`}>
                     {paceLabel}
                   </span>
-                  <span className="text-xs font-mono font-bold text-[#18181B] bg-white shadow-border px-3 py-1 rounded-lg tabular-nums">
+                  <span className="text-xs font-mono font-bold text-[#18181B] bg-white px-3 py-1 rounded-lg tabular-nums">
                     {formatTime(elapsedSeconds)} / {formatTime(targetTimeSeconds)}
                   </span>
                 </div>
@@ -395,7 +395,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
                       aria-current={isCurrent ? 'step' : undefined}
                       className={`w-full rounded-xl px-4 py-3 text-start transition-[transform,background-color,color] duration-150 ${
                         isCurrent
-                          ? 'bg-white shadow-border text-[#18181B] font-semibold text-base'
+                          ? 'bg-white text-[#18181B] font-semibold text-base'
                           : isPast
                           ? 'text-[#63636B] text-xs line-through opacity-75 hover:opacity-100'
                           : 'text-[#52525B] text-xs sm:text-[13px] hover:bg-white/60 hover:text-[#18181B]'

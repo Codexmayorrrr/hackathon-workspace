@@ -209,7 +209,7 @@ The system employs an event-driven decoupled architecture:
               onClick={() => setViewMode('formatted')}
               aria-pressed={viewMode === 'formatted'}
               className={`px-3 py-1 rounded-lg text-xs font-medium min-h-[28px] ${
-                viewMode === 'formatted' ? 'bg-white shadow-border text-[#18181B] font-semibold' : 'text-[#52525B]'
+                viewMode === 'formatted' ? 'bg-white text-[#18181B] font-semibold' : 'text-[#52525B]'
               }`}
             >
               Formatted
@@ -219,7 +219,7 @@ The system employs an event-driven decoupled architecture:
               onClick={() => setViewMode('markdown')}
               aria-pressed={viewMode === 'markdown'}
               className={`px-3 py-1 rounded-lg text-xs font-medium min-h-[28px] ${
-                viewMode === 'markdown' ? 'bg-white shadow-border text-[#18181B] font-semibold' : 'text-[#52525B]'
+                viewMode === 'markdown' ? 'bg-white text-[#18181B] font-semibold' : 'text-[#52525B]'
               }`}
             >
               Markdown
