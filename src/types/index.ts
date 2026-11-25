@@ -156,8 +156,15 @@ export interface SlideItem {
   allocatedSeconds: number; // Duration budgeted for this slide
 }
 
+export type DeckTemplateId =
+  | 'hackathon_demo'
+  | 'grant_proposal'
+  | 'accelerator_investor'
+  | 'event_spotlight';
+
 export interface SlideDeck {
   id: string;
+  templateId?: DeckTemplateId;
   title: string;
   repoUrl?: string;
   targetTimeMinutes: number; // 1, 3, or 5 mins

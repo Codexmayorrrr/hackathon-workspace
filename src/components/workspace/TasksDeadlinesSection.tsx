@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import {
+  animate,
+  AnimatePresence,
+  motion,
+  PanInfo,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from 'framer-motion';
 import {
   CheckSquare,
   Plus,
@@ -16,6 +24,148 @@ interface TasksDeadlinesSectionProps {
   opportunity: Opportunity;
   onOpenCalendarSync: () => void;
 }
+
+interface SwipeableTaskRowProps {
+  task: WorkspaceTask;
+  priorityColors: string;
+  onToggle: () => void;
+  onDelete: () => void;
+}
+
+const SwipeableTaskRow: React.FC<SwipeableTaskRowProps> = ({
+  task,
+  priorityColors,
+  onToggle,
+  onDelete,
+}) => {
+  const shouldReduceMotion = useReducedMotion();
+  const x = useMotionValue(0);
+  const completeCueOpacity = useTransform(x, [12, 72], [0, 1]);
+  const deleteCueOpacity = useTransform(x, [-72, -12], [1, 0]);
+
+  const snapBack = (velocityX: number) => {
+    if (shouldReduceMotion) {
+      x.set(0);
+      return;
+    }
+    animate(x, 0, {
+      type: 'spring',
+      duration: 0.34,
+      bounce: 0.16,
+      velocity: velocityX,
+    });
+  };
+
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (info.offset.x > 68 || info.velocity.x > 420) {
+      onToggle();
+      snapBack(info.velocity.x);
+      return;
+    }
+    if (info.offset.x < -82 || info.velocity.x < -460) {
+      onDelete();
+      return;
+    }
+    snapBack(info.velocity.x);
+  };
+
+  return (
+    <div className="relative overflow-hidden rounded-2xl">
+      {/* Linked Swipe Action Cues */}
+      <motion.div
+        aria-hidden="true"
+        style={{ opacity: completeCueOpacity }}
+        className="absolute inset-y-0 start-0 w-28 bg-[#ECFDF5] text-[#065F46] flex items-center ps-5 gap-2 text-xs font-semibold pointer-events-none"
+      >
+        <Check className="w-4 h-4 stroke-[2.25]" />
+        <span>{task.completed ? 'Reopen' : 'Done'}</span>
+      </motion.div>
+
+      <motion.div
+        aria-hidden="true"
+        style={{ opacity: deleteCueOpacity }}
+        className="absolute inset-y-0 end-0 w-28 bg-rose-50 text-rose-800 flex items-center justify-end pe-5 gap-2 text-xs font-semibold pointer-events-none"
+      >
+        <span>Delete</span>
+        <Trash2 className="w-4 h-4 stroke-[1.75]" />
+      </motion.div>
+
+      {/* 1:1 Finger-Tracked Foreground Row */}
+      <motion.div
+        drag="x"
+        dragDirectionLock
+        dragConstraints={{ left: -120, right: 110 }}
+        dragElastic={0.18}
+        dragMomentum={false}
+        onDragEnd={handleDragEnd}
+        style={{ x }}
+        className={`surface-card p-4 rounded-2xl flex items-center justify-between gap-4 relative z-10 touch-pan-y ${
+          task.completed ? 'opacity-75' : 'surface-card-interactive'
+        }`}
+      >
+        <div className="flex items-center gap-3.5 min-w-0 flex-1">
+          {/* Extended 48x48 hit area wrapping crisp visual box */}
+          <button
+            type="button"
+            role="checkbox"
+            aria-checked={task.completed}
+            aria-label={task.completed ? `Mark "${task.title}" incomplete` : `Mark "${task.title}" complete`}
+            onClick={onToggle}
+            className="relative w-9 h-9 -m-1.5 rounded-xl flex items-center justify-center flex-shrink-0 hover:bg-[#F4F4F6] transition-colors before:content-[''] before:absolute before:-inset-1.5"
+          >
+            <span
+              aria-hidden="true"
+              className={`w-5 h-5 rounded-md flex items-center justify-center transition-[transform,background-color] duration-150 ${
+                task.completed
+                  ? 'bg-[#18181B] text-white'
+                  : 'bg-[#F4F4F6] shadow-[inset_0_0_0_1px_oklch(0_0_0/0.14)]'
+              }`}
+            >
+              {task.completed && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
+            </span>
+          </button>
+
+          <div className="min-w-0 flex-1 space-y-1">
+            <button
+              type="button"
+              onClick={onToggle}
+              className={`text-sm font-medium text-start block max-w-full truncate hover:text-[#52525B] transition-colors ${
+                task.completed ? 'line-through text-[#63636B]' : 'text-[#18181B]'
+              }`}
+              title={task.title}
+            >
+              {task.title}
+            </button>
+
+            <div className="flex items-center gap-2 text-xs text-[#52525B] flex-wrap">
+              <span className={`px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase ${priorityColors}`}>
+                {task.priority}
+              </span>
+              {task.dueDate && (
+                <span className="font-mono tabular-nums text-[11px]">
+                  Due {formatEventDate(task.dueDate)}
+                </span>
+              )}
+              {task.category && (
+                <span className="capitalize text-[11px] text-[#63636B]">· {task.category}</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={onDelete}
+          className="relative w-9 h-9 rounded-xl text-rose-700 hover:bg-rose-50 transition-colors flex items-center justify-center flex-shrink-0 before:content-[''] before:absolute before:-inset-1.5"
+          title={`Delete "${task.title}"`}
+          aria-label={`Delete task: ${task.title}`}
+        >
+          <Trash2 aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
+        </button>
+      </motion.div>
+    </div>
+  );
+};
 
 export const TasksDeadlinesSection: React.FC<TasksDeadlinesSectionProps> = ({
   opportunity,
@@ -230,6 +380,7 @@ export const TasksDeadlinesSection: React.FC<TasksDeadlinesSectionProps> = ({
                   <input
                     id="new-task-title"
                     type="text"
+                    enterKeyHint="done"
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                     placeholder="e.g., Draft 2-minute elevator pitch"
@@ -331,72 +482,13 @@ export const TasksDeadlinesSection: React.FC<TasksDeadlinesSectionProps> = ({
               }[task.priority];
 
               return (
-                <div
+                <SwipeableTaskRow
                   key={task.id}
-                  className={`surface-card p-4 rounded-2xl flex items-center justify-between gap-4 ${
-                    task.completed ? 'opacity-75' : 'surface-card-interactive'
-                  }`}
-                >
-                  <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                    {/* Extended 36x36 hit area wrapping crisp visual box */}
-                    <button
-                      type="button"
-                      role="checkbox"
-                      aria-checked={task.completed}
-                      aria-label={task.completed ? `Mark "${task.title}" incomplete` : `Mark "${task.title}" complete`}
-                      onClick={() => toggleWorkspaceTask(opportunity.id, task.id)}
-                      className="w-9 h-9 -m-1.5 rounded-xl flex items-center justify-center flex-shrink-0 hover:bg-[#F4F4F6] transition-colors"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className={`w-5 h-5 rounded-md flex items-center justify-center transition-[transform,background-color] duration-150 ${
-                          task.completed
-                            ? 'bg-[#18181B] text-white'
-                            : 'bg-[#F4F4F6] shadow-[inset_0_0_0_1px_oklch(0_0_0/0.14)]'
-                        }`}
-                      >
-                        {task.completed && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
-                      </span>
-                    </button>
-
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <button
-                        type="button"
-                        onClick={() => toggleWorkspaceTask(opportunity.id, task.id)}
-                        className={`text-sm font-medium text-start block max-w-full truncate hover:text-[#52525B] transition-colors ${
-                          task.completed ? 'line-through text-[#63636B]' : 'text-[#18181B]'
-                        }`}
-                        title={task.title}
-                      >
-                        {task.title}
-                      </button>
-
-                      <div className="flex items-center gap-2 text-xs text-[#52525B] flex-wrap">
-                        <span className={`px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase ${priorityColors}`}>
-                          {task.priority}
-                        </span>
-                        {task.dueDate && (
-                          <span className="font-mono tabular-nums text-[11px]">
-                            Due {formatEventDate(task.dueDate)}
-                          </span>
-                        )}
-                        {task.category && (
-                          <span className="capitalize text-[11px] text-[#63636B]">· {task.category}</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteWithUndo(task)}
-                    className="w-9 h-9 rounded-xl text-rose-700 hover:bg-rose-50 transition-colors flex items-center justify-center flex-shrink-0"
-                    title={`Delete "${task.title}"`}
-                    aria-label={`Delete task: ${task.title}`}
-                  >
-                    <Trash2 aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
-                  </button>
-                </div>
+                  task={task}
+                  priorityColors={priorityColors}
+                  onToggle={() => toggleWorkspaceTask(opportunity.id, task.id)}
+                  onDelete={() => handleDeleteWithUndo(task)}
+                />
               );
             })}
           </div>

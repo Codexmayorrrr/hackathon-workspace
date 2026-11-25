@@ -73,6 +73,7 @@ export const PitchDocumentsSection: React.FC<PitchDocumentsSectionProps> = ({
         <SlideDeckGenerator
           workspaceId={opportunity.id}
           opportunityTitle={opportunity.title}
+          opportunity={opportunity}
           onLaunchCoach={onLaunchCoach}
         />
       ) : (

@@ -124,6 +124,11 @@ export const BuildSection: React.FC<BuildSectionProps> = ({ opportunity }) => {
             <input
               id="workspace-repo-url"
               type="url"
+              inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              enterKeyHint="done"
               value={repoUrl}
               onChange={(e) => setRepoUrl(e.target.value)}
               onBlur={handleRepoBlur}
@@ -189,6 +194,9 @@ export const BuildSection: React.FC<BuildSectionProps> = ({ opportunity }) => {
             <input
               id="workspace-custom-tech"
               type="text"
+              enterKeyHint="done"
+              autoCapitalize="none"
+              autoCorrect="off"
               value={customTech}
               onChange={(e) => setCustomTech(e.target.value)}
               placeholder="Add custom library or protocol..."

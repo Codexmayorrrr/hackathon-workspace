@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   X,
@@ -40,18 +40,23 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
   const slides = slideDeck.slides;
   const targetTimeSeconds = (slideDeck.targetTimeMinutes || 3) * 60;
 
-  const flattenedLines: FlattenedScriptLine[] = useRef(
-    slides.flatMap((slide, sIdx) =>
-      slide.scriptLines.map((line, lIdx) => ({
-        id: `line-${sIdx}-${lIdx}`,
-        slideIndex: sIdx,
-        slideNumber: slide.slideNumber,
-        lineIndex: lIdx,
-        text: line,
-        allocatedSeconds: Math.round(slide.allocatedSeconds / slide.scriptLines.length),
-      }))
-    )
-  ).current;
+  const flattenedLines: FlattenedScriptLine[] = useMemo(
+    () =>
+      slides.flatMap((slide, sIdx) =>
+        slide.scriptLines.map((line, lIdx) => ({
+          id: `line-${sIdx}-${lIdx}`,
+          slideIndex: sIdx,
+          slideNumber: slide.slideNumber,
+          lineIndex: lIdx,
+          text: line,
+          allocatedSeconds: Math.max(
+            2,
+            Math.round(slide.allocatedSeconds / Math.max(1, slide.scriptLines.length))
+          ),
+        }))
+      ),
+    [slides]
+  );
 
   const [mode, setMode] = useState<'rehearsal' | 'live'>('rehearsal');
   const [isRunning, setIsRunning] = useState(false);

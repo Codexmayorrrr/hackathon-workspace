@@ -19,6 +19,12 @@ export function App() {
           position="top-right"
           richColors
           closeButton
+          swipeDirections={['top', 'right', 'left']}
+          mobileOffset={{
+            top: 'max(16px, env(safe-area-inset-top))',
+            left: '16px',
+            right: '16px',
+          }}
           toastOptions={{
             style: {
               fontFamily: 'inherit',

@@ -219,10 +219,14 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
           <input
             id="vault-search"
             type="search"
+            enterKeyHint="search"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search snippets by title or content..."
-            className="field-surface w-full rounded-xl ps-9 pe-16 py-2 text-xs sm:text-[13px]"
+            className="field-surface w-full rounded-xl ps-9 pe-16 py-2 text-base sm:text-[13px]"
           />
           {searchQuery && (
             <button

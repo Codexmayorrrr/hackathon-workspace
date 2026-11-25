@@ -113,7 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
   return (
     <aside
       aria-label="Primary Sidebar Navigation"
-      className={`hidden md:flex flex-col flex-shrink-0 min-h-screen bg-[#F4F4F6] shadow-[1px_0_0_0_oklch(0_0_0/0.05)] select-none transition-[width] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] z-20 ${
+      className={`hidden md:flex flex-col flex-shrink-0 min-h-[100dvh] bg-[#F4F4F6] shadow-[1px_0_0_0_oklch(0_0_0/0.05)] select-none transition-[width] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] z-20 ${
         isCollapsed ? 'w-16' : 'w-60'
       }`}
     >

@@ -139,10 +139,14 @@ export const WinnersLeaderboardPage: React.FC = () => {
           <input
             id="winners-search"
             type="search"
+            enterKeyHint="search"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             placeholder="Search winners, projects..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="field-surface w-full rounded-xl ps-9 pe-3.5 py-2 text-xs sm:text-[13px]"
+            className="field-surface w-full rounded-xl ps-9 pe-3.5 py-2 text-base sm:text-[13px]"
           />
         </div>
       </div>

@@ -41,6 +41,10 @@ import {
   getOrderedVisibleSections,
 } from '../utils/workspaceConfig';
 import { CATEGORY_THEMES } from '../utils/categoryTheme';
+import {
+  buildDeckFromTemplate,
+  getDefaultTemplateIdForOpportunity,
+} from '../utils/deckTemplates';
 import { MarkdownContent } from '../components/ui/MarkdownContent';
 import { CalendarSyncModal } from '../components/calendar/CalendarSyncModal';
 import { ReminderTimeline } from '../components/workspace/ReminderTimeline';
@@ -409,12 +413,12 @@ export const WorkspacePage: React.FC = () => {
       </div>
 
       {/* Workspace Tabs Navigation (Wraps cleanly on desktop so zero tabs ever hide at 1440px) */}
-      <div className="sticky top-14 md:top-0 z-20 bg-[#FAFAFB]/95 backdrop-blur-xl py-2.5 flex items-start md:items-center justify-between gap-3 border-b border-neutral-200/70">
+      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] md:top-0 z-20 bg-[#FAFAFB]/95 backdrop-blur-xl py-2.5 flex items-start md:items-center justify-between gap-3 border-b border-neutral-200/70">
         <div className="relative flex-1 min-w-0">
           <div
             role="tablist"
             aria-label="Workspace sections"
-            className="flex items-center gap-1.5 overflow-x-auto md:overflow-visible md:flex-wrap no-scrollbar pe-8 md:pe-0 py-0.5"
+            className="flex items-center gap-1.5 overflow-x-auto overscroll-x-contain snap-x snap-proximity md:snap-none md:overflow-visible md:flex-wrap no-scrollbar pe-8 md:pe-0 py-0.5"
           >
             {visibleSections.map((secId, idx) => {
               const meta = ALL_SECTIONS_META[secId];
@@ -440,7 +444,7 @@ export const WorkspacePage: React.FC = () => {
                   tabIndex={isActive ? 0 : -1}
                   onKeyDown={(e) => handleTabKeyDown(e, idx)}
                   onClick={() => handleTabChange(secId)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-[transform,background-color,color,box-shadow] duration-150 whitespace-nowrap active:scale-[0.96] min-h-[36px] ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-[transform,background-color,color,box-shadow] duration-150 whitespace-nowrap snap-start active:scale-[0.96] min-h-[36px] ${
                     isActive
                       ? 'bg-white shadow-border text-[#18181B] font-semibold'
                       : 'text-[#52525B] hover:text-[#18181B] hover:bg-[#EBECEF]/70'
@@ -770,117 +774,13 @@ export const WorkspacePage: React.FC = () => {
           isOpen={coachModalOpen}
           onClose={() => setCoachModalOpen(false)}
           slideDeck={
-            effectiveWorkspace.slideDeck || {
-              id: `deck-${opportunity.id}`,
-              title: `${opportunity.title} — Pitch Deck`,
-              targetTimeMinutes: 3,
-              targetAudience: 'judges',
-              slides: [
-                {
-                  id: 's1',
-                  slideNumber: 1,
-                  title: opportunity.title,
-                  subtitle: opportunity.summary,
-                  layoutType: 'title',
-                  bullets: [
-                    'Track: ' + (opportunity.sponsors[0]?.bountyTitle || 'Core Innovation'),
-                    'Format: ' + opportunity.format,
-                  ],
-                  scriptLines: [
-                    'Good afternoon judges and builders.',
-                    'We are presenting our solution for ' + opportunity.title + '.',
-                    'Let us walk you through the core technical architecture and market impact.',
-                  ],
-                  allocatedSeconds: 25,
-                },
-                {
-                  id: 's2',
-                  slideNumber: 2,
-                  title: 'Problem & User Bottleneck',
-                  subtitle: 'Quantified market friction observed in the field',
-                  layoutType: 'problem_solution',
-                  bullets: opportunity.themeContext.problemStatements.slice(0, 3),
-                  scriptLines: [
-                    'Here is the verified bottleneck we are tackling.',
-                    'Current market players lose excessive revenue due to manual reconciliation and delayed clearing.',
-                    'Our interviews showed over eighty percent of users struggle with these exact friction points.',
-                  ],
-                  allocatedSeconds: 35,
-                },
-                {
-                  id: 's3',
-                  slideNumber: 3,
-                  title: 'Technical Implementation & Solution',
-                  subtitle: 'Decoupled event-driven microservices architecture',
-                  layoutType: 'architecture',
-                  bullets: [
-                    'High-throughput execution engine',
-                    'Sub-second state verification',
-                    'Resilient retry queues',
-                    'Audit trail',
-                  ],
-                  scriptLines: [
-                    'To solve this without adding operational complexity, we built an event-driven engine.',
-                    'Transactions execute with cryptographic proof verification in sub-second latency.',
-                    'The user experience remains seamless with zero onboarding friction.',
-                  ],
-                  allocatedSeconds: 45,
-                },
-                {
-                  id: 's4',
-                  slideNumber: 4,
-                  title: 'Market Opportunity & Unit Economics',
-                  subtitle: opportunity.prizePool + ' addressable ecosystem volume',
-                  layoutType: 'market_tam',
-                  bullets: [
-                    'Direct B2B merchant volume',
-                    'Low customer acquisition cost',
-                    'Sustainable monetization model',
-                  ],
-                  scriptLines: [
-                    'The market size here is massive and growing exponentially.',
-                    'Our unit economics allow us to offer transparent pricing that is seventy percent cheaper than legacy alternatives.',
-                  ],
-                  allocatedSeconds: 35,
-                },
-                {
-                  id: 's5',
-                  slideNumber: 5,
-                  title: 'Demo & Product Flow',
-                  subtitle: 'Live functional demonstration on testnet',
-                  layoutType: 'demo_flow',
-                  bullets: [
-                    '1. Fast checkout creation',
-                    '2. Dynamic invoice generation',
-                    '3. Sub-second clearing',
-                    '4. Verified receipt',
-                  ],
-                  scriptLines: [
-                    'Let us now review the live demo flow.',
-                    'Everything you see is running live on our deployed testnet sandbox.',
-                    'Within six seconds, the entire transaction lifecycle is confirmed.',
-                  ],
-                  allocatedSeconds: 40,
-                },
-                {
-                  id: 's6',
-                  slideNumber: 6,
-                  title: 'Team & Roadmap',
-                  subtitle: 'Execution capability and next-quarter milestones',
-                  layoutType: 'team_roadmap',
-                  bullets: [
-                    'Multi-disciplinary team with proven track record',
-                    'Pilot commitments signed',
-                    'Post-hackathon deployment timeline',
-                  ],
-                  scriptLines: [
-                    'Our team has previously shipped production systems handling millions in volume.',
-                    'We are ready to deploy into our commercial pilot next month. Thank you!',
-                  ],
-                  allocatedSeconds: 20,
-                },
-              ],
-            }
+            effectiveWorkspace.slideDeck ||
+            buildDeckFromTemplate(getDefaultTemplateIdForOpportunity(opportunity.type), {
+              workspaceId: opportunity.id,
+              opportunityTitle: opportunity.title,
+              opportunity,
+              repoUrl: effectiveWorkspace.githubRepoUrl,
+            })
           }
           opportunityTitle={opportunity.title}
         />
@@ -1261,6 +1161,11 @@ const InteractiveChecklistRow: React.FC<InteractiveChecklistRowProps> = ({
                       <input
                         id={urlFieldId}
                         type="url"
+                        inputMode="url"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
+                        enterKeyHint="done"
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
                         onBlur={handleUrlBlur}

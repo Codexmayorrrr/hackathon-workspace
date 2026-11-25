@@ -86,7 +86,7 @@ export const AppShell: React.FC = () => {
 
       <div
         id="app-shell-root"
-        className="min-h-screen bg-[#FAFAFB] text-[#18181B] flex flex-col md:flex-row antialiased"
+        className="min-h-[100dvh] bg-[#FAFAFB] text-[#18181B] flex flex-col md:flex-row antialiased"
       >
         {/* Desktop & Tablet Sidebar (>= 768px) */}
         <Sidebar
@@ -95,10 +95,13 @@ export const AppShell: React.FC = () => {
         />
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-[#FAFAFB]">
-          {/* Mobile Top Header (< 768px) - Reflows safely down to 320px */}
-          <header className="md:hidden flex items-center justify-between gap-2 px-3 sm:px-4 h-14 bg-white/95 backdrop-blur-xl shadow-[0_1px_0_0_oklch(0_0_0/0.06)] sticky top-0 z-30">
-            <NavLink to="/discover" className="flex items-center gap-2 min-w-0 rounded-lg py-1">
+        <div className="flex-1 flex flex-col min-w-0 min-h-[100dvh] bg-[#FAFAFB]">
+          {/* Mobile Top Header (< 768px) - Reflows safely down to 320px and clears safe-area notch */}
+          <header className="md:hidden flex items-center justify-between gap-2 min-h-[calc(3.5rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top)] ps-[max(0.75rem,env(safe-area-inset-left))] pe-[max(0.75rem,env(safe-area-inset-right))] bg-white/95 backdrop-blur-xl shadow-[0_1px_0_0_oklch(0_0_0/0.06)] sticky top-0 z-30">
+            <NavLink
+              to="/discover"
+              className="flex items-center gap-2 min-w-0 rounded-lg py-1 active:scale-[0.96] transition-transform duration-150"
+            >
               <div
                 aria-hidden="true"
                 className="w-6 h-6 rounded-[4px] bg-[#DECAFF] flex items-center justify-center text-[#18181B] font-bold text-xs flex-shrink-0"
@@ -116,7 +119,7 @@ export const AppShell: React.FC = () => {
                 type="button"
                 onClick={() => setVaultModalOpen(true)}
                 aria-label="Open Reusable Vault"
-                className="w-9 h-9 rounded-xl btn-tactile-secondary text-[#18181B] flex items-center justify-center"
+                className="relative w-9 h-9 rounded-xl btn-tactile-secondary text-[#18181B] flex items-center justify-center before:content-[''] before:absolute before:-inset-1"
               >
                 <FolderArchive aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
               </button>
@@ -124,7 +127,7 @@ export const AppShell: React.FC = () => {
                 type="button"
                 onClick={() => setCalendarModalOpen(true)}
                 aria-label="Open Calendar Sync"
-                className="w-9 h-9 rounded-xl btn-tactile-secondary text-[#18181B] flex items-center justify-center"
+                className="relative w-9 h-9 rounded-xl btn-tactile-secondary text-[#18181B] flex items-center justify-center before:content-[''] before:absolute before:-inset-1"
               >
                 <Calendar aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
               </button>
@@ -135,7 +138,7 @@ export const AppShell: React.FC = () => {
           <main
             id="main"
             tabIndex={-1}
-            className="flex-1 w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-6 sm:py-10 pb-24 md:pb-12 focus-visible:outline-none"
+            className="flex-1 w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-6 sm:py-10 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] md:pb-12 focus-visible:outline-none"
           >
             <Outlet />
           </main>
@@ -144,7 +147,7 @@ export const AppShell: React.FC = () => {
         {/* Mobile Fixed Bottom Nav (< 768px) - 4 even flex slots fit cleanly at 320px */}
         <nav
           aria-label="Primary mobile navigation"
-          className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl shadow-[0_-1px_0_0_oklch(0_0_0/0.06)] px-1.5 pt-1.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-1"
+          className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl shadow-[0_-1px_0_0_oklch(0_0_0/0.06)] ps-[max(0.375rem,env(safe-area-inset-left))] pe-[max(0.375rem,env(safe-area-inset-right))] pt-1.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-1"
         >
           {mobileNavLinks.map((item) => {
             const Icon = item.icon;
