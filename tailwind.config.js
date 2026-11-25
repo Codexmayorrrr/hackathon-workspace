@@ -4,48 +4,40 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        border: 'hsl(var(--border))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+        canvas: 'var(--bg-canvas)',
+        surface: {
+          DEFAULT: 'var(--bg-card)',
+          subtle: 'var(--bg-subtle)',
+          hover: 'var(--bg-hover)',
         },
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-          hover: 'hsl(var(--primary-hover))',
+        ink: {
+          DEFAULT: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          muted: 'var(--text-muted)',
         },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+        lavender: {
+          DEFAULT: '#DECAFF',
+          soft: '#EFE6FF',
+          ink: '#3B0764',
         },
       },
       fontFamily: {
         sans: [
-          'Inter',
+          '"Instrument Sans"',
           '-apple-system',
           'BlinkMacSystemFont',
-          '"SF Pro Text"',
-          '"SF Pro Display"',
           'system-ui',
           'sans-serif',
         ],
         mono: [
-          '"SF Mono"',
-          'Menlo',
-          'Monaco',
-          'Consolas',
-          '"Liberation Mono"',
-          'monospace',
+          '"Instrument Sans"',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'system-ui',
+          'sans-serif',
         ],
       },
       borderRadius: {
@@ -53,12 +45,11 @@ export default {
         '3xl': '1.25rem',
       },
       boxShadow: {
-        'subtle': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        'apple': '0 4px 20px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04)',
-        'glow-primary': '0 0 24px -4px rgba(59, 130, 246, 0.35)',
-        'glow-amber': '0 0 24px -4px rgba(245, 158, 11, 0.35)',
+        'border': 'var(--shadow-border)',
+        'border-hover': 'var(--shadow-border-hover)',
+        'dialog': '0 0 0 1px rgba(24, 24, 27, 0.08), 0 12px 32px -4px rgba(24, 24, 27, 0.12)',
       },
     },
   },
   plugins: [],
-}
+};

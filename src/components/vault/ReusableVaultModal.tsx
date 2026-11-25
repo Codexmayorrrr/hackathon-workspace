@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  X, 
-  FolderArchive, 
-  Copy, 
-  Check, 
-  Plus, 
-  Trash2, 
-  Edit3, 
+import { motion } from 'framer-motion';
+import {
+  X,
+  FolderArchive,
+  Copy,
+  Check,
+  Plus,
+  Trash2,
+  Edit3,
   Sparkles,
   ArrowRight,
-  Search
+  Search,
 } from 'lucide-react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import { VaultCategory, VaultItem, ApplicationRequirement } from '../../types';
+import { AccessibleModal } from '../ui/AccessibleModal';
 import { toast } from 'sonner';
 
 interface ReusableVaultModalProps {
@@ -48,6 +49,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
   const addVaultItem = useWorkspaceStore((state) => state.addVaultItem);
   const updateVaultItem = useWorkspaceStore((state) => state.updateVaultItem);
   const deleteVaultItem = useWorkspaceStore((state) => state.deleteVaultItem);
+  const restoreVaultItem = useWorkspaceStore((state) => state.restoreVaultItem);
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,7 +57,6 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // New Item Form State
   const [formTitle, setFormTitle] = useState('');
   const [formCategory, setFormCategory] = useState<VaultCategory>('bio');
   const [formContent, setFormContent] = useState('');
@@ -69,8 +70,6 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
       setEditingId(null);
     }
   }, [initialFormState, isOpen]);
-
-  if (!isOpen) return null;
 
   const countWords = (str: string) => str.trim().split(/\s+/).filter(Boolean).length;
 
@@ -94,10 +93,22 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
     }
   };
 
+  const handleDeleteWithUndo = (item: VaultItem) => {
+    deleteVaultItem(item.id);
+    toast('Snippet removed', {
+      description: item.title,
+      duration: 6000,
+      action: {
+        label: 'Undo',
+        onClick: () => restoreVaultItem(item),
+      },
+    });
+  };
+
   const handleSaveNew = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formTitle.trim() || !formContent.trim()) {
-      toast.error('Enter a title and content to continue');
+      toast.error('Enter both a title and snippet content');
       return;
     }
 
@@ -143,111 +154,108 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
     });
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-neutral-900/25 backdrop-blur-sm"
-          onClick={onClose}
-        >
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-            style={{ transformOrigin: 'center' }}
-            className="w-full max-w-2xl bg-white rounded-2xl p-6 sm:p-8 relative overflow-hidden max-h-[92vh] overflow-y-auto space-y-6"
-            onClick={(e) => e.stopPropagation()}
+    <AccessibleModal
+      isOpen={isOpen}
+      onClose={onClose}
+      titleId="vault-modal-title"
+      descriptionId="vault-modal-desc"
+      maxWidthClass="max-w-2xl"
+    >
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4 pb-4 border-b border-neutral-200/70">
+        <div className="flex items-center gap-3">
+          <div
+            aria-hidden="true"
+            className="w-10 h-10 rounded-xl bg-[#F4F4F6] flex items-center justify-center text-[#18181B]"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between pb-2">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-neutral-800">
-                  <FolderArchive className="w-5 h-5 stroke-[1.75]" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-neutral-900 tracking-tight [text-wrap:balance]">
-                    Reusable Vault
-                  </h3>
-                  <p className="text-xs text-neutral-500 [text-wrap:pretty]">
-                    Save your bio, project stories, and answers once. Insert them into any application with one click.
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 rounded-xl btn-tactile-ghost text-neutral-400 hover:text-neutral-700"
-                aria-label="Close modal"
-              >
-                <X className="w-4 h-4 stroke-[1.75]" />
-              </button>
-            </div>
+            <FolderArchive className="w-5 h-5 stroke-[1.75]" />
+          </div>
+          <div>
+            <h2 id="vault-modal-title" className="text-lg font-bold text-[#18181B] tracking-tight">
+              Reusable Vault
+            </h2>
+            <p id="vault-modal-desc" className="text-xs text-[#52525B]">
+              Save bios, origins, and core stories once. Insert them into any application in one click.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="w-9 h-9 rounded-xl btn-tactile-ghost flex items-center justify-center flex-shrink-0"
+          aria-label="Close Reusable Vault dialog"
+        >
+          <X aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
+        </button>
+      </div>
 
-            {/* Target Requirement Destination Banner */}
-            {targetRequirement && (
-              <div className="p-3.5 rounded-xl bg-neutral-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-                <div className="flex items-center gap-2 min-w-0">
-                  <Sparkles className="w-4 h-4 text-amber-400 stroke-[2] flex-shrink-0" />
-                  <span className="truncate">
-                    Destination: <strong className="text-white">{targetRequirement.title}</strong>
-                    {targetRequirement.maxWords && (
-                      <span className="text-neutral-300 font-mono text-[11px] ml-1">
-                        (limit: {targetRequirement.maxWords} words)
-                      </span>
-                    )}
+      <div className="space-y-5 pt-4">
+        {/* Target Requirement Destination Banner */}
+        {targetRequirement && (
+          <div className="p-3.5 rounded-xl bg-[#18181B] text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <Sparkles aria-hidden="true" className="w-4 h-4 text-[#DECAFF] stroke-[2] flex-shrink-0" />
+              <span className="truncate">
+                Destination: <strong className="text-white">{targetRequirement.title}</strong>
+                {targetRequirement.maxWords && (
+                  <span className="text-neutral-200 font-mono text-[11px] ms-1.5">
+                    (limit: {targetRequirement.maxWords} words)
                   </span>
-                </div>
-                <span className="text-[11px] text-neutral-400 flex-shrink-0">
-                  Click "Insert" on any snippet
-                </span>
-              </div>
-            )}
-
-            {/* Search Input */}
-            <div className="relative">
-              <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-2.5 stroke-[1.75]" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search snippets by title or content..."
-                className="w-full bg-[#F5F5F5] rounded-xl pl-9 pr-14 py-2 text-xs text-neutral-900 focus:outline-none placeholder:text-neutral-400 border-0"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-2 text-xs text-neutral-400 hover:text-neutral-700"
-                >
-                  Clear
-                </button>
-              )}
+                )}
+              </span>
             </div>
+            <span className="text-[11px] text-neutral-200 flex-shrink-0">
+              Select Insert on any snippet
+            </span>
+          </div>
+        )}
+
+        {/* Search Input */}
+        <div className="relative">
+          <label htmlFor="vault-search" className="sr-only">
+            Search reusable vault snippets
+          </label>
+          <Search aria-hidden="true" className="w-4 h-4 text-[#63636B] absolute start-3.5 top-2.5 stroke-[1.75] pointer-events-none" />
+          <input
+            id="vault-search"
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search snippets by title or content..."
+            className="field-surface w-full rounded-xl ps-9 pe-16 py-2 text-xs sm:text-[13px]"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute end-3 top-2 text-xs font-medium text-[#52525B] hover:text-[#18181B]"
+            >
+              Clear
+            </button>
+          )}
+        </div>
 
         {/* Category Pills & Add Trigger */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+          <div className="flex items-center gap-1.5 flex-wrap py-1" role="group" aria-label="Filter vault snippets by category">
             <button
+              type="button"
               onClick={() => setSelectedCategory('all')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap ${
-                selectedCategory === 'all'
-                  ? 'btn-tactile-primary font-semibold'
-                  : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-900'
+              aria-pressed={selectedCategory === 'all'}
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium min-h-[34px] ${
+                selectedCategory === 'all' ? 'btn-tactile-primary font-semibold' : 'btn-tactile-secondary'
               }`}
             >
               All ({vaultItems.length})
             </button>
             {Object.entries(CATEGORY_LABELS).map(([catKey, label]) => (
               <button
+                type="button"
                 key={catKey}
                 onClick={() => setSelectedCategory(catKey)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap ${
-                  selectedCategory === catKey
-                    ? 'btn-tactile-primary font-semibold'
-                    : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-900'
+                aria-pressed={selectedCategory === catKey}
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium min-h-[34px] ${
+                  selectedCategory === catKey ? 'btn-tactile-primary font-semibold' : 'btn-tactile-secondary'
                 }`}
               >
                 {label}
@@ -257,6 +265,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
 
           {!isAddingNew && (
             <button
+              type="button"
               onClick={() => {
                 setEditingId(null);
                 setFormTitle('');
@@ -264,9 +273,9 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
                 setFormCategory(selectedCategory === 'all' ? 'bio' : (selectedCategory as VaultCategory));
                 setIsAddingNew(true);
               }}
-              className="btn-tactile-primary px-3.5 py-2 rounded-xl text-xs font-semibold text-white flex items-center justify-center gap-1.5 flex-shrink-0"
+              className="btn-tactile-primary px-4 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 flex-shrink-0 min-h-[38px]"
             >
-              <Plus className="w-3.5 h-3.5 stroke-[2]" />
+              <Plus aria-hidden="true" className="w-3.5 h-3.5 stroke-[2]" />
               <span>Add snippet</span>
             </button>
           )}
@@ -274,22 +283,22 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
 
         {/* Add / Edit Form */}
         {isAddingNew && (
-          <motion.form 
+          <motion.form
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.16, ease: [0.23, 1, 0.32, 1] }}
-            onSubmit={handleSaveNew} 
-            className="p-5 rounded-2xl bg-[#FDFDFD] space-y-4"
+            onSubmit={handleSaveNew}
+            className="p-5 rounded-2xl bg-[#F4F4F6] space-y-4"
           >
             <div className="flex items-center justify-between">
-              <h4 className="text-xs sm:text-sm font-bold text-neutral-900 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-600 stroke-[1.75]" />
+              <h3 className="text-sm font-bold text-[#18181B] flex items-center gap-2">
+                <Sparkles aria-hidden="true" className="w-4 h-4 text-amber-700 stroke-[1.75]" />
                 <span>{editingId ? 'Edit snippet' : 'Add new snippet'}</span>
-              </h4>
+              </h3>
               <button
                 type="button"
                 onClick={() => setIsAddingNew(false)}
-                className="text-xs text-neutral-400 hover:text-neutral-700"
+                className="text-xs font-medium text-[#52525B] hover:text-[#18181B]"
               >
                 Cancel
               </button>
@@ -297,44 +306,55 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-neutral-600 block mb-1">Title</label>
+                <label htmlFor="vault-item-title" className="text-xs font-medium text-[#52525B] block mb-1.5">
+                  Title
+                </label>
                 <input
+                  id="vault-item-title"
                   type="text"
-                  placeholder="e.g., Short bio or problem statement"
+                  placeholder="e.g., Short founder bio"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  className="w-full bg-[#F5F5F5] rounded-xl px-3.5 py-2.5 text-base sm:text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 border-0"
+                  className="field-surface bg-white w-full rounded-xl px-3.5 py-2.5 text-base sm:text-sm"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-xs font-medium text-neutral-600 block mb-1">Category</label>
+                <label htmlFor="vault-item-category" className="text-xs font-medium text-[#52525B] block mb-1.5">
+                  Category
+                </label>
                 <select
+                  id="vault-item-category"
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value as VaultCategory)}
-                  className="w-full bg-[#F5F5F5] rounded-xl px-3.5 py-2.5 text-base sm:text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 border-0"
+                  className="field-surface bg-white w-full rounded-xl px-3.5 py-2.5 text-base sm:text-sm"
                 >
                   {Object.entries(CATEGORY_LABELS).map(([catKey, label]) => (
-                    <option key={catKey} value={catKey}>{label}</option>
+                    <option key={catKey} value={catKey}>
+                      {label}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="text-xs font-medium text-neutral-600">Content</label>
-                <span className="text-[11px] font-mono text-neutral-400 tabular-nums">
+              <div className="flex items-center justify-between mb-1.5">
+                <label htmlFor="vault-item-content" className="text-xs font-medium text-[#52525B]">
+                  Content
+                </label>
+                <span className="text-xs font-mono text-[#52525B] tabular-nums">
                   {countWords(formContent)} words
                 </span>
               </div>
               <textarea
+                id="vault-item-content"
                 rows={4}
-                placeholder="Write or paste your text here..."
+                placeholder="Write or paste reusable text..."
                 value={formContent}
                 onChange={(e) => setFormContent(e.target.value)}
-                className="w-full bg-[#F5F5F5] rounded-xl p-3.5 text-base sm:text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 leading-relaxed border-0"
+                className="field-surface bg-white w-full rounded-xl p-3.5 text-base sm:text-sm leading-relaxed"
                 required
               />
             </div>
@@ -343,13 +363,13 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
               <button
                 type="button"
                 onClick={() => setIsAddingNew(false)}
-                className="btn-tactile-secondary px-4 py-2 rounded-xl text-xs font-medium"
+                className="btn-tactile-secondary bg-white px-4 py-2 rounded-xl text-xs font-medium min-h-[38px]"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="btn-tactile-primary px-4.5 py-2 rounded-xl text-xs font-semibold text-white"
+                className="btn-tactile-primary px-4 py-2 rounded-xl text-xs font-semibold min-h-[38px]"
               >
                 {editingId ? 'Save changes' : 'Save snippet'}
               </button>
@@ -358,34 +378,37 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
         )}
 
         {/* Vault Items List */}
-        <div className="space-y-3.5">
+        <div className="space-y-3">
           {filteredItems.length === 0 ? (
-            <div className="p-8 rounded-2xl bg-[#FDFDFD] text-center space-y-3">
+            <div className="p-8 rounded-2xl bg-[#F4F4F6] text-center space-y-3">
               {searchQuery ? (
                 <>
                   <div className="space-y-1">
-                    <p className="text-sm font-semibold text-neutral-900">No matching snippets</p>
-                    <p className="text-xs text-neutral-500 max-w-sm mx-auto [text-wrap:pretty]">
-                      No snippets match "{searchQuery}". Try a different keyword or clear your search.
+                    <p className="text-sm font-semibold text-[#18181B]">
+                      No snippets match “{searchQuery}”
+                    </p>
+                    <p className="text-xs text-[#52525B] max-w-sm mx-auto">
+                      Try a different keyword or clear the search filter.
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
-                    className="btn-tactile-secondary px-3.5 py-1.5 rounded-xl text-xs font-medium"
+                    className="btn-tactile-secondary bg-white px-4 py-2 rounded-xl text-xs font-medium"
                   >
-                    Clear search
+                    Clear filter
                   </button>
                 </>
               ) : (
                 <>
                   <div className="space-y-1">
-                    <p className="text-sm font-semibold text-neutral-900">No snippets in this category yet</p>
-                    <p className="text-xs text-neutral-500 max-w-sm mx-auto [text-wrap:pretty]">
+                    <p className="text-sm font-semibold text-[#18181B]">No snippets in this category</p>
+                    <p className="text-xs text-[#52525B] max-w-sm mx-auto">
                       Save your bio, answers, or project stories to reuse them across applications.
                     </p>
                   </div>
                   <button
+                    type="button"
                     onClick={() => {
                       setEditingId(null);
                       setFormTitle('');
@@ -393,9 +416,9 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
                       setFormCategory(selectedCategory === 'all' ? 'bio' : (selectedCategory as VaultCategory));
                       setIsAddingNew(true);
                     }}
-                    className="btn-tactile-secondary px-3.5 py-1.5 rounded-xl text-xs font-medium inline-flex items-center gap-1.5"
+                    className="btn-tactile-secondary bg-white px-4 py-2 rounded-xl text-xs font-medium inline-flex items-center gap-1.5"
                   >
-                    <Plus className="w-3.5 h-3.5 stroke-[2]" />
+                    <Plus aria-hidden="true" className="w-3.5 h-3.5 stroke-[2]" />
                     <span>Add snippet</span>
                   </button>
                 </>
@@ -408,96 +431,101 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
               const diff = maxWords ? item.wordCount - maxWords : 0;
 
               return (
-                <div 
+                <div
                   key={item.id}
-                  className="p-5 rounded-2xl bg-[#FDFDFD] hover:bg-[#f9f9fa] transition-colors space-y-3"
+                  className="p-5 rounded-2xl bg-[#F4F4F6] space-y-3"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      <h4 className="text-sm font-semibold text-neutral-900 [text-wrap:balance]">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="text-sm font-semibold text-[#18181B]">
                         {item.title}
-                      </h4>
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#F5F5F5] text-neutral-600 font-medium">
+                      </h3>
+                      <span className="text-[11px] px-2 py-0.5 rounded-md bg-white shadow-[0_0_0_1px_oklch(0_0_0/0.05)] text-[#52525B] font-medium">
                         {CATEGORY_LABELS[item.category]}
                       </span>
-                      <span className="text-[11px] font-mono text-neutral-400 tabular-nums">
+                      <span className="text-xs font-mono text-[#52525B] tabular-nums">
                         {item.wordCount} words
                       </span>
                       {maxWords && (
-                        <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
-                          fits ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800'
-                        }`}>
-                          {fits ? `Fits limit (${item.wordCount}/${maxWords}w)` : `${diff}w over limit`}
+                        <span
+                          className={`text-[11px] font-semibold px-2 py-0.5 rounded-md ${
+                            fits ? 'bg-[#ECFDF5] text-[#065F46]' : 'bg-[#FEF3C7] text-[#92400E]'
+                          }`}
+                        >
+                          {fits ? `Fits (${item.wordCount}/${maxWords}w)` : `${diff}w over limit`}
                         </span>
                       )}
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <div className="flex items-center gap-1.5 self-start sm:self-auto">
                       {onInsertSnippet && (
                         <button
+                          type="button"
                           onClick={() => handleInsert(item)}
-                          className="btn-tactile-primary px-3 py-1.5 rounded-xl text-xs font-semibold text-white flex items-center gap-1.5"
+                          className="btn-tactile-primary ps-3.5 pe-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 min-h-[36px]"
                         >
                           <span>Insert</span>
-                          <ArrowRight className="w-3 h-3 stroke-[2]" />
+                          <ArrowRight aria-hidden="true" className="w-3.5 h-3.5 stroke-[2] rtl:-scale-x-100" />
                         </button>
                       )}
 
-                    <button
-                      onClick={() => handleCopy(item)}
-                      className="btn-tactile-secondary p-2 rounded-xl"
-                      title="Copy text"
-                    >
-                      {copiedId === item.id ? (
-                        <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
-                      ) : (
-                        <Copy className="w-3.5 h-3.5 stroke-[1.75]" />
-                      )}
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(item)}
+                        className="btn-tactile-secondary bg-white w-9 h-9 rounded-xl flex items-center justify-center"
+                        title={`Copy "${item.title}"`}
+                        aria-label={`Copy "${item.title}"`}
+                      >
+                        {copiedId === item.id ? (
+                          <Check aria-hidden="true" className="w-3.5 h-3.5 text-emerald-700 stroke-[2.25]" />
+                        ) : (
+                          <Copy aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
+                        )}
+                      </button>
 
-                    <button
-                      onClick={() => startEdit(item)}
-                      className="btn-tactile-secondary p-2 rounded-xl"
-                      title="Edit snippet"
-                    >
-                      <Edit3 className="w-3.5 h-3.5 stroke-[1.75]" />
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => startEdit(item)}
+                        className="btn-tactile-secondary bg-white w-9 h-9 rounded-xl flex items-center justify-center"
+                        title={`Edit "${item.title}"`}
+                        aria-label={`Edit "${item.title}"`}
+                      >
+                        <Edit3 aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
+                      </button>
 
-                    <button
-                      onClick={() => {
-                        deleteVaultItem(item.id);
-                        toast.success('Snippet deleted');
-                      }}
-                      className="btn-tactile-secondary p-2 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-neutral-400"
-                      title="Delete snippet"
-                    >
-                      <Trash2 className="w-3.5 h-3.5 stroke-[1.75]" />
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteWithUndo(item)}
+                        className="btn-tactile-secondary bg-white w-9 h-9 rounded-xl flex items-center justify-center text-rose-700 hover:bg-rose-50"
+                        title={`Delete "${item.title}"`}
+                        aria-label={`Delete "${item.title}"`}
+                      >
+                        <Trash2 aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed [text-wrap:pretty]">
-                  {item.content}
-                </p>
-              </div>
-            );
-          })
-        )}
+                  <p className="text-xs sm:text-[13px] text-[#52525B] leading-relaxed">
+                    {item.content}
+                  </p>
+                </div>
+              );
+            })
+          )}
         </div>
 
         {/* Footer */}
-        <div className="pt-2 flex justify-end">
+        <div className="pt-2 flex justify-end border-t border-neutral-200/70">
           <button
+            type="button"
             onClick={onClose}
-            className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold text-white"
+            className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold min-h-[40px]"
           >
             Done
           </button>
         </div>
-      </motion.div>
-    </motion.div>
-  )}
-</AnimatePresence>
+      </div>
+    </AccessibleModal>
   );
 };

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Video, 
-  Play, 
-  Pause, 
-  RotateCcw, 
-  Volume2, 
-  Download
+import {
+  Video,
+  Play,
+  Pause,
+  RotateCcw,
+  Volume2,
+  Download,
 } from 'lucide-react';
 import { Opportunity } from '../../types';
 import { toast } from 'sonner';
@@ -83,8 +83,8 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
           return next;
         });
       }, 1000);
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
+    } else if (timerRef.current) {
+      clearInterval(timerRef.current);
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -104,57 +104,54 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header Banner - PRD §3.H All in one place */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] space-y-4">
+      {/* Header Banner */}
+      <div className="p-5 sm:p-6 rounded-2xl bg-[#F4F4F6] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-neutral-800">
+          <div className="flex items-start gap-3">
+            <div
+              aria-hidden="true"
+              className="w-10 h-10 rounded-xl bg-white shadow-border flex items-center justify-center text-[#18181B] flex-shrink-0"
+            >
               <Video className="w-5 h-5 stroke-[1.75]" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base sm:text-lg font-bold text-neutral-900 tracking-tight [text-wrap:balance]">
-                  Demo Video Studio (Script, Voice & Video)
-                </h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F5F5F5] text-neutral-700 font-mono font-semibold">
-                  PRD §3.H Single Flow
-                </span>
-              </div>
-              <p className="text-xs text-neutral-500 [text-wrap:pretty]">
-                No more jumping between Remotion, ElevenLabs, and video editors. Synthesizes script, voiceover, and visual storyboard in one unified timeline.
+              <h4 className="text-base font-bold text-[#18181B] tracking-tight">
+                Demo Video Studio
+              </h4>
+              <p className="text-xs text-[#52525B] mt-0.5 max-w-[60ch]">
+                Coordinate scene visuals, script cadence, and voiceover timing on one storyboard.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => toast.success('Video exported as MP4 (1080p)')}
-              className="btn-tactile-primary px-4.5 py-2.5 rounded-xl text-xs font-semibold active:scale-[0.97] text-white flex items-center gap-1.5"
-            >
-              <Download className="w-3.5 h-3.5 stroke-[1.75]" />
-              <span>Export Final Video</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => toast.success('Prepared MP4 (1080p) storyboard export')}
+            className="btn-tactile-primary px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 self-start sm:self-auto min-h-[40px]"
+          >
+            <Download aria-hidden="true" className="w-3.5 h-3.5 stroke-[2]" />
+            <span>Export video</span>
+          </button>
         </div>
 
         {/* Voice Persona Selector */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-2 text-xs">
-          <span className="text-neutral-400 font-medium text-[11px] flex-shrink-0">Voice Persona:</span>
+        <div className="flex items-center gap-2 flex-wrap pt-1 text-xs" role="group" aria-label="Voiceover persona">
+          <span className="text-[#52525B] font-medium text-xs">Narrator:</span>
           {[
-            { id: 'kelechi', label: 'Kelechi — Confident African English' },
-            { id: 'amara', label: 'Amara — Warm Tech Storyteller' },
-            { id: 'marcus', label: 'Marcus — Fast-Paced Technical Explainer' },
+            { id: 'kelechi', label: 'Kelechi — Crisp Technical' },
+            { id: 'amara', label: 'Amara — Storyteller' },
+            { id: 'marcus', label: 'Marcus — Fast Walkthrough' },
           ].map((v) => (
             <button
+              type="button"
               key={v.id}
               onClick={() => {
                 setVoicePersona(v.id as any);
-                toast.info(`Switched voice to ${v.label.split('—')[0].trim()}`);
+                toast.info(`Selected narrator: ${v.label.split('—')[0].trim()}`);
               }}
-              className={`px-3 py-1.5 rounded-xl font-medium whitespace-nowrap ${
-                voicePersona === v.id
-                  ? 'btn-tactile-primary font-semibold'
-                  : 'btn-tactile-secondary text-neutral-700'
+              aria-pressed={voicePersona === v.id}
+              className={`px-3 py-1.5 rounded-xl font-medium min-h-[34px] ${
+                voicePersona === v.id ? 'btn-tactile-primary font-semibold' : 'btn-tactile-secondary bg-white'
               }`}
             >
               {v.label}
@@ -165,12 +162,11 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
 
       {/* Main Video Canvas & Timeline Player */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: 16:9 Video Simulation Screen (7 cols) */}
+        {/* Left: 16:9 Video Simulation Screen */}
         <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
-          <div className="aspect-[16/9] w-full bg-neutral-950 rounded-2xl p-6 sm:p-8 flex flex-col justify-between text-white relative overflow-hidden select-none">
-            {/* Top Video Header */}
-            <div className="flex items-center justify-between text-xs text-neutral-400">
-              <span className="font-mono text-[10px] tracking-wider uppercase bg-white/10 px-2 py-0.5 rounded">
+          <div className="aspect-[16/9] w-full bg-[#18181B] rounded-2xl p-5 sm:p-8 flex flex-col justify-between text-white relative overflow-hidden">
+            <div className="flex items-center justify-between text-xs text-neutral-300">
+              <span className="font-mono text-[11px] tracking-wider uppercase bg-white/10 px-2.5 py-0.5 rounded">
                 1080p · 60fps Preview
               </span>
               <span className="font-mono text-xs tabular-nums text-white font-bold">
@@ -178,62 +174,68 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
               </span>
             </div>
 
-            {/* Video Visual Stage Graphic Simulation */}
-            <div className="my-auto space-y-3 max-w-lg">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-400">
+            <div className="my-auto py-3 space-y-2.5 max-w-lg">
+              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-300">
                 {activeScene.title}
               </span>
-              <h4 className="text-lg sm:text-xl font-bold tracking-tight leading-snug">
+              <h5 className="text-base sm:text-xl font-bold tracking-tight leading-snug text-white">
                 {activeScene.visualCue}
-              </h4>
+              </h5>
             </div>
 
-            {/* Bottom Subtitle / Voiceover Overlay */}
-            <div className="bg-black/60 backdrop-blur-md p-3.5 rounded-xl space-y-1">
-              <div className="flex items-center gap-2 text-[10px] text-amber-300 font-mono">
-                <Volume2 className="w-3 h-3 stroke-[2]" />
-                <span>Voiceover Stream:</span>
+            <div className="bg-black/65 backdrop-blur-md p-3.5 rounded-xl space-y-1">
+              <div className="flex items-center gap-2 text-[11px] text-amber-300 font-mono">
+                <Volume2 aria-hidden="true" className="w-3.5 h-3.5 stroke-[2]" />
+                <span>Voiceover stream:</span>
               </div>
-              <p className="text-xs sm:text-sm text-neutral-200 leading-relaxed [text-wrap:pretty]">
-                "{activeScene.voiceoverText}"
+              <p className="text-xs sm:text-sm text-neutral-100 leading-relaxed">
+                “{activeScene.voiceoverText}”
               </p>
             </div>
           </div>
 
           {/* Scrubber & Controls */}
-          <div className="p-4 rounded-2xl bg-[#FDFDFD] flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
+          <div className="p-4 rounded-2xl bg-[#F4F4F6] flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
               <button
+                type="button"
                 onClick={() => setIsPlaying(!isPlaying)}
+                aria-label={isPlaying ? 'Pause preview playback' : 'Play preview playback'}
                 className="w-10 h-10 rounded-xl btn-tactile-primary flex items-center justify-center"
               >
-                {isPlaying ? <Pause className="w-4 h-4 fill-white" /> : <Play className="w-4 h-4 fill-white ml-0.5" />}
+                {isPlaying ? (
+                  <Pause aria-hidden="true" className="w-4 h-4 fill-white" />
+                ) : (
+                  <Play aria-hidden="true" className="w-4 h-4 fill-white translate-x-[1px]" />
+                )}
               </button>
               <button
+                type="button"
                 onClick={() => {
                   setIsPlaying(false);
                   setCurrentSec(0);
                   setActiveSceneIndex(0);
                 }}
-                className="p-2.5 rounded-xl btn-tactile-ghost text-neutral-500 hover:text-neutral-900"
+                className="w-10 h-10 rounded-xl btn-tactile-secondary bg-white flex items-center justify-center"
                 title="Restart playback"
+                aria-label="Restart playback"
               >
-                <RotateCcw className="w-4 h-4 stroke-[1.75]" />
+                <RotateCcw aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
               </button>
-              <span className="text-xs font-mono font-bold text-neutral-900 tabular-nums">
+              <span className="text-xs font-mono font-bold text-[#18181B] tabular-nums ms-1">
                 {formatTime(currentSec)} / 1:30
               </span>
             </div>
 
-            <div className="flex items-center gap-1.5 overflow-x-auto text-xs">
+            <div className="flex items-center gap-1.5 flex-wrap text-xs" role="group" aria-label="Jump to scene">
               {scenes.map((s, idx) => (
                 <button
+                  type="button"
                   key={s.id}
                   onClick={() => handleSeekScene(idx)}
-                  className={`px-2.5 py-1 rounded-lg font-mono text-[11px] whitespace-nowrap ${
-                    activeSceneIndex === idx
-                      ? 'btn-tactile-primary font-semibold'
-                      : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-900'
+                  aria-current={activeSceneIndex === idx ? 'step' : undefined}
+                  className={`px-2.5 py-1.5 rounded-lg font-mono text-xs min-h-[32px] ${
+                    activeSceneIndex === idx ? 'btn-tactile-primary font-semibold' : 'btn-tactile-secondary bg-white'
                   }`}
                 >
                   Scene {idx + 1}
@@ -243,9 +245,9 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
           </div>
         </div>
 
-        {/* Right: 4-Scene Storyboard Editor (5 cols) */}
-        <div className="lg:col-span-5 space-y-3.5">
-          <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider block px-1">
+        {/* Right: 4-Scene Storyboard Editor */}
+        <div className="lg:col-span-5 space-y-3">
+          <span className="text-xs font-semibold text-[#52525B] uppercase tracking-wider block px-1">
             4-Step Demo Storyboard
           </span>
 
@@ -253,32 +255,34 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
             const isActive = activeSceneIndex === idx;
 
             return (
-              <div
+              <button
+                type="button"
                 key={scene.id}
                 onClick={() => handleSeekScene(idx)}
-                className={`p-4 rounded-xl cursor-pointer transition-[transform,background-color] duration-150 active:scale-[0.98] space-y-2 ${
+                aria-current={isActive ? 'step' : undefined}
+                className={`w-full text-start p-4 rounded-xl transition-[transform,background-color,box-shadow] duration-150 active:scale-[0.98] space-y-2 ${
                   isActive
-                    ? 'bg-[#FDFDFD] ring-2 ring-neutral-900'
-                    : 'bg-[#FDFDFD] hover:bg-[#f9f9fa]'
+                    ? 'surface-card ring-2 ring-[#18181B]'
+                    : 'bg-[#F4F4F6] hover:bg-[#EBECEF]'
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-neutral-900">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-bold text-[#18181B]">
                     {scene.title}
                   </span>
-                  <span className="text-[10px] font-mono text-neutral-400 tabular-nums">
+                  <span className="text-[11px] font-mono text-[#52525B] tabular-nums flex-shrink-0">
                     {formatTime(scene.startSec)} – {formatTime(scene.endSec)}
                   </span>
                 </div>
 
-                <p className="text-[11px] text-neutral-500 line-clamp-2">
-                  <strong className="text-neutral-700">Visual:</strong> {scene.visualCue}
+                <p className="text-xs text-[#52525B] line-clamp-2">
+                  <strong className="text-[#18181B]">Visual:</strong> {scene.visualCue}
                 </p>
 
-                <p className="text-xs text-neutral-700 italic line-clamp-2 [text-wrap:pretty]">
-                  "{scene.voiceoverText}"
+                <p className="text-xs text-[#52525B] italic line-clamp-2">
+                  “{scene.voiceoverText}”
                 </p>
-              </div>
+              </button>
             );
           })}
         </div>

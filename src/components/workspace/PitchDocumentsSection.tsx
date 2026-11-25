@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Presentation, 
-  FileText 
-} from 'lucide-react';
+import { Presentation, FileText } from 'lucide-react';
 import { Opportunity } from '../../types';
 import { SlideDeckGenerator } from '../pitch/SlideDeckGenerator';
 import { DocumentProposalGenerator } from './DocumentProposalGenerator';
@@ -16,7 +13,6 @@ export const PitchDocumentsSection: React.FC<PitchDocumentsSectionProps> = ({
   opportunity,
   onLaunchCoach,
 }) => {
-  // If the opportunity is a grant, default to 'proposal', otherwise 'slides'
   const isGrant = opportunity.type === 'grant';
   const [activeSubTab, setActiveSubTab] = useState<'slides' | 'proposals'>(
     isGrant ? 'proposals' : 'slides'
@@ -24,41 +20,49 @@ export const PitchDocumentsSection: React.FC<PitchDocumentsSectionProps> = ({
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-10">
-      {/* Section Sub-nav Pill Header */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Section Sub-nav Header */}
+      <div className="surface-card p-6 sm:p-8 rounded-2xl space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1">
-            <h2 className="text-lg sm:text-xl font-bold text-neutral-900 tracking-tight">
+            <h2 className="text-lg sm:text-xl font-bold text-[#18181B] tracking-tight">
               Pitch & Documentation Studio
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed" style={{ textWrap: 'pretty' }}>
-              Generate interactive pitch decks with real-time audio rehearsal and draft executive proposals with budget breakdowns.
+            <p className="text-xs sm:text-sm text-[#52525B] leading-relaxed max-w-[65ch]">
+              Generate interactive pitch decks with live rehearsal timing and draft structured proposals with budget breakdowns.
             </p>
           </div>
 
-          <div className="flex items-center gap-1 bg-[#F5F5F5] p-1 rounded-xl self-start sm:self-auto">
+          <div
+            className="flex items-center gap-1 bg-[#F4F4F6] p-1 rounded-xl self-start lg:self-auto flex-wrap"
+            role="group"
+            aria-label="Document mode"
+          >
             <button
+              type="button"
               onClick={() => setActiveSubTab('slides')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-[0.97] ${
+              aria-pressed={activeSubTab === 'slides'}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] min-h-[34px] ${
                 activeSubTab === 'slides'
-                  ? 'bg-white text-neutral-950 font-semibold'
-                  : 'text-neutral-500 hover:text-neutral-900'
+                  ? 'bg-white shadow-border text-[#18181B] font-semibold'
+                  : 'text-[#52525B] hover:text-[#18181B]'
               }`}
             >
-              <Presentation className="w-3.5 h-3.5 stroke-[1.75]" />
-              <span>Pitch Deck & Coach</span>
+              <Presentation aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
+              <span>Pitch deck & coach</span>
             </button>
 
             <button
+              type="button"
               onClick={() => setActiveSubTab('proposals')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-[0.97] ${
+              aria-pressed={activeSubTab === 'proposals'}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-[transform,background-color,color] duration-150 active:scale-[0.96] min-h-[34px] ${
                 activeSubTab === 'proposals'
-                  ? 'bg-white text-neutral-950 font-semibold'
-                  : 'text-neutral-500 hover:text-neutral-900'
+                  ? 'bg-white shadow-border text-[#18181B] font-semibold'
+                  : 'text-[#52525B] hover:text-[#18181B]'
               }`}
             >
-              <FileText className="w-3.5 h-3.5 stroke-[1.75]" />
-              <span>Written Proposal & Budget</span>
+              <FileText aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
+              <span>Proposal & budget</span>
             </button>
           </div>
         </div>

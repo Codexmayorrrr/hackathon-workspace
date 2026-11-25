@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { MotionConfig } from 'framer-motion';
 import { Toaster } from 'sonner';
 import { AppShell } from './components/layout/AppShell';
 import { DiscoverPage } from './pages/DiscoverPage';
@@ -11,37 +12,40 @@ import { WinnersLeaderboardPage } from './pages/WinnersLeaderboardPage';
 
 export function App() {
   return (
-    <BrowserRouter>
-      <Toaster 
-        theme="light" 
-        position="top-right" 
-        richColors 
-        closeButton
-        toastOptions={{
-          style: {
-            background: '#FDFDFD',
-            border: 'none',
-            boxShadow: 'none',
-            color: '#18181b',
-            borderRadius: '16px',
-            padding: '14px 18px',
-          }
-        }}
-      />
-      <Routes>
-        <Route path="/" element={<AppShell />}>
-          <Route index element={<Navigate to="/discover" replace />} />
-          <Route path="discover" element={<DiscoverPage />} />
-          <Route path="discover/:sectionType" element={<SectionRailPage />} />
-          <Route path="opportunities/:slug" element={<OpportunityDetailPage />} />
-          <Route path="saved" element={<SavedQueuePage />} />
-          <Route path="workspaces/:workspaceId" element={<WorkspacePage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="winners" element={<WinnersLeaderboardPage />} />
-          <Route path="*" element={<Navigate to="/discover" replace />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <MotionConfig reducedMotion="user">
+      <BrowserRouter>
+        <Toaster
+          theme="light"
+          position="top-right"
+          richColors
+          closeButton
+          toastOptions={{
+            style: {
+              fontFamily: 'inherit',
+              background: '#FFFFFF',
+              border: 'none',
+              boxShadow: '0 0 0 1px oklch(0 0 0 / 0.08), 0 8px 24px -4px oklch(0 0 0 / 0.08)',
+              color: '#18181B',
+              borderRadius: '16px',
+              padding: '14px 18px',
+            },
+          }}
+        />
+        <Routes>
+          <Route path="/" element={<AppShell />}>
+            <Route index element={<Navigate to="/discover" replace />} />
+            <Route path="discover" element={<DiscoverPage />} />
+            <Route path="discover/:sectionType" element={<SectionRailPage />} />
+            <Route path="opportunities/:slug" element={<OpportunityDetailPage />} />
+            <Route path="saved" element={<SavedQueuePage />} />
+            <Route path="workspaces/:workspaceId" element={<WorkspacePage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="winners" element={<WinnersLeaderboardPage />} />
+            <Route path="*" element={<Navigate to="/discover" replace />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </MotionConfig>
   );
 }
 

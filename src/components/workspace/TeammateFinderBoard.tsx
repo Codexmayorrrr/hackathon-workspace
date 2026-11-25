@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { 
-  Users, 
-  UserPlus, 
-  Sparkles, 
-  Check, 
-  ExternalLink, 
-  Github, 
-  Trophy, 
-  ShieldCheck
+import {
+  Users,
+  UserPlus,
+  Sparkles,
+  Check,
+  ExternalLink,
+  Github,
+  Trophy,
+  ShieldCheck,
 } from 'lucide-react';
 import { TeammateProfile, TeammateSkill } from '../../types';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
+import { Avatar } from '../ui/Avatar';
 import { toast } from 'sonner';
 
 interface TeammateFinderBoardProps {
@@ -75,15 +76,13 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
   const addTeammateToWorkspace = useWorkspaceStore((state) => state.addTeammateToWorkspace);
 
   const teamMembers = workspace?.teamMembers || [];
-  const [activeTab, setActiveTab] = useState<'available' | 'need_people' | 'my_team'>('available');
+  const [activeTab, setActiveTab] = useState<'available' | 'my_team'>('available');
   const [candidates] = useState<TeammateProfile[]>(MOCK_CANDIDATES);
   const [invitedIds, setInvitedIds] = useState<string[]>([]);
 
-  // Collect all skills already represented in current team
   const coveredSkills = new Set<TeammateSkill>();
   teamMembers.forEach((m) => m.skills.forEach((s) => coveredSkills.add(s)));
 
-  // Identify skill gaps (PRD §3.L: "A team with backend + designer + pitch beats 4 backend devs")
   const desiredSkills: TeammateSkill[] = [
     'Backend',
     'Frontend',
@@ -97,53 +96,52 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
   const handleInviteCandidate = (candidate: TeammateProfile) => {
     addTeammateToWorkspace(workspaceId, candidate);
     setInvitedIds((prev) => [...prev, candidate.id]);
-    toast.success(`${candidate.name} joined your team!`, {
-      description: `Roster updated with ${candidate.skills.join(', ')} skills.`,
+    toast.success(`${candidate.name} joined your team`, {
+      description: `Added ${candidate.skills.join(', ')} coverage.`,
     });
   };
 
   return (
     <div className="space-y-6">
-      {/* Header Banner - Complementary Skill Matching */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] space-y-4">
+      {/* Header Banner */}
+      <div className="surface-card p-6 sm:p-8 rounded-2xl space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-neutral-800">
+          <div className="flex items-start gap-3">
+            <div
+              aria-hidden="true"
+              className="w-10 h-10 rounded-xl bg-[#EEF2FF] text-[#3730A3] flex items-center justify-center flex-shrink-0"
+            >
               <Users className="w-5 h-5 stroke-[1.75]" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base sm:text-lg font-bold text-neutral-900 tracking-tight [text-wrap:balance]">
-                  Teammate Finder & Gap Matching
-                </h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F5F5F5] text-neutral-700 font-mono font-semibold">
-                  PRD §3.L
-                </span>
-              </div>
-              <p className="text-xs text-neutral-500 [text-wrap:pretty]">
-                Matches based on skill gaps. A team with a backend developer, a designer, and someone who can pitch beats four backend developers.
+              <h2 className="text-lg font-bold text-[#18181B] tracking-tight">
+                Teammates & Skill Coverage
+              </h2>
+              <p className="text-xs sm:text-sm text-[#52525B] mt-0.5 max-w-[65ch]">
+                Balance engineering, product design, and storytelling across your collaborator roster.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-semibold px-3 py-1 rounded-xl bg-[#F5F5F5] text-neutral-800">
-              {teamMembers.length} / 4 Members
-            </span>
-          </div>
+          <span className="text-xs font-mono font-semibold px-3 py-1.5 rounded-xl bg-[#F4F4F6] text-[#18181B] self-start sm:self-auto flex-shrink-0">
+            {teamMembers.length} / 4 Members
+          </span>
         </div>
 
         {/* Skill Gap Analysis Strip */}
-        <div className="pt-2 p-4 rounded-xl bg-[#F5F5F5] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="space-y-1">
-            <span className="text-xs font-semibold text-neutral-900 flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-amber-600 stroke-[2]" />
-              <span>Team Skill Composition:</span>
+        <div className="p-4 rounded-xl bg-[#F4F4F6] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1.5">
+            <span className="text-xs font-semibold text-[#18181B] flex items-center gap-2">
+              <Sparkles aria-hidden="true" className="w-3.5 h-3.5 text-[#92400E] stroke-[2]" />
+              <span>Covered team skills:</span>
             </span>
             <div className="flex items-center gap-1.5 flex-wrap">
               {Array.from(coveredSkills).map((s) => (
-                <span key={s} className="text-[11px] font-medium bg-white text-emerald-800 px-2.5 py-0.5 rounded-md flex items-center gap-1">
-                  <Check className="w-3 h-3 stroke-[2.5]" />
+                <span
+                  key={s}
+                  className="text-xs font-medium bg-white shadow-border text-[#065F46] px-2.5 py-0.5 rounded-md flex items-center gap-1"
+                >
+                  <Check aria-hidden="true" className="w-3 h-3 stroke-[2.5]" />
                   <span>{s}</span>
                 </span>
               ))}
@@ -151,93 +149,90 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
           </div>
 
           {missingSkills.length > 0 ? (
-            <div className="text-xs text-neutral-600 sm:text-right space-y-1">
-              <span className="text-rose-700 font-semibold block text-[11px]">Recommended Gap Hires:</span>
+            <div className="text-xs sm:text-end space-y-1.5">
+              <span className="text-rose-800 font-semibold block text-xs">Recommended additions:</span>
               <div className="flex items-center gap-1.5 sm:justify-end flex-wrap">
                 {missingSkills.map((m) => (
-                  <span key={m} className="text-[10px] font-semibold bg-rose-50 text-rose-800 px-2 py-0.5 rounded-md">
+                  <span key={m} className="text-[11px] font-semibold bg-rose-100 text-rose-900 px-2 py-0.5 rounded-md">
                     + {m}
                   </span>
                 ))}
               </div>
             </div>
           ) : (
-            <div className="text-xs text-emerald-700 font-medium flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 stroke-[2]" />
-              <span>Full multidisciplinary team coverage achieved!</span>
+            <div className="text-xs text-[#065F46] font-semibold flex items-center gap-1.5">
+              <ShieldCheck aria-hidden="true" className="w-4 h-4 stroke-[2]" />
+              <span>Full multidisciplinary coverage ready</span>
             </div>
           )}
         </div>
       </div>
 
       {/* Tabs Switcher */}
-      <div className="flex items-center gap-2 pb-2">
+      <div className="flex items-center gap-2 flex-wrap" role="group" aria-label="Team roster view">
         <button
+          type="button"
           onClick={() => setActiveTab('available')}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold ${
-            activeTab === 'available'
-              ? 'btn-tactile-primary'
-              : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-900'
+          aria-pressed={activeTab === 'available'}
+          className={`px-4 py-2 rounded-xl text-xs font-semibold min-h-[38px] ${
+            activeTab === 'available' ? 'btn-tactile-primary' : 'btn-tactile-secondary'
           }`}
         >
-          Candidates Available ({candidates.length})
+          Available candidates ({candidates.length})
         </button>
 
         <button
+          type="button"
           onClick={() => setActiveTab('my_team')}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold ${
-            activeTab === 'my_team'
-              ? 'btn-tactile-primary'
-              : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-900'
+          aria-pressed={activeTab === 'my_team'}
+          className={`px-4 py-2 rounded-xl text-xs font-semibold min-h-[38px] ${
+            activeTab === 'my_team' ? 'btn-tactile-primary' : 'btn-tactile-secondary'
           }`}
         >
-          Current Team Roster ({teamMembers.length})
+          Team roster ({teamMembers.length})
         </button>
       </div>
 
-      {/* Candidates List with Gap Matching Priority */}
+      {/* Candidates List */}
       {activeTab === 'available' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {candidates.map((candidate) => {
             const fillsGap = candidate.skills.some((s) => missingSkills.includes(s));
-            const isAlreadyOnTeam = teamMembers.some((m) => m.id === candidate.id) || invitedIds.includes(candidate.id);
+            const isAlreadyOnTeam =
+              teamMembers.some((m) => m.id === candidate.id) || invitedIds.includes(candidate.id);
 
             return (
-              <div
+              <article
                 key={candidate.id}
-                className="p-5 sm:p-6 rounded-2xl bg-[#FDFDFD] hover:bg-[#f9f9fa] transition-colors space-y-4 flex flex-col justify-between"
+                className="surface-card surface-card-interactive p-5 sm:p-6 rounded-2xl space-y-4 flex flex-col justify-between"
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={candidate.avatarUrl}
-                        alt={candidate.name}
-                        className="w-12 h-12 rounded-xl object-cover"
-                      />
-                      <div>
-                        <h4 className="text-sm font-bold text-neutral-900 [text-wrap:balance]">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Avatar src={candidate.avatarUrl} name={candidate.name} />
+                      <div className="min-w-0">
+                        <h3 className="text-sm font-bold text-[#18181B] truncate">
                           {candidate.name}
-                        </h4>
-                        <p className="text-xs text-neutral-400 font-mono">
+                        </h3>
+                        <p className="text-xs text-[#63636B] font-mono truncate">
                           {candidate.handle}
                         </p>
                       </div>
                     </div>
 
                     {candidate.verifiedWins > 0 && (
-                      <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-[#F5F5F5] text-amber-800 flex items-center gap-1">
-                        <Trophy className="w-3 h-3 stroke-[2] text-amber-600" />
+                      <span className="text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#92400E] flex items-center gap-1 flex-shrink-0">
+                        <Trophy aria-hidden="true" className="w-3 h-3 stroke-[2]" />
                         <span>{candidate.verifiedWins} Wins</span>
                       </span>
                     )}
                   </div>
 
-                  <p className="text-xs font-medium text-neutral-800">
+                  <p className="text-xs font-semibold text-[#18181B]">
                     {candidate.primaryRole}
                   </p>
 
-                  <p className="text-xs text-neutral-500 leading-relaxed [text-wrap:pretty]">
+                  <p className="text-xs text-[#52525B] leading-relaxed">
                     {candidate.bio}
                   </p>
 
@@ -248,13 +243,13 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
                       return (
                         <span
                           key={s}
-                          className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${
+                          className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-md ${
                             isNeeded
-                              ? 'bg-emerald-600 text-white'
-                              : 'bg-[#F5F5F5] text-neutral-700'
+                              ? 'bg-[#047857] text-white'
+                              : 'bg-[#F4F4F6] text-[#52525B]'
                           }`}
                         >
-                          {isNeeded ? `★ ${s}` : s}
+                          {isNeeded ? `Gap Match: ${s}` : s}
                         </span>
                       );
                     })}
@@ -262,16 +257,18 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
                 </div>
 
                 {/* Card Action */}
-                <div className="pt-3 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-neutral-400">
+                <div className="pt-3 flex items-center justify-between gap-3 border-t border-neutral-200/70">
+                  <div className="flex items-center gap-1.5">
                     {candidate.githubUrl && (
                       <a
                         href={candidate.githubUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="p-1.5 rounded-lg hover:bg-[#F5F5F5] hover:text-neutral-900 transition-colors"
+                        aria-label={`${candidate.name} on GitHub`}
+                        title={`${candidate.name} on GitHub`}
+                        className="w-9 h-9 rounded-lg btn-tactile-ghost flex items-center justify-center"
                       >
-                        <Github className="w-4 h-4 stroke-[1.75]" />
+                        <Github aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
                       </a>
                     )}
                     {candidate.portfolioUrl && (
@@ -279,19 +276,22 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
                         href={candidate.portfolioUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="p-1.5 rounded-lg hover:bg-[#F5F5F5] hover:text-neutral-900 transition-colors"
+                        aria-label={`${candidate.name} portfolio`}
+                        title={`${candidate.name} portfolio`}
+                        className="w-9 h-9 rounded-lg btn-tactile-ghost flex items-center justify-center"
                       >
-                        <ExternalLink className="w-4 h-4 stroke-[1.75]" />
+                        <ExternalLink aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
                       </a>
                     )}
                   </div>
 
                   <button
+                    type="button"
                     onClick={() => handleInviteCandidate(candidate)}
                     disabled={isAlreadyOnTeam}
-                    className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 ${
+                    className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 min-h-[38px] ${
                       isAlreadyOnTeam
-                        ? 'bg-neutral-200 text-neutral-500 cursor-default'
+                        ? 'bg-[#F4F4F6] text-[#52525B] cursor-default'
                         : fillsGap
                         ? 'btn-tactile-primary'
                         : 'btn-tactile-secondary'
@@ -299,18 +299,18 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
                   >
                     {isAlreadyOnTeam ? (
                       <>
-                        <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                        <span>On Team</span>
+                        <Check aria-hidden="true" className="w-3.5 h-3.5 stroke-[2.5]" />
+                        <span>On team</span>
                       </>
                     ) : (
                       <>
-                        <UserPlus className="w-3.5 h-3.5" />
-                        <span>{fillsGap ? 'Fill Team Gap' : 'Invite to Team'}</span>
+                        <UserPlus aria-hidden="true" className="w-3.5 h-3.5 stroke-[2]" />
+                        <span>{fillsGap ? 'Fill team gap' : 'Invite to team'}</span>
                       </>
                     )}
                   </button>
                 </div>
-              </div>
+              </article>
             );
           })}
         </div>
@@ -318,34 +318,28 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
 
       {/* Current Team Roster View */}
       {activeTab === 'my_team' && (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {teamMembers.map((member) => (
-              <div
-                key={member.id}
-                className="p-5 rounded-2xl bg-[#FDFDFD] flex items-center gap-4"
-              >
-                <img
-                  src={member.avatarUrl}
-                  alt={member.name}
-                  className="w-12 h-12 rounded-xl object-cover"
-                />
-                <div className="space-y-1">
-                  <h4 className="text-sm font-bold text-neutral-900">
-                    {member.name}
-                  </h4>
-                  <p className="text-xs text-neutral-500">{member.primaryRole}</p>
-                  <div className="flex items-center gap-1 flex-wrap pt-0.5">
-                    {member.skills.map((s) => (
-                      <span key={s} className="text-[10px] bg-[#F5F5F5] text-neutral-600 px-2 py-0.5 rounded font-medium">
-                        {s}
-                      </span>
-                    ))}
-                  </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {teamMembers.map((member) => (
+            <div key={member.id} className="surface-card p-5 rounded-2xl flex items-center gap-4">
+              <Avatar src={member.avatarUrl} name={member.name} />
+              <div className="space-y-1 min-w-0">
+                <h3 className="text-sm font-bold text-[#18181B] truncate">
+                  {member.name}
+                </h3>
+                <p className="text-xs text-[#52525B] truncate">{member.primaryRole}</p>
+                <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                  {member.skills.map((s) => (
+                    <span
+                      key={s}
+                      className="text-[11px] bg-[#F4F4F6] text-[#52525B] px-2 py-0.5 rounded-md font-medium"
+                    >
+                      {s}
+                    </span>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

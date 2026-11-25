@@ -1,85 +1,38 @@
 {
-  "version": "1.0.0",
-  "name": "Hackathon Workspace Design Tokens",
+  "version": "1.1.0",
+  "name": "HackWorkspace Design Tokens",
   "author": "Mayowa (Product Designer & UX Engineer)",
   "color": {
     "canvas": {
-      "default": { "value": "#FFFFFF", "type": "color", "description": "Page canvas background" }
+      "default": { "value": "#FAFAFB", "type": "color", "description": "Warm editorial paper canvas background" }
     },
     "surface": {
-      "primary": { "value": "#FDFDFD", "type": "color", "description": "Primary card and workspace tab surface" },
-      "secondary": { "value": "#F5F5F5", "type": "color", "description": "Sidebar canvas, nested chips, and secondary button fills" },
-      "hover": { "value": "#EBEBEB", "type": "color", "description": "Hover state for secondary surfaces" },
-      "active": { "value": "#E0E0E0", "type": "color", "description": "Active press state for secondary surfaces" }
+      "primary": { "value": "#FFFFFF", "type": "color", "description": "Elevated primary card and workspace surface" },
+      "secondary": { "value": "#F4F4F6", "type": "color", "description": "Sidebar, nested wells, and secondary controls" },
+      "hover": { "value": "#EBECEF", "type": "color", "description": "Hover state for secondary surfaces" },
+      "active": { "value": "#E2E2E6", "type": "color", "description": "Active press state for secondary surfaces" }
     },
     "text": {
-      "primary": { "value": "#181818", "type": "color", "description": "Primary Obsidian text and CTA fill" },
-      "secondary": { "value": "#7B7B7B", "type": "color", "description": "Muted secondary descriptive text" },
-      "tertiary": { "value": "#A1A1AA", "type": "color", "description": "Subtle captions, borders, and timestamps" },
-      "inverse": { "value": "#FFFFFF", "type": "color", "description": "White text on primary CTAs" }
+      "primary": { "value": "#18181B", "type": "color", "description": "Obsidian primary text and CTA fill" },
+      "secondary": { "value": "#52525B", "type": "color", "description": "High-contrast secondary descriptive copy" },
+      "muted": { "value": "#63636B", "type": "color", "description": "Accessible WCAG AA muted metadata and timestamps" },
+      "inverse": { "value": "#FFFFFF", "type": "color", "description": "White text on primary dark CTAs" }
     },
     "accent": {
-      "lavender": { "value": "#DECAFF", "type": "color", "description": "Signature brand badge and avatar accent" },
-      "selection-bg": { "value": "#FFEDD5", "type": "color", "description": "Orange-100 highlight selection background" },
-      "selection-text": { "value": "#7C2D12", "type": "color", "description": "Orange-900 highlight selection text" }
+      "lavender": { "value": "#DECAFF", "type": "color", "description": "Brand mark and active saved action highlight" },
+      "lavender-soft": { "value": "#EFE6FF", "type": "color", "description": "Hackathon category pill fill" },
+      "emerald-soft": { "value": "#ECFDF5", "type": "color", "description": "Grant category and verified readiness fill" },
+      "amber-soft": { "value": "#FEF3C7", "type": "color", "description": "Event category and deadline attention fill" },
+      "indigo-soft": { "value": "#EEF2FF", "type": "color", "description": "Accelerator / Venture Hub category fill" }
     }
   },
   "typography": {
-    "fontFamily": { "value": "Inter, system-ui, sans-serif", "type": "fontFamilies" },
-    "letterSpacing": {
-      "body": { "value": "-0.02em", "type": "letterSpacing", "description": "Optical negative tracking for body copy" },
-      "meta": { "value": "-0.03em", "type": "letterSpacing", "description": "Tight tracking for numbers and metrics" },
-      "headings": { "value": "-0.04em", "type": "letterSpacing", "description": "Tight tracking for headlines" }
-    },
-    "heading-xl": {
-      "fontFamily": "Inter",
-      "fontWeight": "700",
-      "fontSize": "32px",
-      "lineHeight": "38px",
-      "letterSpacing": "-0.04em"
-    },
-    "heading-lg": {
-      "fontFamily": "Inter",
-      "fontWeight": "600",
-      "fontSize": "24px",
-      "lineHeight": "30px",
-      "letterSpacing": "-0.03em"
-    },
-    "heading-md": {
-      "fontFamily": "Inter",
-      "fontWeight": "600",
-      "fontSize": "18px",
-      "lineHeight": "24px",
-      "letterSpacing": "-0.02em"
-    },
-    "body-base": {
-      "fontFamily": "Inter",
-      "fontWeight": "400",
-      "fontSize": "14px",
-      "lineHeight": "20px",
-      "letterSpacing": "-0.02em"
-    },
-    "caption": {
-      "fontFamily": "Inter",
-      "fontWeight": "500",
-      "fontSize": "11px",
-      "lineHeight": "16px",
-      "letterSpacing": "-0.01em"
-    }
-  },
-  "spacing": {
-    "card-padding-desktop": { "value": "32px", "type": "spacing" },
-    "card-padding-mobile": { "value": "24px", "type": "spacing" },
-    "sidebar-width": { "value": "240px", "type": "spacing" },
-    "sidebar-width-collapsed": { "value": "64px", "type": "spacing" }
-  },
-  "borderRadius": {
-    "container": { "value": "16px", "type": "borderRadius" },
-    "card": { "value": "12px", "type": "borderRadius" },
-    "button": { "value": "12px", "type": "borderRadius" },
-    "pill": { "value": "9999px", "type": "borderRadius" }
+    "fontFamily": { "value": "Instrument Sans, system-ui, sans-serif", "type": "fontFamilies" }
   },
   "elevation": {
-    "shadow": { "value": "none", "type": "boxShadow", "description": "Strict zero-shadow policy" }
+    "shadowBorder": {
+      "value": "0 0 0 1px oklch(0 0 0 / 0.06), 0 1px 2px -1px oklch(0 0 0 / 0.04), 0 2px 4px 0 oklch(0 0 0 / 0.02)",
+      "type": "boxShadow"
+    }
   }
 }

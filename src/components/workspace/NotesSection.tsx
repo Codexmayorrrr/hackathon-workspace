@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  FileText, 
-  Copy, 
-  Check, 
-  Sparkles 
+import {
+  FileText,
+  Copy,
+  Check,
+  Sparkles,
 } from 'lucide-react';
 import { Opportunity } from '../../types';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
@@ -82,36 +82,43 @@ export const NotesSection: React.FC<NotesSectionProps> = ({ opportunity }) => {
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-10">
-      <div className="p-6 sm:p-8 rounded-2xl bg-[#FDFDFD] space-y-4">
+      <div className="surface-card p-6 sm:p-8 rounded-2xl space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <h2 className="text-lg sm:text-xl font-bold text-neutral-900 tracking-tight">
-              Workspace Notes & Research Scratchpad
+            <h2 className="text-lg sm:text-xl font-bold text-[#18181B] tracking-tight">
+              Workspace Notes & Scratchpad
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed" style={{ textWrap: 'pretty' }}>
-              Capture meeting takeaways, judge feedback, architecture thoughts, and strategy notes in one persistent place.
+            <p className="text-xs sm:text-sm text-[#52525B] leading-relaxed">
+              Capture meeting takeaways, evaluator feedback, and architecture decisions in one persistent scratchpad.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-auto">
+          <div className="flex items-center gap-2.5 self-start sm:self-auto">
             {savedStatus && (
-              <span className="text-xs text-neutral-400 italic mr-2">{savedStatus}</span>
+              <span role="status" className="text-xs text-[#52525B] italic">
+                {savedStatus}
+              </span>
             )}
             <button
+              type="button"
               onClick={handleCopy}
               disabled={!notes}
-              className="btn-tactile-secondary px-3.5 py-2 rounded-lg text-xs font-medium disabled:opacity-40 gap-1.5"
+              className="btn-tactile-secondary px-4 py-2 rounded-xl text-xs font-medium disabled:opacity-40 gap-1.5 min-h-[38px]"
             >
-              {copySuccess ? <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" /> : <Copy className="w-3.5 h-3.5 stroke-[1.75]" />}
-              <span>{copySuccess ? 'Copied' : 'Copy All'}</span>
+              {copySuccess ? (
+                <Check aria-hidden="true" className="w-3.5 h-3.5 text-emerald-700 stroke-[2.25]" />
+              ) : (
+                <Copy aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
+              )}
+              <span>{copySuccess ? 'Copied' : 'Copy all'}</span>
             </button>
           </div>
         </div>
 
         {/* Quick Insert Templates */}
-        <div className="space-y-2 pt-2">
-          <p className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">
-            Quick Insert Templates
+        <div className="space-y-2">
+          <p className="text-[11px] font-semibold text-[#63636B] uppercase tracking-wider">
+            Quick insert templates
           </p>
           <div className="flex flex-wrap gap-2">
             {TEMPLATES.map((tmpl) => (
@@ -119,9 +126,9 @@ export const NotesSection: React.FC<NotesSectionProps> = ({ opportunity }) => {
                 key={tmpl.name}
                 type="button"
                 onClick={() => handleInsertTemplate(tmpl.content, tmpl.name)}
-                className="btn-tactile-secondary px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 text-neutral-700"
+                className="btn-tactile-secondary px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 min-h-[34px]"
               >
-                <Sparkles className="w-3 h-3 text-neutral-400 stroke-[1.75]" />
+                <Sparkles aria-hidden="true" className="w-3.5 h-3.5 text-[#52525B] stroke-[1.75]" />
                 <span>{tmpl.name}</span>
               </button>
             ))}
@@ -130,25 +137,29 @@ export const NotesSection: React.FC<NotesSectionProps> = ({ opportunity }) => {
       </div>
 
       {/* Persistent Scratchpad Area */}
-      <div className="p-6 rounded-2xl bg-[#FDFDFD] space-y-3">
-        <div className="flex items-center justify-between text-xs text-neutral-500">
-          <span className="font-semibold text-neutral-700 flex items-center gap-1.5">
-            <FileText className="w-3.5 h-3.5 stroke-[1.75]" />
+      <div className="surface-card p-6 rounded-2xl space-y-3">
+        <div className="flex items-center justify-between text-xs text-[#52525B]">
+          <label
+            htmlFor="workspace-notes-scratchpad"
+            className="font-semibold text-[#18181B] flex items-center gap-1.5"
+          >
+            <FileText aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
             <span>Scratchpad</span>
-          </span>
+          </label>
           <span className="font-mono tabular-nums">{wordCount} words</span>
         </div>
 
         <textarea
+          id="workspace-notes-scratchpad"
           value={notes}
           onChange={handleChange}
           rows={14}
           placeholder="Type or paste notes here... All edits auto-save to this opportunity workspace."
-          className="w-full bg-[#F5F5F5] rounded-xl p-4 text-sm text-neutral-900 leading-relaxed font-sans border-0 focus:outline-none focus:ring-1 focus:ring-neutral-900/10 transition-colors"
+          className="field-surface w-full rounded-xl p-4 text-base sm:text-sm leading-relaxed font-sans"
         />
 
-        <p className="text-[11px] text-neutral-400 leading-relaxed">
-          Notes are scoped directly to <strong className="text-neutral-700">{opportunity.title}</strong> and preserved across all workspace configuration changes.
+        <p className="text-xs text-[#52525B] leading-relaxed">
+          Notes are scoped directly to <strong className="text-[#18181B] font-semibold">{opportunity.title}</strong> and preserved across all navigation customizations.
         </p>
       </div>
     </div>

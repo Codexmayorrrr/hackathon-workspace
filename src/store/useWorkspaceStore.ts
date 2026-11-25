@@ -33,6 +33,7 @@ interface WorkspaceStore {
   addWorkspaceTask: (workspaceId: string, task: Omit<WorkspaceTask, 'id' | 'createdAt'>) => void;
   toggleWorkspaceTask: (workspaceId: string, taskId: string) => void;
   deleteWorkspaceTask: (workspaceId: string, taskId: string) => void;
+  restoreWorkspaceTask: (workspaceId: string, task: WorkspaceTask) => void;
 
   // Checklist & Draft Actions
   toggleItemCompleted: (workspaceId: string, requirementId: string) => void;
@@ -54,6 +55,7 @@ interface WorkspaceStore {
   addVaultItem: (item: Omit<VaultItem, 'id' | 'updatedAt'>) => void;
   updateVaultItem: (id: string, updates: Partial<VaultItem>) => void;
   deleteVaultItem: (id: string) => void;
+  restoreVaultItem: (item: VaultItem) => void;
 
   // Integration Toggles
   toggleReminders: (workspaceId: string, enabled?: boolean) => void;
@@ -622,6 +624,24 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
         });
       },
 
+      restoreWorkspaceTask: (workspaceId: string, task: WorkspaceTask) => {
+        set((state) => {
+          const ws = state.savedWorkspaces[workspaceId];
+          if (!ws) return state;
+          const tasks = ws.tasks || [];
+          if (tasks.some((t) => t.id === task.id)) return state;
+          return {
+            savedWorkspaces: {
+              ...state.savedWorkspaces,
+              [workspaceId]: {
+                ...ws,
+                tasks: [task, ...tasks],
+              },
+            },
+          };
+        });
+      },
+
       updateWorkspaceResults: (workspaceId: string, results: Partial<WorkspaceResult>) => {
         set((state) => {
           const ws = state.savedWorkspaces[workspaceId];
@@ -914,6 +934,15 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
         set((state) => ({
           vaultItems: state.vaultItems.filter((item) => item.id !== id),
         }));
+      },
+
+      restoreVaultItem: (item) => {
+        set((state) => {
+          if (state.vaultItems.some((existing) => existing.id === item.id)) return state;
+          return {
+            vaultItems: [item, ...state.vaultItems],
+          };
+        });
       },
 
       toggleReminders: (workspaceId: string, enabled?: boolean) => {

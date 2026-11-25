@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  X, 
-  Sparkles, 
-  Check, 
-  Copy, 
-  ShieldAlert, 
+import {
+  X,
+  Sparkles,
+  Check,
+  Copy,
+  ShieldAlert,
   FolderArchive,
   Lightbulb,
   Sliders,
-  CheckCircle2
+  CheckCircle2,
 } from 'lucide-react';
 import { ApplicationRequirement, Opportunity, Judge } from '../../types';
+import { AccessibleModal } from '../ui/AccessibleModal';
 import { toast } from 'sonner';
 
 interface ApplicationHelperModalProps {
@@ -39,16 +39,18 @@ export const ApplicationHelperModal: React.FC<ApplicationHelperModalProps> = ({
   const judges = opportunity.judges || [];
   const primaryJudge: Judge | undefined = judges[0];
 
-  // Helper generator options based on the requirement type and question
-  const isProblemStatement = requirement.title.toLowerCase().includes('problem') || requirement.title.toLowerCase().includes('market');
-  const isArchitecture = requirement.title.toLowerCase().includes('architecture') || requirement.title.toLowerCase().includes('technical');
+  const isProblemStatement =
+    requirement.title.toLowerCase().includes('problem') ||
+    requirement.title.toLowerCase().includes('market');
+  const isArchitecture =
+    requirement.title.toLowerCase().includes('architecture') ||
+    requirement.title.toLowerCase().includes('technical');
 
-  // Pre-calibrated sample answers tuned to the hackathon and strictly under the word limit
   const getPrecalibratedAnswers = () => {
     if (isProblemStatement) {
       return {
         full: {
-          label: 'Full Comprehensive Answer',
+          label: 'Comprehensive Draft',
           targetWords: Math.min(142, maxWords),
           text: `In Sub-Saharan Africa, cross-border informal merchants lose 8% to 14% on currency spreads and endure 72-hour bank settlement lags, directly stalling inventory restocking. Our interviews with 42 open-market traders in Lagos revealed that 88% rely on high-risk parallel cash brokers because formal SWIFT wire corridors are inaccessible or cost-prohibitive.
 
@@ -79,12 +81,12 @@ We solve this with a sub-cent payment routing SDK bridging Paystack virtual acco
 For payment rail integration, we interface asynchronously with Paystack Webhooks backed by AWS SQS queues with exponential backoff retries. On-chain settlement utilizes Circle CCTP smart contracts with gasless account abstraction paymasters, allowing users to transact without native gas tokens. Cryptographic state transitions are verified on-chain in batches every 30 seconds to maintain high throughput and fault-tolerant auditability.`,
         },
         concise: {
-          label: 'Concise Architecture Summary',
+          label: 'Concise Summary',
           targetWords: Math.min(88, maxWords),
           text: `Built on a Rust ingestion engine for high-throughput transaction sequencing with PostgreSQL and Redis caching. Payment integration utilizes Paystack Webhooks with SQS dead-letter queues. On-chain stablecoin settlement executes over Circle CCTP smart contracts with account abstraction, achieving sub-second finality with zero gas friction.`,
         },
         elevator: {
-          label: '40-Word Tech Stack',
+          label: '40-Word Stack',
           targetWords: Math.min(42, maxWords),
           text: `Event-driven architecture with a Rust core engine, Paystack Webhooks, AWS SQS queues, and Circle CCTP smart contracts. Delivers sub-10ms execution, zero gas friction for end-users, and 99.99% fault-tolerant settlement.`,
         },
@@ -114,8 +116,6 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
   const [selectedPreset, setSelectedPreset] = useState<'full' | 'concise' | 'elevator'>('full');
   const [workingText, setWorkingText] = useState(currentDraft || presets.full.text);
 
-  if (!isOpen) return null;
-
   const countWords = (str: string) => str.trim().split(/\s+/).filter(Boolean).length;
   const currentCount = countWords(workingText);
   const isOver = currentCount > maxWords;
@@ -135,107 +135,99 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-neutral-900/25 backdrop-blur-sm"
-          onClick={onClose}
-        >
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-            style={{ transformOrigin: 'center' }}
-            className="w-full max-w-2xl bg-white rounded-2xl p-6 sm:p-8 relative overflow-hidden max-h-[92vh] overflow-y-auto space-y-6"
-            onClick={(e) => e.stopPropagation()}
+    <AccessibleModal
+      isOpen={isOpen}
+      onClose={onClose}
+      titleId="app-helper-title"
+      descriptionId="app-helper-desc"
+      maxWidthClass="max-w-2xl"
+    >
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4 pb-4 border-b border-neutral-200/70">
+        <div className="flex items-center gap-3">
+          <div
+            aria-hidden="true"
+            className="w-10 h-10 rounded-xl bg-[#EFE6FF] text-[#3B0764] flex items-center justify-center flex-shrink-0"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between pb-2">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#FDFDFD] flex items-center justify-center text-neutral-800">
-                  <Sparkles className="w-5 h-5 stroke-[1.75]" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-bold text-neutral-900 tracking-tight [text-wrap:balance]">
-                      Application Helper
-                    </h3>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FDFDFD] text-neutral-600 font-mono font-semibold">
-                      PRD §3.C Strict Limit
-                    </span>
-                  </div>
-                  <p className="text-xs text-neutral-500 [text-wrap:pretty]">
-                    Guaranteed to stay within limits on the first try. Context-aware guidance tailored to the judges.
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 rounded-xl text-neutral-400 hover:text-neutral-700 hover:bg-[#FDFDFD] transition-[transform,background-color,color] duration-150 active:scale-[0.97]"
-                aria-label="Close modal"
-              >
-                <X className="w-4 h-4 stroke-[1.75]" />
-              </button>
-            </div>
+            <Sparkles className="w-5 h-5 stroke-[1.75]" />
+          </div>
+          <div>
+            <h2 id="app-helper-title" className="text-lg font-bold text-[#18181B] tracking-tight">
+              Draft Assistant
+            </h2>
+            <p id="app-helper-desc" className="text-xs text-[#52525B]">
+              Pre-sized answer templates calibrated to the {maxWords}-word limit and evaluator priorities.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="w-9 h-9 rounded-xl btn-tactile-ghost flex items-center justify-center flex-shrink-0"
+          aria-label="Close Draft Assistant dialog"
+        >
+          <X aria-hidden="true" className="w-4 h-4 stroke-[1.75]" />
+        </button>
+      </div>
 
+      <div className="space-y-5 pt-4">
         {/* Question Context Banner */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-[#FDFDFD] space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+        <div className="p-4 sm:p-5 rounded-2xl bg-[#F4F4F6] space-y-2">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <span className="text-[11px] font-semibold text-[#63636B] uppercase tracking-wider">
               Target Question
             </span>
-            <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full bg-white text-neutral-800 tabular-nums">
+            <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-md bg-white shadow-[0_0_0_1px_oklch(0_0_0/0.05)] text-[#18181B] tabular-nums">
               Max {maxWords} words
             </span>
           </div>
-          <h4 className="text-sm font-bold text-neutral-900 [text-wrap:balance]">
+          <h3 className="text-sm font-semibold text-[#18181B]">
             {requirement.title}
-          </h4>
+          </h3>
           {requirement.description && (
-            <p className="text-xs text-neutral-500 leading-relaxed [text-wrap:pretty]">
+            <p className="text-xs text-[#52525B] leading-relaxed">
               {requirement.description}
             </p>
           )}
         </div>
 
-        {/* Judge & Sponsor Intel Hint */}
+        {/* Judge Intel Hint */}
         {primaryJudge && (
-          <div className="p-4 rounded-xl bg-white flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#FDFDFD] flex items-center justify-center text-amber-700 flex-shrink-0 mt-0.5">
-              <Lightbulb className="w-4 h-4 stroke-[1.75]" />
+          <div className="p-4 rounded-xl bg-[#FEF3C7]/60 flex items-start gap-3">
+            <div
+              aria-hidden="true"
+              className="w-8 h-8 rounded-lg bg-[#FEF3C7] flex items-center justify-center text-[#92400E] flex-shrink-0"
+            >
+              <Lightbulb className="w-4 h-4 stroke-[2]" />
             </div>
             <div className="space-y-1">
-              <p className="text-xs font-semibold text-neutral-900 flex items-center gap-1.5 flex-wrap">
-                <span>Judge Intel Hint:</span>
-                <span className="text-neutral-600 font-normal">
-                  {primaryJudge.name} ({primaryJudge.role} @ {primaryJudge.company})
+              <p className="text-xs font-semibold text-[#18181B] flex items-center gap-1.5 flex-wrap">
+                <span>Evaluator note:</span>
+                <span className="text-[#52525B] font-normal">
+                  {primaryJudge.name} ({primaryJudge.role} at {primaryJudge.company})
                 </span>
               </p>
-              <p className="text-[11px] text-neutral-500 leading-relaxed [text-wrap:pretty]">
-                Judges from payment infrastructure favor quantitative latency/failure metrics and concrete customer validation over vague buzzwords.
+              <p className="text-xs text-[#52525B] leading-relaxed">
+                Infrastructure evaluators favor specific latency, fee, or customer validation metrics over broad claims.
               </p>
             </div>
           </div>
         )}
 
         {/* Preset Length Selector */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-neutral-900 flex items-center gap-2">
-              <Sliders className="w-3.5 h-3.5 stroke-[1.75]" />
-              <span>Calibrated Answer Presets (Pre-Computed &le; {maxWords} Words)</span>
-            </label>
+        <div className="space-y-2.5">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <span className="text-xs font-semibold text-[#18181B] flex items-center gap-2">
+              <Sliders aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
+              <span>Calibrated presets (under {maxWords} words)</span>
+            </span>
             <button
+              type="button"
               onClick={onOpenVault}
-              className="text-xs font-medium text-neutral-600 hover:text-neutral-900 flex items-center gap-1 hover:underline"
+              className="text-xs font-medium text-[#18181B] hover:underline flex items-center gap-1.5 py-1"
             >
-              <FolderArchive className="w-3.5 h-3.5 stroke-[1.75]" />
-              <span>Import from Vault</span>
+              <FolderArchive aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
+              <span>Insert from Vault</span>
             </button>
           </div>
 
@@ -245,19 +237,19 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
               const isSelected = selectedPreset === key;
               return (
                 <button
+                  type="button"
                   key={key}
                   onClick={() => handleApplyPreset(key)}
-                  className={`p-3.5 rounded-xl text-left transition-[transform,background-color,color] duration-150 active:scale-[0.97] ${
-                    isSelected
-                      ? 'bg-neutral-900 text-white font-medium'
-                      : 'bg-[#FDFDFD] hover:bg-[#f4f4f6] text-neutral-800'
+                  aria-pressed={isSelected}
+                  className={`p-3.5 rounded-xl text-start transition-[transform,background-color,color] duration-150 active:scale-[0.96] ${
+                    isSelected ? 'btn-tactile-primary' : 'btn-tactile-secondary'
                   }`}
                 >
                   <div className="flex items-center justify-between text-xs mb-1">
                     <span className="font-semibold">{preset.label}</span>
-                    {isSelected && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
+                    {isSelected && <Check aria-hidden="true" className="w-3.5 h-3.5 stroke-[2.5]" />}
                   </div>
-                  <p className={`text-[11px] font-mono tabular-nums ${isSelected ? 'text-neutral-300' : 'text-neutral-400'}`}>
+                  <p className={`text-[11px] font-mono tabular-nums ${isSelected ? 'text-neutral-200' : 'text-[#52525B]'}`}>
                     {preset.targetWords} words
                   </p>
                 </button>
@@ -268,86 +260,91 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
 
         {/* Live Draft & Word Counter */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-medium text-neutral-600">
-              Live Draft Editor
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <label htmlFor="helper-draft-editor" className="text-xs font-medium text-[#52525B]">
+              Draft editor
             </label>
             <div className="flex items-center gap-2 font-mono text-xs tabular-nums">
-              <span className={`font-semibold ${isOver ? 'text-rose-600 font-bold' : 'text-neutral-700'}`}>
+              <span className={`font-semibold ${isOver ? 'text-rose-700' : 'text-[#18181B]'}`}>
                 {currentCount}
               </span>
-              <span className="text-neutral-300">/</span>
-              <span className="text-neutral-500">{maxWords} words</span>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full ${
-                isOver ? 'bg-rose-100 text-rose-800 font-semibold' : 'bg-[#FDFDFD] text-emerald-700 font-medium'
-              }`}>
-                {isOver ? `${Math.abs(remaining)} words over limit` : `${remaining} words remaining`}
+              <span className="text-[#63636B]">/</span>
+              <span className="text-[#52525B]">{maxWords} words</span>
+              <span
+                className={`text-[11px] font-semibold px-2 py-0.5 rounded-md ${
+                  isOver ? 'bg-rose-100 text-rose-800' : 'bg-[#ECFDF5] text-[#065F46]'
+                }`}
+              >
+                {isOver ? `${Math.abs(remaining)} words over limit` : `${remaining} remaining`}
               </span>
             </div>
           </div>
 
           <textarea
+            id="helper-draft-editor"
             rows={6}
             value={workingText}
             onChange={(e) => setWorkingText(e.target.value)}
-            className="w-full bg-[#FDFDFD] rounded-xl p-4 text-base sm:text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 leading-relaxed border-0 transition-colors"
-            placeholder="Edit or refine your answer here..."
+            className="field-surface w-full rounded-xl p-4 text-base sm:text-sm leading-relaxed"
+            placeholder="Edit or refine your answer..."
           />
 
           {isOver && (
-            <p className="text-xs text-rose-600 flex items-center gap-1.5 [text-wrap:pretty]">
-              <ShieldAlert className="w-4 h-4 flex-shrink-0 stroke-[1.75]" />
-              <span>Warning: External portal forms will cut off text exceeding {maxWords} words. Please edit down before applying.</span>
+            <p role="alert" className="text-xs text-rose-700 font-medium flex items-center gap-1.5">
+              <ShieldAlert aria-hidden="true" className="w-4 h-4 flex-shrink-0 stroke-[2]" />
+              <span>
+                External portal forms truncate text beyond {maxWords} words. Trim before applying.
+              </span>
             </p>
           )}
         </div>
 
         {/* Action Footer */}
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="pt-3 border-t border-neutral-200/70 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
+              type="button"
               onClick={() => {
                 navigator.clipboard.writeText(workingText);
-                toast.success('Copied draft to clipboard');
+                toast.success('Copied draft');
               }}
-              className="btn-tactile-secondary px-4 py-2.5 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5"
+              className="btn-tactile-secondary px-4 py-2 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 min-h-[38px]"
             >
-              <Copy className="w-3.5 h-3.5 stroke-[1.75]" />
+              <Copy aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
               <span>Copy</span>
             </button>
             {onSaveToVault && workingText.trim().length > 10 && (
               <button
                 type="button"
                 onClick={() => onSaveToVault(workingText.trim())}
-                className="btn-tactile-secondary px-3.5 py-2.5 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5"
-                title="Save current draft to your Reusable Vault"
+                className="btn-tactile-secondary px-4 py-2 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 min-h-[38px]"
               >
-                <FolderArchive className="w-3.5 h-3.5 stroke-[1.75]" />
+                <FolderArchive aria-hidden="true" className="w-3.5 h-3.5 stroke-[1.75]" />
                 <span>Save to Vault</span>
               </button>
             )}
           </div>
 
-          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+          <div className="flex items-center gap-2.5">
             <button
+              type="button"
               onClick={onClose}
-              className="btn-tactile-secondary px-4 py-2.5 rounded-xl text-xs font-medium w-full sm:w-auto text-center"
+              className="btn-tactile-secondary px-4 py-2 rounded-xl text-xs font-medium flex-1 sm:flex-none min-h-[40px]"
             >
               Cancel
             </button>
             <button
+              type="button"
               onClick={handleSaveToDraft}
               disabled={isOver}
-              className="btn-tactile-primary px-5 py-2.5 rounded-xl text-xs font-semibold disabled:opacity-50 w-full sm:w-auto text-center flex items-center justify-center gap-2"
+              className="btn-tactile-primary px-5 py-2 rounded-xl text-xs font-semibold disabled:opacity-50 flex-1 sm:flex-none flex items-center justify-center gap-2 min-h-[40px]"
             >
-              <CheckCircle2 className="w-4 h-4 stroke-[2]" />
-              <span>Apply to Checklist Draft</span>
+              <CheckCircle2 aria-hidden="true" className="w-4 h-4 stroke-[2]" />
+              <span>Apply draft</span>
             </button>
           </div>
         </div>
-      </motion.div>
-    </motion.div>
-  )}
-</AnimatePresence>
+      </div>
+    </AccessibleModal>
   );
 };

@@ -11,13 +11,17 @@ export const InterestBoostBar: React.FC = () => {
   const isAll = selectedInterests.length === 0;
 
   return (
-    <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+    <div
+      role="group"
+      aria-label="Filter and prioritize by track"
+      className="flex items-center gap-2 flex-wrap py-1"
+    >
       <button
+        type="button"
         onClick={clearInterests}
-        className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium ${
-          isAll
-            ? 'btn-tactile-primary'
-            : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-950'
+        aria-pressed={isAll}
+        className={`px-3.5 py-2 rounded-xl text-xs font-medium min-h-[34px] ${
+          isAll ? 'btn-tactile-primary' : 'btn-tactile-secondary'
         }`}
       >
         All Tracks
@@ -27,15 +31,15 @@ export const InterestBoostBar: React.FC = () => {
         const isSelected = selectedInterests.includes(tag);
         return (
           <button
+            type="button"
             key={tag}
             onClick={() => toggleInterest(tag)}
-            className={`flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${
-              isSelected
-                ? 'btn-tactile-primary'
-                : 'btn-tactile-secondary text-neutral-600 hover:text-neutral-950'
+            aria-pressed={isSelected}
+            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium min-h-[34px] ${
+              isSelected ? 'btn-tactile-primary' : 'btn-tactile-secondary'
             }`}
           >
-            {isSelected && <Check className="w-3 h-3 stroke-[2.5]" />}
+            {isSelected && <Check aria-hidden="true" className="w-3.5 h-3.5 stroke-[2.25]" />}
             <span>{tag}</span>
           </button>
         );
