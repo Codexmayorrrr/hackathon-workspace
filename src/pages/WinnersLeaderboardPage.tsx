@@ -201,8 +201,8 @@ export const WinnersLeaderboardPage: React.FC = () => {
                 {/* Prize Pool Badge & Socials */}
                 <div className="flex items-center gap-4 self-start sm:self-auto flex-shrink-0">
                   <div className="text-start sm:text-end">
-                    <span className="text-[11px] text-[#63636B] uppercase tracking-wider font-semibold block">
-                      Total Earnings
+                    <span className="text-xs text-[#63636B] font-medium block">
+                      Total earnings
                     </span>
                     <span className="text-sm font-semibold text-[#18181B] font-mono tabular-nums">
                       {winner.totalPrizesWon}

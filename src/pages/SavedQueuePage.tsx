@@ -164,7 +164,7 @@ export const SavedQueuePage: React.FC = () => {
 
                       <span aria-hidden="true" className="text-[#63636B]">·</span>
 
-                      <span className="text-[11px] uppercase tracking-wider font-semibold text-[#63636B]">
+                      <span className="text-xs capitalize font-medium text-[#63636B]">
                         {workspace.stage}
                       </span>
                     </div>
@@ -288,7 +288,7 @@ export const SavedQueuePage: React.FC = () => {
                     <div className="space-y-1">
                       <h3 className="text-sm font-semibold text-[#18181B]">{opp.title}</h3>
                       <p className="text-[#52525B] font-mono text-[11px] tabular-nums">
-                        Submitted · Stage: {workspace.stage.toUpperCase()}
+                        Submitted · Stage: <span className="capitalize">{workspace.stage}</span>
                       </p>
                     </div>
 

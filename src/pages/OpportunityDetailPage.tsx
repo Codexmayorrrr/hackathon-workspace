@@ -165,21 +165,21 @@ export const OpportunityDetailPage: React.FC = () => {
         </p>
 
         {/* Metadata stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
           <div className="p-4 rounded-xl bg-[#F4F4F6] space-y-1">
-            <p className="text-[11px] uppercase font-semibold text-[#63636B] tracking-wider">Prize Pool</p>
+            <p className="text-xs font-medium text-[#63636B]">Prize Pool</p>
             <p className="text-base font-semibold text-[#18181B] font-mono tabular-nums">{opportunity.prizePool}</p>
           </div>
 
           <div className="p-4 rounded-xl bg-[#F4F4F6] space-y-1">
-            <p className="text-[11px] uppercase font-semibold text-[#63636B] tracking-wider">Deadline</p>
+            <p className="text-xs font-medium text-[#63636B]">Deadline</p>
             <p className="text-[13px] font-semibold text-[#18181B] font-mono tabular-nums">
               {formatEventDate(opportunity.applicationDeadline)}
             </p>
           </div>
 
           <div className="p-4 rounded-xl bg-[#F4F4F6] space-y-1">
-            <p className="text-[11px] uppercase font-semibold text-[#63636B] tracking-wider">Format & Location</p>
+            <p className="text-xs font-medium text-[#63636B]">Format & Location</p>
             <p className="text-[13px] font-semibold text-[#18181B] truncate" title={opportunity.location || opportunity.format}>
               {opportunity.location || opportunity.format}
             </p>
@@ -217,7 +217,7 @@ export const OpportunityDetailPage: React.FC = () => {
         <div className="space-y-6">
           {Object.entries(stepGroups).map(([stepName, reqs]) => (
             <div key={stepName} className="space-y-3">
-              <h3 className="text-[13px] font-semibold text-[#52525B] uppercase tracking-wider px-1">
+              <h3 className="text-sm font-semibold text-[#52525B] px-1">
                 {stepName} ({reqs.length})
               </h3>
 
@@ -231,13 +231,13 @@ export const OpportunityDetailPage: React.FC = () => {
                       <div className="p-2.5 rounded-xl bg-[#F4F4F6] mt-0.5 flex-shrink-0">
                         {getRequirementIcon(req.type)}
                       </div>
-                      <div className="space-y-1 min-w-0">
+                      <div className="space-y-1.5 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           <h4 className="text-sm font-semibold text-[#18181B]">
                             {req.title}
                           </h4>
                           <span
-                            className={`text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                            className={`text-[11px] font-semibold px-2 py-0.5 rounded-md ${
                               req.mandatory
                                 ? 'bg-[#18181B] text-white'
                                 : 'bg-[#F4F4F6] text-[#52525B]'

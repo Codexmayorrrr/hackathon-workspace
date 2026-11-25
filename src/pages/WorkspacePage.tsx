@@ -301,9 +301,9 @@ export const WorkspacePage: React.FC = () => {
       </div>
 
       {/* Workspace Header Card */}
-      <div className="surface-card p-5 sm:p-7 rounded-2xl space-y-5 min-w-0">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 min-w-0">
-          <div className="space-y-2.5 min-w-0">
+      <div className="surface-card p-5 sm:p-8 rounded-2xl space-y-6 min-w-0">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 min-w-0">
+          <div className="space-y-3 min-w-0">
             <div className="flex items-center gap-2 text-xs text-[#52525B] font-medium flex-wrap">
               <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold ${theme.badgeClasses}`}>
                 <CategoryIcon aria-hidden="true" className="w-3 h-3 stroke-[2]" />
@@ -342,7 +342,7 @@ export const WorkspacePage: React.FC = () => {
             </div>
 
             {/* Inline Clock Selector Pills (WCAG 2.5.8 >= 28px touch target) */}
-            <div className="flex items-center gap-1 flex-wrap" role="group" aria-label="Switch countdown clock">
+            <div className="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Switch countdown clock">
               {(['app_deadline', 'build_clock', 'event_start', 'submission_cutoff', 'pitch_slot'] as const).map((tKey) => {
                 const labels: Record<string, string> = {
                   app_deadline: 'Deadline',
@@ -373,12 +373,12 @@ export const WorkspacePage: React.FC = () => {
         </div>
 
         {/* Stage Selector Pipeline (wraps cleanly down to 320px) */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-1 min-w-0">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 pt-1 min-w-0">
           <span className="text-xs font-semibold text-[#52525B] flex-shrink-0">Stage</span>
           <div
             role="group"
             aria-label="Workspace preparation stage"
-            className="flex items-center gap-1 bg-[#F4F4F6] p-1 rounded-xl flex-wrap max-w-full"
+            className="flex items-center gap-1.5 bg-[#F4F4F6] p-1.5 rounded-xl flex-wrap max-w-full"
           >
             {STAGES.map((st, idx) => {
               const isCurrent = effectiveWorkspace.stage === st;
@@ -413,12 +413,12 @@ export const WorkspacePage: React.FC = () => {
       </div>
 
       {/* Workspace Tabs Navigation (Wraps cleanly on desktop so zero tabs ever hide at 1440px) */}
-      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] md:top-0 z-20 bg-[#FAFAFB]/95 backdrop-blur-xl py-2.5 flex items-start md:items-center justify-between gap-3 border-b border-neutral-200/70">
+      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] md:top-0 z-20 bg-[#FAFAFB]/95 backdrop-blur-xl py-3 flex items-start md:items-center justify-between gap-3 border-b border-neutral-200/70">
         <div className="relative flex-1 min-w-0">
           <div
             role="tablist"
             aria-label="Workspace sections"
-            className="flex items-center gap-1.5 overflow-x-auto overscroll-x-contain snap-x snap-proximity md:snap-none md:overflow-visible md:flex-wrap no-scrollbar pe-8 md:pe-0 py-0.5"
+            className="flex items-center gap-x-1.5 gap-y-2 overflow-x-auto overscroll-x-contain snap-x snap-proximity md:snap-none md:overflow-visible md:flex-wrap no-scrollbar pe-8 md:pe-0 py-0.5"
           >
             {visibleSections.map((secId, idx) => {
               const meta = ALL_SECTIONS_META[secId];
@@ -523,9 +523,9 @@ export const WorkspacePage: React.FC = () => {
                 <h2 className="text-base font-semibold text-[#18181B] tracking-tight">
                   Key Milestones
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div className="p-4 rounded-xl bg-[#F4F4F6] space-y-1">
-                    <p className="text-[11px] uppercase font-semibold text-[#63636B] tracking-wider">
+                    <p className="text-xs font-medium text-[#63636B]">
                       Registration Opens
                     </p>
                     <p className="text-sm font-semibold text-[#18181B] font-mono tabular-nums">
@@ -533,7 +533,7 @@ export const WorkspacePage: React.FC = () => {
                     </p>
                   </div>
                   <div className="p-4 rounded-xl bg-[#18181B] text-white space-y-1">
-                    <p className="text-[11px] uppercase font-semibold text-neutral-200 tracking-wider">
+                    <p className="text-xs font-medium text-neutral-200">
                       Submission Deadline
                     </p>
                     <p className="text-sm font-semibold text-white font-mono tabular-nums">
@@ -542,7 +542,7 @@ export const WorkspacePage: React.FC = () => {
                   </div>
                   {opportunity.judgingStarts && (
                     <div className="p-4 rounded-xl bg-[#F4F4F6] space-y-1">
-                      <p className="text-[11px] uppercase font-semibold text-[#63636B] tracking-wider">
+                      <p className="text-xs font-medium text-[#63636B]">
                         Judging Starts
                       </p>
                       <p className="text-sm font-semibold text-[#18181B] font-mono tabular-nums">
@@ -552,7 +552,7 @@ export const WorkspacePage: React.FC = () => {
                   )}
                   {opportunity.winnersAnnounced && (
                     <div className="p-4 rounded-xl bg-[#F4F4F6] space-y-1">
-                      <p className="text-[11px] uppercase font-semibold text-[#63636B] tracking-wider">
+                      <p className="text-xs font-medium text-[#63636B]">
                         Winners Announced
                       </p>
                       <p className="text-sm font-semibold text-[#18181B] font-mono tabular-nums">
@@ -618,7 +618,7 @@ export const WorkspacePage: React.FC = () => {
             <div className="space-y-8">
               {Object.entries(stepGroups).map(([stepName, reqs]) => (
                 <section key={stepName} className="space-y-3.5">
-                  <h3 className="text-xs font-semibold text-[#52525B] uppercase tracking-wider px-1 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-[#52525B] px-1 flex items-center gap-2">
                     <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[#18181B]" />
                     <span>{stepName}</span>
                   </h3>
@@ -963,7 +963,7 @@ const InteractiveChecklistRow: React.FC<InteractiveChecklistRowProps> = ({
               </h4>
 
               <span
-                className={`text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                className={`text-[11px] font-semibold px-2 py-0.5 rounded-md ${
                   requirement.mandatory
                     ? 'bg-[#18181B] text-white'
                     : 'bg-[#F4F4F6] text-[#52525B]'

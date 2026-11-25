@@ -264,8 +264,15 @@
   box-shadow: 0 0 0 2px #18181B;
 }
 
-/* Keep toast overlays clear of notched status bars and bottom home indicators */
+/* Keep toast overlays clear of sticky mobile header, notched status bars, and bottom home indicators */
 [data-sonner-toaster] {
   top: max(16px, env(safe-area-inset-top)) !important;
   right: max(16px, env(safe-area-inset-right)) !important;
+}
+@media (max-width: 767px) {
+  [data-sonner-toaster] {
+    top: calc(4.25rem + env(safe-area-inset-top, 0px)) !important;
+    left: max(12px, env(safe-area-inset-left)) !important;
+    right: max(12px, env(safe-area-inset-right)) !important;
+  }
 }

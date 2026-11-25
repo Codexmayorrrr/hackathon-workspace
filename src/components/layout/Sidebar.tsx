@@ -235,7 +235,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
       {/* 3. Action Tools Section */}
       <div className="px-2.5 py-2 flex flex-col gap-1">
         {!isCollapsed && (
-          <div className="px-3 pt-3 pb-1 text-[11px] font-semibold tracking-wider text-[#63636B] uppercase">
+          <div className="px-3 pt-3.5 pb-1 text-xs font-semibold text-[#63636B]">
             Tools
           </div>
         )}
@@ -280,7 +280,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
               type="button"
               onClick={() => setPinnedExpanded(!pinnedExpanded)}
               aria-expanded={pinnedExpanded}
-              className="flex items-center justify-between w-full px-3 py-1.5 rounded-lg text-[11px] font-semibold tracking-wider text-[#63636B] hover:text-[#18181B] uppercase transition-colors"
+              className="flex items-center justify-between w-full px-3 py-1.5 rounded-lg text-xs font-semibold text-[#63636B] hover:text-[#18181B] transition-colors"
             >
               <span>Pinned</span>
               {pinnedExpanded ? (

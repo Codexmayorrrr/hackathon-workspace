@@ -117,7 +117,7 @@ export const NotesSection: React.FC<NotesSectionProps> = ({ opportunity }) => {
 
         {/* Quick Insert Templates */}
         <div className="space-y-2">
-          <p className="text-[11px] font-semibold text-[#63636B] uppercase tracking-wider">
+          <p className="text-xs font-medium text-[#63636B]">
             Quick insert templates
           </p>
           <div className="flex flex-wrap gap-2">

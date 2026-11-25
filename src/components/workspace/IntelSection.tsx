@@ -99,7 +99,7 @@ export const IntelSection: React.FC<IntelSectionProps> = ({
                 {opportunity.themeContext.theme}
               </h4>
               <div className="space-y-2.5">
-                <p className="text-[11px] font-semibold text-[#63636B] uppercase tracking-wider">
+                <p className="text-xs font-medium text-[#63636B]">
                   Target Problem Statements
                 </p>
                 <ul className="space-y-2.5 text-[13px] text-[#52525B] leading-relaxed">
@@ -114,7 +114,7 @@ export const IntelSection: React.FC<IntelSectionProps> = ({
             </div>
 
             <div className="surface-card p-6 rounded-2xl space-y-3">
-              <p className="text-[11px] font-semibold text-[#63636B] uppercase tracking-wider">
+              <p className="text-xs font-medium text-[#63636B]">
                 Evaluation Weights
               </p>
               <div className="space-y-2.5">
@@ -192,8 +192,8 @@ export const IntelSection: React.FC<IntelSectionProps> = ({
                     </div>
 
                     {judge.notableProducts.length > 0 && (
-                      <div className="space-y-1.5">
-                        <p className="text-[11px] uppercase font-semibold text-[#63636B] tracking-wider">Notable Work</p>
+                      <div className="space-y-2">
+                        <p className="text-xs font-medium text-[#63636B]">Notable Work</p>
                         <div className="flex flex-wrap gap-1.5">
                           {judge.notableProducts.map((p, idx) => (
                             <span key={idx} className="px-2 py-0.5 rounded-md bg-[#F4F4F6] text-[11px] text-[#52525B] font-medium">
@@ -345,8 +345,8 @@ export const IntelSection: React.FC<IntelSectionProps> = ({
                   </p>
 
                   {winner.whyTheyWon && (
-                    <div className="p-3.5 rounded-xl bg-[#F4F4F6] text-xs space-y-1">
-                      <span className="font-semibold text-[#18181B] text-[11px] uppercase tracking-wider">Why they won:</span>
+                    <div className="p-3.5 rounded-xl bg-[#F4F4F6] text-xs space-y-1.5">
+                      <span className="font-semibold text-[#18181B] text-xs block">Why they won</span>
                       <p className="text-[#52525B] leading-snug">{winner.whyTheyWon}</p>
                     </div>
                   )}

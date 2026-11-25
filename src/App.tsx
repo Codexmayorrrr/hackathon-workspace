@@ -21,9 +21,9 @@ export function App() {
           closeButton
           swipeDirections={['top', 'right', 'left']}
           mobileOffset={{
-            top: 'max(16px, env(safe-area-inset-top))',
-            left: '16px',
-            right: '16px',
+            top: 'calc(4.25rem + env(safe-area-inset-top, 0px))',
+            left: '12px',
+            right: '12px',
           }}
           toastOptions={{
             style: {

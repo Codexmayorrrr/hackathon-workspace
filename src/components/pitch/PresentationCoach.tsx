@@ -308,7 +308,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
             </div>
 
             <div className="max-w-xl mx-auto space-y-2 text-start">
-              <span className="text-[11px] font-semibold text-[#63636B] uppercase tracking-wider block">
+              <span className="text-xs font-semibold text-[#63636B] block">
                 Per-Slide Pace Audit
               </span>
               <div className="space-y-1.5">
@@ -447,7 +447,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
             <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
               <div className="surface-card aspect-[16/9] w-full rounded-2xl p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between text-[11px] text-[#63636B]">
-                  <span className="font-semibold uppercase tracking-wider">
+                  <span className="font-semibold">
                     {mode === 'live' ? 'Audience View' : 'Active Slide'}
                   </span>
                   <span className="font-mono font-medium">
@@ -480,7 +480,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
               {nextSlide ? (
                 <div className="p-4 rounded-xl bg-[#F4F4F6] space-y-1">
                   <div className="flex items-center justify-between text-[11px] text-[#63636B]">
-                    <span className="font-semibold uppercase tracking-wider">Up Next</span>
+                    <span className="font-semibold">Up Next</span>
                     <span className="font-mono">Slide {nextSlide.slideNumber}</span>
                   </div>
                   <h4 className="text-xs font-bold text-[#18181B] truncate">

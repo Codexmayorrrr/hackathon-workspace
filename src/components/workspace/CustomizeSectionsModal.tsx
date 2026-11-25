@@ -98,15 +98,15 @@ export const CustomizeSectionsModal: React.FC<CustomizeSectionsModalProps> = ({
       {/* Section Toggles Scrollable Area */}
       <div className="py-5 space-y-6">
         {/* Core Sections */}
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-semibold text-[#63636B] uppercase tracking-wider">
+            <span className="text-xs font-semibold text-[#63636B]">
               Core sections
             </span>
             <span className="text-[11px] text-[#63636B] font-mono">Always visible</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {coreSections.map((section) => (
               <div
                 key={section.id}
@@ -128,12 +128,12 @@ export const CustomizeSectionsModal: React.FC<CustomizeSectionsModalProps> = ({
         </div>
 
         {/* Contextual Sections */}
-        <div className="space-y-2.5">
-          <span className="text-[11px] font-semibold text-[#63636B] uppercase tracking-wider block">
+        <div className="space-y-3">
+          <span className="text-xs font-semibold text-[#63636B] block">
             Contextual sections
           </span>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {contextualSections.map((section) => {
               const isEnabled = Boolean(currentSections[section.id]);
 

@@ -72,10 +72,10 @@ export const DiscoverPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-10 sm:space-y-14 min-w-0">
+    <div className="space-y-8 sm:space-y-10 min-w-0">
       {/* Page Header */}
       <div className="space-y-4">
-        <div className="space-y-2.5">
+        <div className="space-y-2">
           <h1 className="text-2xl sm:text-3xl font-bold text-[#18181B] tracking-tight">
             Discover Opportunities
           </h1>
@@ -92,7 +92,7 @@ export const DiscoverPage: React.FC = () => {
 
       {/* Discovery Rails */}
       <LayoutGroup>
-        <div className="space-y-12 sm:space-y-14">
+        <div className="space-y-10 sm:space-y-12">
           {SECTIONS.map((section) => {
             const rawItems = opportunitiesByType[section.type] || [];
             const sortedItems = sortSectionOpportunities(rawItems);

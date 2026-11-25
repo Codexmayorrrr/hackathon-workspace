@@ -224,7 +224,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
           </div>
 
           <div
-            className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5"
+            className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3"
             role="group"
             aria-label="Choose ready-made pitch deck template"
           >
@@ -236,7 +236,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
                   key={tpl.id}
                   onClick={() => handleSelectTemplate(tpl.id)}
                   aria-pressed={isSelected}
-                  className={`text-start p-3.5 rounded-xl transition-[transform,background-color,box-shadow] duration-150 active:scale-[0.97] space-y-1.5 min-w-0 ${
+                  className={`text-start p-4 rounded-xl transition-[transform,background-color,box-shadow] duration-150 active:scale-[0.97] space-y-2 min-w-0 ${
                     isSelected
                       ? 'bg-white ring-2 ring-[#18181B] shadow-border'
                       : 'bg-[#F4F4F6] hover:bg-[#EBECEF]'
@@ -366,7 +366,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
             className="surface-card min-h-[340px] sm:aspect-[16/9] w-full rounded-2xl p-6 sm:p-10 lg:p-14 flex flex-col justify-between relative touch-pan-y select-none sm:select-text cursor-grab active:cursor-grabbing"
           >
             <div className="flex items-start justify-between gap-4 text-xs text-[#63636B]">
-              <span className="font-semibold tracking-wider uppercase text-[11px] min-w-0">
+              <span className="font-medium text-xs min-w-0">
                 {opportunityTitle}
               </span>
               <span className="font-mono text-[11px] tabular-nums whitespace-nowrap flex-shrink-0">
@@ -399,7 +399,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
               {currentSlide.layoutType === 'problem_solution' && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                   <div className="p-4 sm:p-5 rounded-xl bg-[#F4F4F6] space-y-2">
-                    <span className="text-xs font-semibold text-rose-800 uppercase tracking-wider block">
+                    <span className="text-xs font-semibold text-rose-800 block">
                       Core Friction
                     </span>
                     <ul className="space-y-2 text-xs sm:text-sm text-[#52525B]">
@@ -453,7 +453,7 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
                   )}
 
                   <div className="p-5 rounded-xl bg-[#F4F4F6] space-y-2">
-                    <span className="text-xs font-semibold text-[#18181B] uppercase tracking-wider block">
+                    <span className="text-xs font-semibold text-[#18181B] block">
                       Key Breakdown
                     </span>
                     <ul className="space-y-1.5 text-xs text-[#52525B]">

@@ -174,7 +174,7 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
         {/* Question Context Banner */}
         <div className="p-4 sm:p-5 rounded-2xl bg-[#F4F4F6] space-y-2">
           <div className="flex items-center justify-between gap-2 flex-wrap">
-            <span className="text-[11px] font-semibold text-[#63636B] uppercase tracking-wider">
+            <span className="text-xs font-medium text-[#63636B]">
               Target Question
             </span>
             <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-md bg-white shadow-[0_0_0_1px_oklch(0_0_0/0.05)] text-[#18181B] tabular-nums">

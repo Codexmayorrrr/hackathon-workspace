@@ -50,7 +50,7 @@ export const InPersonLogistics: React.FC<InPersonLogisticsProps> = ({
               <MapPin className="w-5 h-5 stroke-[1.75]" />
             </div>
             <div className="space-y-1">
-              <span className="text-[11px] font-semibold text-[#63636B] uppercase tracking-wider block">
+              <span className="text-xs font-medium text-[#63636B] block">
                 Venue & Location
               </span>
               <h2 className="text-base sm:text-lg font-bold text-[#18181B]">
@@ -141,7 +141,7 @@ export const InPersonLogistics: React.FC<InPersonLogisticsProps> = ({
                   </span>
                 </div>
 
-                <span className="text-[11px] font-mono uppercase px-2 py-0.5 rounded bg-white shadow-[0_0_0_1px_oklch(0_0_0/0.05)] text-[#52525B] flex-shrink-0">
+                <span className="text-[11px] font-mono capitalize px-2 py-0.5 rounded bg-white shadow-[0_0_0_1px_oklch(0_0_0/0.05)] text-[#52525B] flex-shrink-0">
                   {item.category}
                 </span>
               </button>

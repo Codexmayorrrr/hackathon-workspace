@@ -166,8 +166,8 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
         <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
           <div className="aspect-[16/9] w-full bg-[#18181B] rounded-2xl p-5 sm:p-8 flex flex-col justify-between text-white relative overflow-hidden">
             <div className="flex items-center justify-between text-xs text-neutral-300">
-              <span className="font-mono text-[11px] tracking-wider uppercase bg-white/10 px-2.5 py-0.5 rounded">
-                1080p · 60fps Preview
+              <span className="font-mono text-[11px] bg-white/10 px-2.5 py-0.5 rounded">
+                1080p · 60fps preview
               </span>
               <span className="font-mono text-xs tabular-nums text-white font-bold">
                 {formatTime(currentSec)} / 1:30
@@ -175,7 +175,7 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
             </div>
 
             <div className="my-auto py-3 space-y-2.5 max-w-lg">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-amber-300">
+              <span className="text-xs font-mono font-semibold text-amber-300">
                 {activeScene.title}
               </span>
               <h5 className="text-base sm:text-xl font-bold tracking-tight leading-snug text-white">
@@ -247,7 +247,7 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
 
         {/* Right: 4-Scene Storyboard Editor */}
         <div className="lg:col-span-5 space-y-3">
-          <span className="text-xs font-semibold text-[#52525B] uppercase tracking-wider block px-1">
+          <span className="text-xs font-semibold text-[#52525B] block px-1">
             4-Step Demo Storyboard
           </span>
 

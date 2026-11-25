@@ -138,7 +138,7 @@ const SwipeableTaskRow: React.FC<SwipeableTaskRowProps> = ({
             </button>
 
             <div className="flex items-center gap-2 text-xs text-[#52525B] flex-wrap">
-              <span className={`px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase ${priorityColors}`}>
+              <span className={`px-2 py-0.5 rounded-md text-[11px] font-semibold capitalize ${priorityColors}`}>
                 {task.priority}
               </span>
               {task.dueDate && (
@@ -302,7 +302,7 @@ export const TasksDeadlinesSection: React.FC<TasksDeadlinesSectionProps> = ({
           Fixed Opportunity Milestones
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           {milestones.map((m, idx) => (
             <div
               key={idx}
@@ -311,7 +311,7 @@ export const TasksDeadlinesSection: React.FC<TasksDeadlinesSectionProps> = ({
               }`}
             >
               <p
-                className={`text-[11px] uppercase font-semibold tracking-wider ${
+                className={`text-xs font-medium ${
                   m.isDeadline ? 'text-neutral-200' : 'text-[#63636B]'
                 }`}
               >
