@@ -162,7 +162,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
       maxWidthClass="max-w-2xl"
     >
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 pb-4 border-b border-neutral-200/70">
+      <div className="flex items-start justify-between gap-4 pb-3">
         <div className="flex items-center gap-3">
           <div
             aria-hidden="true"
@@ -444,7 +444,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
                       <h3 className="text-sm font-semibold text-[#18181B]">
                         {item.title}
                       </h3>
-                      <span className="text-[11px] px-2 py-0.5 rounded-md bg-white shadow-[0_0_0_1px_oklch(0_0_0/0.05)] text-[#52525B] font-medium">
+                      <span className="text-[11px] px-2 py-0.5 rounded-md bg-white text-[#52525B] font-medium">
                         {CATEGORY_LABELS[item.category]}
                       </span>
                       <span className="text-xs font-mono text-[#52525B] tabular-nums">
@@ -520,7 +520,7 @@ export const ReusableVaultModal: React.FC<ReusableVaultModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="pt-2 flex justify-end border-t border-neutral-200/70">
+        <div className="pt-2 flex justify-end">
           <button
             type="button"
             onClick={onClose}

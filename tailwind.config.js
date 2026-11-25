@@ -50,7 +50,7 @@ export default {
       boxShadow: {
         'border': 'var(--shadow-border)',
         'border-hover': 'var(--shadow-border-hover)',
-        'dialog': '0 0 0 1px rgba(24, 24, 27, 0.08), 0 12px 32px -4px rgba(24, 24, 27, 0.12)',
+        'dialog': '0 18px 40px -8px oklch(0 0 0 / 0.14)',
       },
     },
   },

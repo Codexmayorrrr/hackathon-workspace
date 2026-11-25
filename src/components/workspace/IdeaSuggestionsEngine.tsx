@@ -63,7 +63,7 @@ export const IdeaSuggestionsEngine: React.FC<IdeaSuggestionsEngineProps> = ({
             <article
               key={idea.id}
               className={`surface-card p-6 sm:p-8 rounded-2xl space-y-5 ${
-                isSelected ? 'ring-2 ring-[#18181B]' : 'surface-card-interactive'
+                isSelected ? 'shadow-border-hover bg-white' : 'surface-card-interactive'
               }`}
             >
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">

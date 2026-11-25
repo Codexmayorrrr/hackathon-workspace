@@ -113,7 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
   return (
     <aside
       aria-label="Primary Sidebar Navigation"
-      className={`hidden md:flex flex-col flex-shrink-0 min-h-[100dvh] bg-[#F4F4F6] shadow-[1px_0_0_0_oklch(0_0_0/0.05)] select-none transition-[width] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] z-20 ${
+      className={`hidden md:flex flex-col flex-shrink-0 min-h-[100dvh] bg-[#EFEFF2] select-none transition-[width] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] z-20 ${
         isCollapsed ? 'w-16' : 'w-60'
       }`}
     >
@@ -127,7 +127,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
             >
               <div
                 aria-hidden="true"
-                className="w-6 h-6 rounded-[5px] bg-[#DECAFF] shadow-[0_0_0_1px_oklch(0_0_0/0.06)] flex items-center justify-center flex-shrink-0 text-[#18181B] font-bold text-xs leading-none"
+                className="w-6 h-6 rounded-[5px] bg-[#DECAFF] flex items-center justify-center flex-shrink-0 text-[#18181B] font-bold text-xs leading-none"
               >
                 H
               </div>
@@ -152,7 +152,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
             <button
               type="button"
               onClick={() => setIsCollapsed(false)}
-              className="w-8 h-8 rounded-lg bg-[#DECAFF] shadow-[0_0_0_1px_oklch(0_0_0/0.06)] hover:opacity-90 flex items-center justify-center text-[#18181B] font-bold text-xs active:scale-[0.96] transition-[transform,opacity] duration-150"
+              className="w-8 h-8 rounded-lg bg-[#DECAFF] hover:opacity-90 flex items-center justify-center text-[#18181B] font-bold text-xs active:scale-[0.96] transition-[transform,opacity] duration-150"
               title="Expand sidebar (HackWorkspace)"
               aria-label="Expand sidebar"
               aria-expanded={false}
@@ -340,7 +340,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2 pt-2">
-            <div className="w-4 h-[1px] bg-neutral-300 my-1" />
             {pinnedList.slice(0, 4).map((pin) => {
               const isPinActive = location.pathname === `/workspaces/${pin.id}`;
               const badgeStyle = CATEGORY_THEMES[pin.type]?.badgeClasses || 'bg-[#EFE6FF] text-[#3B0764]';
@@ -351,8 +350,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
                   title={pin.title}
                   aria-label={pin.title}
                   aria-current={isPinActive ? 'page' : undefined}
-                  className={`w-8 h-8 rounded-lg ${badgeStyle} hover:opacity-90 active:scale-[0.96] font-bold text-xs flex items-center justify-center transition-[transform,opacity] duration-150 ${
-                    isPinActive ? 'ring-2 ring-[#18181B] ring-offset-1' : ''
+                  className={`w-8 h-8 rounded-lg hover:opacity-90 active:scale-[0.96] font-bold text-xs flex items-center justify-center transition-[transform,opacity,background-color] duration-150 ${
+                    isPinActive ? 'bg-[#18181B] text-white' : badgeStyle
                   }`}
                 >
                   {pin.initial}
@@ -364,11 +363,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenVault, onOpenCalendar })
       </div>
 
       {/* 5. Footer Utility */}
-      <div className="p-3 bg-[#F4F4F6] flex flex-col gap-2">
+      <div className="p-3 flex flex-col gap-2">
         {!isCollapsed ? (
           <div
             title={`Timezone: ${tzName} (${tzAbbr})`}
-            className="px-3 py-2 rounded-xl bg-white/80 shadow-[0_0_0_1px_oklch(0_0_0/0.04)] text-[11px] text-[#52525B] flex items-center gap-2 min-w-0"
+            className="px-3 py-2 rounded-xl bg-white text-[11px] text-[#52525B] flex items-center gap-2 min-w-0"
           >
             <Clock aria-hidden="true" className="w-3.5 h-3.5 text-[#63636B] flex-shrink-0" />
             <span className="font-mono font-semibold text-[#18181B] flex-shrink-0">{tzAbbr}</span>

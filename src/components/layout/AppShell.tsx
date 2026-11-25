@@ -86,7 +86,7 @@ export const AppShell: React.FC = () => {
 
       <div
         id="app-shell-root"
-        className="min-h-[100dvh] bg-[#FAFAFB] text-[#18181B] flex flex-col md:flex-row antialiased"
+        className="min-h-[100dvh] bg-[#F5F5F7] text-[#18181B] flex flex-col md:flex-row antialiased"
       >
         {/* Desktop & Tablet Sidebar (>= 768px) */}
         <Sidebar
@@ -95,9 +95,9 @@ export const AppShell: React.FC = () => {
         />
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0 min-h-[100dvh] bg-[#FAFAFB]">
+        <div className="flex-1 flex flex-col min-w-0 min-h-[100dvh] bg-[#F5F5F7]">
           {/* Mobile Top Header (< 768px) - Reflows safely down to 320px and clears safe-area notch */}
-          <header className="md:hidden flex items-center justify-between gap-2 min-h-[calc(3.5rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top)] ps-[max(0.75rem,env(safe-area-inset-left))] pe-[max(0.75rem,env(safe-area-inset-right))] bg-white/95 backdrop-blur-xl shadow-[0_1px_0_0_oklch(0_0_0/0.06)] sticky top-0 z-30">
+          <header className="md:hidden flex items-center justify-between gap-2 min-h-[calc(3.5rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top)] ps-[max(0.75rem,env(safe-area-inset-left))] pe-[max(0.75rem,env(safe-area-inset-right))] bg-white/95 backdrop-blur-xl shadow-[0_4px_16px_-4px_oklch(0_0_0/0.05)] sticky top-0 z-30">
             <NavLink
               to="/discover"
               className="flex items-center gap-2 min-w-0 rounded-lg py-1 active:scale-[0.96] transition-transform duration-150"
@@ -147,7 +147,7 @@ export const AppShell: React.FC = () => {
         {/* Mobile Fixed Bottom Nav (< 768px) - 4 even flex slots fit cleanly at 320px */}
         <nav
           aria-label="Primary mobile navigation"
-          className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl shadow-[0_-1px_0_0_oklch(0_0_0/0.06)] ps-[max(0.375rem,env(safe-area-inset-left))] pe-[max(0.375rem,env(safe-area-inset-right))] pt-1.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-1"
+          className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl shadow-[0_-4px_16px_-4px_oklch(0_0_0/0.06)] ps-[max(0.375rem,env(safe-area-inset-left))] pe-[max(0.375rem,env(safe-area-inset-right))] pt-1.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-1"
         >
           {mobileNavLinks.map((item) => {
             const Icon = item.icon;

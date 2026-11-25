@@ -238,8 +238,8 @@ export const SlideDeckGenerator: React.FC<SlideDeckGeneratorProps> = ({
                   aria-pressed={isSelected}
                   className={`text-start p-4 rounded-xl transition-[transform,background-color,box-shadow] duration-150 active:scale-[0.97] space-y-2 min-w-0 ${
                     isSelected
-                      ? 'bg-white ring-2 ring-[#18181B] shadow-border'
-                      : 'bg-[#F4F4F6] hover:bg-[#EBECEF]'
+                      ? 'bg-white shadow-border'
+                      : 'bg-[#EFEFF2] hover:bg-[#E6E6EB]'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">

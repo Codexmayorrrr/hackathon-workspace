@@ -183,7 +183,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
     >
       <div className="space-y-5 flex flex-col">
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-neutral-200/70">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
           <div className="flex items-center gap-3 min-w-0">
             <div
               aria-hidden="true"
@@ -419,7 +419,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
               </div>
 
               {/* Teleprompter Footer Overrides */}
-              <div className="flex items-center justify-between pt-3 border-t border-neutral-200/70 text-xs text-[#52525B]">
+              <div className="flex items-center justify-between pt-3 text-xs text-[#52525B]">
                 <span>Select any line or step manually</span>
                 <div className="flex items-center gap-2">
                   <button
@@ -535,7 +535,7 @@ export const PresentationCoach: React.FC<PresentationCoachProps> = ({
 
         {/* Global Bottom Controls Bar */}
         {!isFinished && (
-          <div className="pt-3 border-t border-neutral-200/70 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="pt-3 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               {!isRunning ? (
                 <button

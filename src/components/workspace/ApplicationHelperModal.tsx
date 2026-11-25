@@ -143,7 +143,7 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
       maxWidthClass="max-w-2xl"
     >
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 pb-4 border-b border-neutral-200/70">
+      <div className="flex items-start justify-between gap-4 pb-3">
         <div className="flex items-center gap-3">
           <div
             aria-hidden="true"
@@ -177,7 +177,7 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
             <span className="text-xs font-medium text-[#63636B]">
               Target Question
             </span>
-            <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-md bg-white shadow-[0_0_0_1px_oklch(0_0_0/0.05)] text-[#18181B] tabular-nums">
+            <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-md bg-white text-[#18181B] tabular-nums">
               Max {maxWords} words
             </span>
           </div>
@@ -300,7 +300,7 @@ For payment rail integration, we interface asynchronously with Paystack Webhooks
         </div>
 
         {/* Action Footer */}
-        <div className="pt-3 border-t border-neutral-200/70 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 flex-wrap">
             <button
               type="button"

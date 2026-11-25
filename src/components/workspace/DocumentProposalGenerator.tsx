@@ -198,7 +198,7 @@ The system employs an event-driven decoupled architecture:
 
       {/* Rendered Document View */}
       <div className="surface-card p-6 sm:p-10 rounded-2xl space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-200/70">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2">
           <h4 className="text-sm sm:text-base font-bold text-[#18181B]">
             {doc.title}
           </h4>

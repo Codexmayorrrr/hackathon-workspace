@@ -413,7 +413,7 @@ export const WorkspacePage: React.FC = () => {
       </div>
 
       {/* Workspace Tabs Navigation (Wraps cleanly on desktop so zero tabs ever hide at 1440px) */}
-      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] md:top-0 z-20 bg-[#FAFAFB]/95 backdrop-blur-xl py-3 flex items-start md:items-center justify-between gap-3 border-b border-neutral-200/70">
+      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] md:top-0 z-20 bg-[#F5F5F7]/95 backdrop-blur-xl py-3 flex items-start md:items-center justify-between gap-3">
         <div className="relative flex-1 min-w-0">
           <div
             role="tablist"
@@ -486,7 +486,7 @@ export const WorkspacePage: React.FC = () => {
           {/* Mobile scroll affordance cue when horizontally scrolling */}
           <div
             aria-hidden="true"
-            className="md:hidden pointer-events-none absolute inset-y-0 end-0 w-8 bg-gradient-to-l from-[#FAFAFB] via-[#FAFAFB]/80 to-transparent flex items-center justify-end"
+            className="md:hidden pointer-events-none absolute inset-y-0 end-0 w-8 bg-gradient-to-l from-[#F5F5F7] via-[#F5F5F7]/85 to-transparent flex items-center justify-end"
           >
             <ChevronRight className="w-4 h-4 text-[#52525B] stroke-[2]" />
           </div>
@@ -931,7 +931,7 @@ const InteractiveChecklistRow: React.FC<InteractiveChecklistRowProps> = ({
               className={`w-5 h-5 rounded-md flex items-center justify-center transition-[transform,background-color] duration-150 ${
                 itemState.completed
                   ? 'bg-[#18181B] text-white'
-                  : 'bg-[#F4F4F6] shadow-[inset_0_0_0_1px_oklch(0_0_0/0.14)]'
+                  : 'bg-[#E4E4E9]'
               }`}
             >
               {itemState.completed && (
@@ -1039,7 +1039,7 @@ const InteractiveChecklistRow: React.FC<InteractiveChecklistRowProps> = ({
             transition={{ type: 'spring', duration: 0.28, bounce: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-5 sm:px-6 pb-6 pt-2 border-t border-neutral-200/70 space-y-4">
+            <div className="px-5 sm:px-6 pb-6 pt-2 space-y-4">
               {requirement.type === 'text_prompt' && (
                 <div className="space-y-2.5 pt-2">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">

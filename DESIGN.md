@@ -7,14 +7,12 @@
 
 ## Surfaces & Subtle Depth
 
-- **Warm editorial paper canvas (`#FAFAFB`) paired with crisp white elevated cards (`#FFFFFF`).**
-  Why: Pure white cards over a warm `#FAFAFB` ground establish crisp visual anchoring and effortless card scannability without visual clutter.
-- **Translucent hairline shadows for elevation (`.surface-card`), never harsh borders or heavy drop shadows.**
-  `--shadow-border`: `0 0 0 1px oklch(0 0 0 / 0.06), 0 1px 2px -1px oklch(0 0 0 / 0.04), 0 2px 4px 0 oklch(0 0 0 / 0.02)`.
-  Why: Subtle transparent shadows adapt cleanly across tonal steps without harsh opaque outlines or muddy elevation blur. Dividers (`border-t` / `border-b`) stay hairlines (`border-neutral-200/70`) only where structural list separation is needed.
-- **Nested secondary wells and controls use `#F4F4F6` (hover `#EBECEF`, active `#E2E2E6`) inside white cards.**
-  Why: Never place `#FFFFFF` cutouts inside cards without structural distinction; keep recessed wells clearly recessed.
-- **Persistent sidebar uses `#F4F4F6` with clean hairline edge shadow.**
+- **Borderless planar canvas (`#F5F5F7`) paired with pure white elevated cards (`#FFFFFF`).**
+  Why: Soft paper-gray ground and elevated pure white cards establish crisp hierarchy through surface luminance and diffuse elevation without any borders, rings, or dividers.
+- **Pure diffuse ambient shadows for elevation (`.surface-card`), zero `1px` outlines or border dividers.**
+  `--shadow-border`: `0 1px 2px 0 oklch(0 0 0 / 0.03), 0 4px 12px -2px oklch(0 0 0 / 0.04)`.
+  Why: Whitespace and tonal contrast separate cards, modals, and list groups cleanly without visual border noise.
+- **Nested secondary wells, inputs, secondary buttons, and persistent sidebar use `#EFEFF2` (hover `#E6E6EB`, active `#DDDDE3`) with zero borders.**
 
 ---
 

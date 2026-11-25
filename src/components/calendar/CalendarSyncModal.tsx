@@ -47,7 +47,7 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
       maxWidthClass="max-w-lg"
     >
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 pb-4 border-b border-neutral-200/70">
+      <div className="flex items-start justify-between gap-4 pb-3">
         <div className="flex items-center gap-3">
           <div
             aria-hidden="true"
@@ -203,7 +203,7 @@ export const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({
       </div>
 
       {/* Footer */}
-      <div className="mt-6 pt-4 border-t border-neutral-200/70 flex justify-end">
+      <div className="mt-6 pt-2 flex justify-end">
         <button
           type="button"
           onClick={onClose}

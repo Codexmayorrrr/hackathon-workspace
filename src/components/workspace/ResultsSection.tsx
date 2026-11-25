@@ -133,7 +133,7 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ opportunity }) =
       {/* PRIZE OR CAPITAL WON */}
       <div
         className={`surface-card p-6 rounded-2xl space-y-3 ${
-          isPositiveOutcome ? 'ring-2 ring-emerald-700/25' : ''
+          isPositiveOutcome ? 'bg-[#ECFDF5]/60' : ''
         }`}
       >
         <label

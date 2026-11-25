@@ -155,7 +155,7 @@ export const IntelSection: React.FC<IntelSectionProps> = ({
                   key={judge.id}
                   id={`judge-${judge.id}`}
                   className={`surface-card p-6 rounded-2xl flex flex-col justify-between space-y-4 ${
-                    isHighlighted ? 'ring-2 ring-[#18181B]' : 'surface-card-interactive'
+                    isHighlighted ? 'shadow-border-hover bg-white' : 'surface-card-interactive'
                   }`}
                 >
                   <div className="space-y-3.5">
@@ -205,7 +205,7 @@ export const IntelSection: React.FC<IntelSectionProps> = ({
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1.5 pt-3 border-t border-neutral-200/70">
+                  <div className="flex items-center gap-1.5 pt-2">
                     {judge.socials.linkedin && (
                       <a
                         href={judge.socials.linkedin}
@@ -277,7 +277,7 @@ export const IntelSection: React.FC<IntelSectionProps> = ({
                   </p>
                 </div>
 
-                <div className="space-y-2.5 pt-3 border-t border-neutral-200/70">
+                <div className="space-y-2.5 pt-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-[#52525B]">Prize pool:</span>
                     <span className="font-mono font-bold text-[#18181B] tabular-nums">{sponsor.prizePool}</span>
@@ -352,7 +352,7 @@ export const IntelSection: React.FC<IntelSectionProps> = ({
                   )}
                 </div>
 
-                <div className="flex items-center gap-3 pt-3 border-t border-neutral-200/70">
+                <div className="flex items-center gap-3 pt-2">
                   {winner.demoUrl && (
                     <a
                       href={winner.demoUrl}

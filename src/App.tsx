@@ -30,7 +30,7 @@ export function App() {
               fontFamily: 'inherit',
               background: '#FFFFFF',
               border: 'none',
-              boxShadow: '0 0 0 1px oklch(0 0 0 / 0.08), 0 8px 24px -4px oklch(0 0 0 / 0.08)',
+              boxShadow: '0 10px 28px -6px oklch(0 0 0 / 0.12)',
               color: '#18181B',
               borderRadius: '16px',
               padding: '14px 18px',

@@ -41,7 +41,7 @@ export const Avatar: React.FC<AvatarProps> = ({
 
   return (
     <div
-      className={`relative overflow-hidden ${sizeClass} ${getToneClass(name)} outline outline-1 -outline-offset-1 outline-black/10 flex items-center justify-center font-semibold text-sm flex-shrink-0 select-none`}
+      className={`relative overflow-hidden ${sizeClass} ${getToneClass(name)} flex items-center justify-center font-semibold text-sm flex-shrink-0 select-none`}
     >
       <span aria-hidden={Boolean(src && hasLoaded && !hasError)}>{getInitials(name)}</span>
       {src && !hasError && (

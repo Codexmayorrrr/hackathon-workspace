@@ -4,13 +4,13 @@
   "author": "Mayowa (Product Designer & UX Engineer)",
   "color": {
     "canvas": {
-      "default": { "value": "#FAFAFB", "type": "color", "description": "Warm editorial paper canvas background" }
+      "default": { "value": "#F5F5F7", "type": "color", "description": "Borderless soft paper canvas background" }
     },
     "surface": {
       "primary": { "value": "#FFFFFF", "type": "color", "description": "Elevated primary card and workspace surface" },
-      "secondary": { "value": "#F4F4F6", "type": "color", "description": "Sidebar, nested wells, and secondary controls" },
-      "hover": { "value": "#EBECEF", "type": "color", "description": "Hover state for secondary surfaces" },
-      "active": { "value": "#E2E2E6", "type": "color", "description": "Active press state for secondary surfaces" }
+      "secondary": { "value": "#EFEFF2", "type": "color", "description": "Sidebar, nested wells, and secondary controls" },
+      "hover": { "value": "#E6E6EB", "type": "color", "description": "Hover state for secondary surfaces" },
+      "active": { "value": "#DDDDE3", "type": "color", "description": "Active press state for secondary surfaces" }
     },
     "text": {
       "primary": { "value": "#18181B", "type": "color", "description": "Obsidian primary text and CTA fill" },
@@ -31,7 +31,7 @@
   },
   "elevation": {
     "shadowBorder": {
-      "value": "0 0 0 1px oklch(0 0 0 / 0.06), 0 1px 2px -1px oklch(0 0 0 / 0.04), 0 2px 4px 0 oklch(0 0 0 / 0.02)",
+      "value": "0 1px 2px 0 oklch(0 0 0 / 0.03), 0 4px 12px -2px oklch(0 0 0 / 0.04)",
       "type": "boxShadow"
     }
   }

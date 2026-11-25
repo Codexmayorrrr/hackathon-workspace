@@ -69,7 +69,7 @@ export const CustomizeSectionsModal: React.FC<CustomizeSectionsModalProps> = ({
       maxWidthClass="max-w-xl"
     >
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 pb-4 border-b border-neutral-200/70">
+      <div className="flex items-start justify-between gap-4 pb-3">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <Layers aria-hidden="true" className="w-4 h-4 text-[#18181B] stroke-[1.75]" />
@@ -147,8 +147,8 @@ export const CustomizeSectionsModal: React.FC<CustomizeSectionsModalProps> = ({
                   onClick={() => handleToggle(section.id)}
                   className={`w-full p-3.5 rounded-xl flex items-center justify-between gap-4 text-start transition-[transform,background-color] duration-150 active:scale-[0.99] ${
                     isEnabled
-                      ? 'bg-[#F4F4F6] hover:bg-[#EBECEF]'
-                      : 'bg-[#FAFAFB] hover:bg-[#F4F4F6] shadow-[0_0_0_1px_oklch(0_0_0/0.05)]'
+                      ? 'bg-[#EFEFF2] hover:bg-[#E6E6EB]'
+                      : 'bg-[#F8F8FA] hover:bg-[#EFEFF2]'
                   }`}
                 >
                   <div className="min-w-0 flex-1 space-y-0.5">
@@ -198,7 +198,7 @@ export const CustomizeSectionsModal: React.FC<CustomizeSectionsModalProps> = ({
       </div>
 
       {/* Footer Controls */}
-      <div className="flex items-center justify-between pt-4 border-t border-neutral-200/70 gap-3">
+      <div className="flex items-center justify-between pt-2 gap-3">
         <button
           type="button"
           onClick={handleReset}

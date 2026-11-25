@@ -9,26 +9,24 @@
     --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
     --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
-    /* Surface & Ink tokens (Warm editorial paper + Obsidian ink) */
-    --bg-canvas: #FAFAFB;
+    /* Surface & Ink tokens (Borderless planar hierarchy: soft canvas + elevated white + subtle wells) */
+    --bg-canvas: #F5F5F7;
     --bg-card: #FFFFFF;
-    --bg-subtle: #F4F4F6;
-    --bg-hover: #EBECEF;
-    --bg-active: #E2E2E6;
+    --bg-subtle: #EFEFF2;
+    --bg-hover: #E6E6EB;
+    --bg-active: #DDDDE3;
 
     --text-primary: #18181B;
     --text-secondary: #52525B;
     --text-muted: #63636B;
 
-    /* Translucent hairline depth shadows */
+    /* Pure diffuse ambient shadows without 1px borders or outlines */
     --shadow-border:
-      0 0 0 1px oklch(0 0 0 / 0.06),
-      0 1px 2px -1px oklch(0 0 0 / 0.04),
-      0 2px 4px 0 oklch(0 0 0 / 0.02);
+      0 1px 2px 0 oklch(0 0 0 / 0.03),
+      0 4px 12px -2px oklch(0 0 0 / 0.04);
     --shadow-border-hover:
-      0 0 0 1px oklch(0 0 0 / 0.10),
-      0 2px 4px -1px oklch(0 0 0 / 0.06),
-      0 4px 8px 0 oklch(0 0 0 / 0.03);
+      0 2px 6px 0 oklch(0 0 0 / 0.05),
+      0 10px 24px -4px oklch(0 0 0 / 0.06);
     --focus-ring: #18181B;
   }
 
@@ -180,13 +178,11 @@
   background: var(--bg-subtle);
   color: var(--text-primary);
   font-weight: 500;
-  box-shadow: 0 0 0 1px oklch(0 0 0 / 0.04);
-  transition: transform 160ms var(--ease-out), background-color 150ms ease, box-shadow 150ms ease;
+  transition: transform 160ms var(--ease-out), background-color 150ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
   .btn-tactile-secondary:hover {
     background: var(--bg-hover);
-    box-shadow: 0 0 0 1px oklch(0 0 0 / 0.08);
   }
 }
 .btn-tactile-secondary:active {
@@ -223,7 +219,6 @@
   background: #DECAFF;
   color: #18181B;
   font-weight: 600;
-  box-shadow: 0 0 0 1px oklch(0 0 0 / 0.05);
   transition: transform 160ms var(--ease-out), background-color 150ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
@@ -236,7 +231,7 @@
   background: #C5A6FD;
 }
 
-/* Elevated Paper Surface Card - Translucent hairline shadow border for clean tonal depth */
+/* Borderless Elevated Paper Surface Card */
 .surface-card {
   background-color: var(--bg-card);
   box-shadow: var(--shadow-border);
@@ -248,20 +243,19 @@
   }
 }
 
-/* Form Input Surface */
+/* Borderless Form Input Surface */
 .field-surface {
   background-color: var(--bg-subtle);
   color: var(--text-primary);
-  box-shadow: inset 0 0 0 1px oklch(0 0 0 / 0.06);
   transition: box-shadow 150ms var(--ease-out), background-color 150ms ease;
 }
 .field-surface::placeholder {
   color: var(--text-muted);
 }
 .field-surface:focus-visible {
-  outline: none;
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
   background-color: #FFFFFF;
-  box-shadow: 0 0 0 2px #18181B;
 }
 
 /* Keep toast overlays clear of sticky mobile header, notched status bars, and bottom home indicators */

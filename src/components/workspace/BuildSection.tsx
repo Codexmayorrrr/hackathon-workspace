@@ -237,7 +237,7 @@ export const BuildSection: React.FC<BuildSectionProps> = ({ opportunity }) => {
         </div>
 
         {showVideoStudio && (
-          <div className="pt-4 border-t border-neutral-200/70">
+          <div className="pt-3">
             <DemoVideoStudio
               workspaceId={opportunity.id}
               opportunity={opportunity}

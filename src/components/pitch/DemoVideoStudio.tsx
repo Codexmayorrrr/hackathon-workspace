@@ -262,7 +262,7 @@ export const DemoVideoStudio: React.FC<DemoVideoStudioProps> = () => {
                 aria-current={isActive ? 'step' : undefined}
                 className={`w-full text-start p-4 rounded-xl transition-[transform,background-color,box-shadow] duration-150 active:scale-[0.98] space-y-2 ${
                   isActive
-                    ? 'surface-card ring-2 ring-[#18181B]'
+                    ? 'surface-card bg-white shadow-border-hover'
                     : 'bg-[#F4F4F6] hover:bg-[#EBECEF]'
                 }`}
               >

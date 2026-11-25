@@ -257,7 +257,7 @@ export const TeammateFinderBoard: React.FC<TeammateFinderBoardProps> = ({
                 </div>
 
                 {/* Card Action */}
-                <div className="pt-3 flex items-center justify-between gap-3 border-t border-neutral-200/70">
+                <div className="pt-2 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-1.5">
                     {candidate.githubUrl && (
                       <a

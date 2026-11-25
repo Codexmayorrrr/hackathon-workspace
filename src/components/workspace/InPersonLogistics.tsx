@@ -127,7 +127,7 @@ export const InPersonLogistics: React.FC<InPersonLogisticsProps> = ({
                     className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${
                       item.packed
                         ? 'bg-[#047857] text-white'
-                        : 'bg-white shadow-[inset_0_0_0_1px_oklch(0_0_0/0.15)]'
+                        : 'bg-[#E4E4E9]'
                     }`}
                   >
                     {item.packed && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
@@ -141,7 +141,7 @@ export const InPersonLogistics: React.FC<InPersonLogisticsProps> = ({
                   </span>
                 </div>
 
-                <span className="text-[11px] font-mono capitalize px-2 py-0.5 rounded bg-white shadow-[0_0_0_1px_oklch(0_0_0/0.05)] text-[#52525B] flex-shrink-0">
+                <span className="text-[11px] font-mono capitalize px-2 py-0.5 rounded bg-white text-[#52525B] flex-shrink-0">
                   {item.category}
                 </span>
               </button>

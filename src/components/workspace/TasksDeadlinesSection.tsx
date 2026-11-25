@@ -118,7 +118,7 @@ const SwipeableTaskRow: React.FC<SwipeableTaskRowProps> = ({
               className={`w-5 h-5 rounded-md flex items-center justify-center transition-[transform,background-color] duration-150 ${
                 task.completed
                   ? 'bg-[#18181B] text-white'
-                  : 'bg-[#F4F4F6] shadow-[inset_0_0_0_1px_oklch(0_0_0/0.14)]'
+                  : 'bg-[#E4E4E9]'
               }`}
             >
               {task.completed && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
